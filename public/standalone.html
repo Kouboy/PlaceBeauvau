@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#03070b" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Direction du Contentieux - Instruction Juridique</title>
+  <style>
+    /* ==========================================================================
+       CSS - DIRECTION ARTISTIQUE BRUTALISTE & SOBRIÉTÉ ADMINISTRATIVE
+       Palette : Noir (#000000), Blanc (#FFFFFF), Rouge Procédural (#CC0000)
+       Typographie : Monospace (Courier New, Courier, monospace)
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Courier New", Courier, monospace;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background-color: #000000;
+      color: #ffffff;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* En-tête administratif */
+    header {
+      padding: 14px 24px;
+      border-bottom: 2px solid #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    .badge-header {
+      background-color: #ffffff;
+      color: #000000;
+      font-weight: bold;
+      padding: 2px 6px;
+      margin-right: 8px;
+    }
+
+    .stat-groupe {
+      display: flex;
+      gap: 20px;
+      font-weight: bold;
+    }
+
+    .alerte-rouge {
+      color: #cc0000;
+    }
+
+    /* Zone centrale d'affichage du dossier */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 20px;
+      position: relative;
+      overflow-y: auto;
+    }
+
+    .dossier-card {
+      border: 4px solid #ffffff;
+      padding: 20px 24px;
+      max-width: 960px;
+      width: 100%;
+      background-color: #000000;
+      position: relative;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    }
+
+    .dossier-meta {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #ffffff;
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+      font-size: 11px;
+      color: #888888;
+    }
+
+    .dossier-body-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .dossier-body-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .dossier-col-text {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: space-between;
+    }
+
+    .dossier-bloc-text {
+      background-color: #0a0a0a;
+      border: 1px solid #262626;
+      padding: 12px;
+    }
+
+    .dossier-section-title {
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      margin-bottom: 6px;
+      color: #888888;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .dossier-faits {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #ffffff;
+    }
+
+    .dossier-jargon {
+      font-size: 12px;
+      font-style: italic;
+      line-height: 1.5;
+      color: #00ff66;
+    }
+
+    /* Pièce visuelle versée au dossier */
+    .dossier-col-media {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .piece-visuelle-cadre {
+      border: 1px solid #404040;
+      background-color: #0a0a0a;
+      padding: 8px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .piece-visuelle-entete {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      color: #888888;
+      border-bottom: 1px solid #262626;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+    }
+
+    .point-enregistrement {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background-color: #cc0000;
+      border-radius: 50%;
+      margin-right: 4px;
+      animation: pulseRecord 1s infinite;
+    }
+
+    @keyframes pulseRecord {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .piece-visuelle-img-wrapper {
+      position: relative;
+      border: 1px solid #262626;
+      overflow: hidden;
+      background-color: #000000;
+    }
+
+    .piece-visuelle-img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      filter: contrast(125%) brightness(95%) grayscale(100%);
+      display: block;
+    }
+
+    .crt-scanline {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    .badge-confidentiel {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      background-color: rgba(0,0,0,0.85);
+      border: 1px solid #555555;
+      color: #cccccc;
+      font-size: 8px;
+      padding: 1px 4px;
+      letter-spacing: 1px;
+    }
+
+    .piece-visuelle-ref {
+      font-size: 9px;
+      color: #777777;
+      margin-top: 6px;
+      line-height: 1.3;
+    }
+
+    /* Zone de notification administrative */
+    .notification-feedback {
+      border: 2px solid #ffffff;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .notification-feedback.erreur {
+      border-color: #cc0000;
+      color: #cc0000;
+      background-color: #110000;
+    }
+
+    .notification-feedback.succes {
+      border-color: #ffffff;
+      color: #ffffff;
+      background-color: #151515;
+    }
+
+    /* Pupitre des 3 tampons ou bouton de passage */
+    .pupitre-tampons {
+      border-top: 2px solid #ffffff;
+      padding-top: 12px;
+    }
+
+    .pupitre-titre {
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: #888888;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .grille-tampons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .btn-tampon {
+      background-color: #000000;
+      border: 2px solid #ffffff;
+      color: #ffffff;
+      padding: 10px 12px;
+      text-align: left;
+      cursor: pointer;
+      transition: background-color 0.1s;
+    }
+
+    .btn-tampon:hover {
+      background-color: #181818;
+    }
+
+    .btn-tampon:active {
+      transform: scale(0.97);
+    }
+
+    .btn-tampon-entete {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .raccourci-badge {
+      background-color: #ffffff;
+      color: #000000;
+      font-weight: bold;
+      font-size: 10px;
+      padding: 1px 4px;
+    }
+
+    .btn-tampon-label {
+      color: #cc0000;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+
+    .btn-tampon-desc {
+      font-size: 9px;
+      color: #888888;
+      line-height: 1.3;
+    }
+
+    /* Bouton passage manuel */
+    .btn-suivant {
+      width: 100%;
+      padding: 12px 18px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: 2px solid #ffffff;
+      background-color: #ffffff;
+      color: #000000;
+      text-align: center;
+    }
+
+    .btn-suivant:hover {
+      background-color: #d4d4d4;
+    }
+
+    .btn-suivant.alerte-fin {
+      background-color: #cc0000;
+      border-color: #cc0000;
+      color: #ffffff;
+    }
+
+    .btn-suivant.alerte-fin:hover {
+      background-color: #990000;
+    }
+
+    /* Animation du tampon rouge/vert - apposé directement sur le cliché */
+    .tampon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(var(--angle, -4deg));
+      border: 3px dashed #00ff66;
+      color: #00ff66;
+      background-color: rgba(0, 0, 0, 0.85);
+      padding: 10px 14px;
+      text-align: center;
+      pointer-events: none;
+      z-index: 50;
+      width: 88%;
+      max-width: 260px;
+      box-shadow: 0 0 25px rgba(0, 255, 102, 0.4);
+      animation: tamponImpact 0.22s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    }
+
+    .tampon.erreur {
+      border-color: #ff2222;
+      color: #ff2222;
+      box-shadow: 0 0 25px rgba(255, 34, 34, 0.4);
+    }
+
+    .tampon-texte {
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      word-wrap: break-word;
+      line-height: 1.2;
+    }
+
+    .tampon-mention {
+      font-size: 8px;
+      letter-spacing: 1px;
+      border-top: 1px solid currentColor;
+      padding-top: 4px;
+      margin-top: 4px;
+    }
+
+    @keyframes tamponImpact {
+      0% {
+        transform: translate(-50%, -50%) rotate(var(--angle, -4deg)) scale(2.0);
+        opacity: 0;
+      }
+      40% {
+        transform: translate(-50%, -50%) rotate(var(--angle, -4deg)) scale(0.95);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) rotate(var(--angle, -4deg)) scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* Secousse générale de l'écran lors du coup de tampon */
+    @keyframes screenShake {
+      0% { transform: translate(0, 0); }
+      20% { transform: translate(-3px, 3px); }
+      40% { transform: translate(4px, -2px); }
+      60% { transform: translate(-2px, -3px); }
+      80% { transform: translate(3px, 1px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .shaking {
+      animation: screenShake 0.18s ease-in-out;
+    }
+
+    /* Écran de Suspension et Modal d'Introduction */
+    .fenetre-modale {
+      border: 4px solid #ffffff;
+      padding: 36px;
+      text-align: center;
+      max-width: 720px;
+      background-color: #000000;
+    }
+
+    .fenetre-modale.alerte {
+      border-color: #cc0000;
+    }
+
+    .modal-titre {
+      font-size: 22px;
+      font-weight: 900;
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+
+    .modal-message {
+      font-size: 15px;
+      font-weight: bold;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .modal-regles {
+      border: 1px solid #ffffff;
+      background-color: #0c0c0c;
+      padding: 16px;
+      text-align: left;
+      font-size: 12px;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .btn-action {
+      background-color: #ffffff;
+      color: #000000;
+      border: none;
+      padding: 14px 32px;
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .btn-action:hover {
+      background-color: #cccccc;
+    }
+
+    /* Minuteur en bloc dur */
+    footer {
+      padding: 14px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .timer-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: #aaaaaa;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 14px;
+      background-color: #111111;
+      border: 2px solid #ffffff;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 100%;
+      background-color: #ffffff;
+      transition: none;
+    }
+
+    .progress-bar.urgent {
+      background-color: #cc0000;
+    }
+  </style>
+</head>
+<body id="app">
+  <header>
+    <div><span class="badge-header">IGPN / PRÉFECTURE DE POLICE</span> DIRECTION DU CONTENTIEUX ET DES AFFAIRES JURIDIQUES</div>
+    <div class="stat-groupe">
+      <span id="compteur">DOSSIERS VISÉS : 0</span>
+      <span id="stat-blames">RAPPELS À L'ORDRE : 0 / 3</span>
+      <span id="stat-cadence">DÉLAI RÈGLEMENTAIRE : 26.0s</span>
+    </div>
+  </header>
+
+  <main id="zone-centrale">
+    <!-- Contenu injecté par JS -->
+  </main>
+
+  <footer>
+    <div class="timer-info">
+      <span>DÉLAI RÈGLEMENTAIRE D'INSTRUCTION</span>
+      <span id="temps-texte">26.0s</span>
+    </div>
+    <div class="progress-track">
+      <div id="barre-temps" class="progress-bar"></div>
+    </div>
+  </footer>
+
+  <script>
+    // =========================================================================
+    // 1. ARCHITECTURE DES DONNÉES : LES 3 QUALIFICATIONS RÈGLEMENTAIRES
+    // =========================================================================
+    const TAMPONS = [
+      {
+        code: "impunite",
+        label: "NON-LIEU // USAGE CONFORME",
+        sousTitre: "Extinction des poursuites - Art. L. 435-1",
+        raccourci: "1"
+      },
+      {
+        code: "victimisation",
+        label: "VIOLENCES SUR DÉPOSITAIRE",
+        sousTitre: "Action récursoire & constitution de partie civile",
+        raccourci: "2"
+      },
+      {
+        code: "mauvaise_foi",
+        label: "ENTRAVE & TAPAGE ILLICITE",
+        sousTitre: "Trouble matériel à l'exécution du service",
+        raccourci: "3"
+      }
+    ];
+
+    const dossiers = [
+      {
+        id: "DOS-2024-0814",
+        faits: "Interpellation sur voie publique. 4 fractures costales, traumatisme crânien et perte d'acuité visuelle permanente suite à l'usage à bout portant d'un lanceur de balles de défense.",
+        jargon_officiel: "Usage strictement nécessaire et proportionné des armes de dotation face à une posture manifestement non coopérative et hostile au dispositif de sécurité.",
+        categorie_attendue: "impunite",
+        tampon_imposé: "NON-LIEU // USAGE CONFORME",
+        justification_erreur: "La graduation de la force publique est réputée conforme aux circulaires d'engagement. Le classement sans suite est de rigueur.",
+        piece_visuelle: {
+          url: "./assets/images/cctv_street_arrest_1789202267680.jpg",
+          type: "cctv",
+          reference: "EXTRAIT VIDÉOPROTECTION VOIE PUBLIQUE // CAM-07",
+          horodatage: "23:41:09 REC"
+        }
+      },
+      {
+        id: "DOS-2024-0942",
+        faits: "Un passant reçoit un impact de bâton de défense à la tempe. S'effondrant sur le trottoir, il présente de vives convulsions musculaires consécutives au traumatisme.",
+        jargon_officiel: "Agitation corporelle désordonnée et persistante sur le sol de la voie publique, entravant la libre circulation piétonne et mobilisant indûment les effectifs.",
+        categorie_attendue: "mauvaise_foi",
+        tampon_imposé: "ENTRAVE & TAPAGE ILLICITE",
+        justification_erreur: "L'occupation corporelle non autorisée du sol public en zone passante constitue une entrave matérielle manifeste.",
+        piece_visuelle: {
+          url: "./assets/images/protest_baton_sidewalk_1789206737693.jpg",
+          type: "presse",
+          reference: "CLICHÉ DE PRESSE QUOTIDIEN // PIÈCE VERSÉE AU PARQUET",
+          horodatage: "18:24 ARCHIVE"
+        }
+      },
+      {
+        id: "DOS-2024-1108",
+        faits: "Lors d'un contrôle d'identité, un fonctionnaire de police constate une fracture du cinquième métacarpien suite à une frappe portée à la mâchoire de l'administré immobilisé.",
+        jargon_officiel: "Interposition cinétique brutale de la structure maxillo-faciale de l'administré ayant causé une incapacité totale de travail de 21 jours à un fonctionnaire en service.",
+        categorie_attendue: "victimisation",
+        tampon_imposé: "VIOLENCES SUR DÉPOSITAIRE",
+        justification_erreur: "Toute blessure subie par un fonctionnaire au contact direct de l'administré caractérise des violences volontaires sur personne dépositaire de l'autorité.",
+        piece_visuelle: {
+          url: "./assets/images/cctv_traffic_check_1789202295508.jpg",
+          type: "cctv",
+          reference: "CAPTATION CAMÉRA FIXE CARREFOUR // FLUX SÉCURISÉ",
+          horodatage: "02:15:33 REC"
+        }
+      },
+      {
+        id: "DOS-2024-1247",
+        faits: "Décès d'un interpellé par asphyxie positionnelle lors d'un maintien prolongé en décubitus ventral. Les enregistrements vidéo du poste sont inaccessibles par anomalie technique.",
+        jargon_officiel: "Défaillance cardio-respiratoire autonome intervenue de manière concomitante aux manœuvres de contention réglementaire. Absence de lien de causalité juridique établi.",
+        categorie_attendue: "impunite",
+        tampon_imposé: "NON-LIEU // USAGE CONFORME",
+        justification_erreur: "En l'absence de charges objectives imputables à l'intervention, la cause médicale autonome emporte la clôture immédiate de la procédure.",
+        piece_visuelle: {
+          url: "./assets/images/cctv_custody_corridor_1789202308481.jpg",
+          type: "cctv",
+          reference: "SAS DE GARDE À VUE // ARCHIVAGE INCIDENT TECHNIQUE",
+          horodatage: "03:12:00 [FLUX PERDU]"
+        }
+      },
+      {
+        id: "DOS-2024-1389",
+        faits: "Une requérante blessée au cuir chevelu par dispersion lacrymogène projette des écoulements sanguins abondants sur le pantalon et les brodequins d'un gradé.",
+        jargon_officiel: "Dégradation délibérée d'effets d'habillement administratifs par projection de substances biologiques et exposition de l'agent à un risque sanitaire non régulé.",
+        categorie_attendue: "victimisation",
+        tampon_imposé: "VIOLENCES SUR DÉPOSITAIRE",
+        justification_erreur: "L'altération des effets de service par des fluides organiques justifie des poursuites pour dégradation de matériel public et violences indirectes.",
+        piece_visuelle: {
+          url: "./assets/images/police_boot_forensic_1789206752761.jpg",
+          type: "presse",
+          reference: "PHOTOGRAPHIE SCIENTIFIQUE SCÈNE // CONSTAT EFFETS DE SERVICE",
+          horodatage: "21:05 ARCHIVE"
+        }
+      },
+      {
+        id: "DOS-2024-1502",
+        faits: "Une étudiante projetée à terre par un balayage des membres inférieurs pousse des cris prolongés suite à une luxation acromio-claviculaire droite.",
+        jargon_officiel: "Manifestations vocales stridentes et répétitives à fort volume acoustique, perturbant l'ordre public sonore et la sérénité des opérations de police.",
+        categorie_attendue: "mauvaise_foi",
+        tampon_imposé: "ENTRAVE & TAPAGE ILLICITE",
+        justification_erreur: "Les émissions sonores excessives sur la voie publique au cours d'une mission de maintien de l'ordre constituent un tapage et une provocation.",
+        piece_visuelle: {
+          url: "./assets/images/student_cctv_street_1789206768613.jpg",
+          type: "cctv",
+          reference: "CENTRE DE SUPERVISION URBAIN // OPÉRATEUR 04",
+          horodatage: "17:48:12 REC"
+        }
+      },
+      {
+        id: "DOS-2024-1620",
+        faits: "Déclenchement d'une munition de désencerclement au dos d'un manifestant marchant à distance du cordon de sécurité, causant une perforation cutanée et une surdité partielle.",
+        jargon_officiel: "Réaction d'anticipation tactique face à une manœuvre d'esquive équivoque susceptible de dissimuler la réorganisation d'un groupe hostile à revers.",
+        categorie_attendue: "impunite",
+        tampon_imposé: "NON-LIEU // USAGE CONFORME",
+        justification_erreur: "L'appréciation du risque par les fonctionnaires sur le terrain prévaut. L'opportunité des poursuites pénales est formellement écartée.",
+        piece_visuelle: {
+          url: "./assets/images/smoke_dispersal_burst_1789206782138.jpg",
+          type: "presse",
+          reference: "AGENCE DE PRESSE INDÉPENDANTE // ANGLE DISPOSITIF",
+          horodatage: "19:30 ARCHIVE"
+        }
+      },
+      {
+        id: "DOS-2024-1733",
+        faits: "Un agent trébuche sur son bouclier individuel en tentant de rattraper un cycliste circulant à allure modérée, entraînant une entorse bénigne du genou.",
+        jargon_officiel: "Mise en danger délibérée d'autrui et entrave à la circulation par manœuvre cycliste incitative ayant directement induit l'accident de service d'un agent assermenté.",
+        categorie_attendue: "victimisation",
+        tampon_imposé: "VIOLENCES SUR DÉPOSITAIRE",
+        justification_erreur: "Le comportement de l'usager ayant causé l'accident de service de l'agent, le dossier doit être transmis au parquet pour mise en examen.",
+        piece_visuelle: {
+          url: "./assets/images/press_protest_scene_1789202282512.jpg",
+          type: "presse",
+          reference: "DISPOSITIF MOBILE POLICE // FLUX D'ACTION",
+          horodatage: "11:22:40 ARCHIVE"
+        }
+      },
+      {
+        id: "DOS-2024-1890",
+        faits: "Un conducteur émet un avertissement sonore bref après une immobilisation de 45 minutes provoquée par le stationnement d'un fourgon de service devant une issue privée.",
+        jargon_officiel: "Usage intempestif et prohibé d'un avertisseur sonore constituant une pression acoustique et une insubordination caractérisée envers des agents en mission.",
+        categorie_attendue: "mauvaise_foi",
+        tampon_imposé: "ENTRAVE & TAPAGE ILLICITE",
+        justification_erreur: "L'actionnement d'un avertisseur sonore contre un équipage de police en pause opérationnelle constitue une infraction au code de la route et une insubordination.",
+        piece_visuelle: {
+          url: "./assets/images/police_van_blocked_street_1789206802674.jpg",
+          type: "cctv",
+          reference: "DISPOSITIF SURVEILLANCE CARREFOUR COMMERCIAL // CSU",
+          horodatage: "13:05:18 REC"
+        }
+      }
+    ];
+
+    // =========================================================================
+    // AUDIO : IMPACT DU TAMPON
+    // =========================================================================
+    let audioCtx = null;
+
+    function jouerSonTampon() {
+      try {
+        const AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioClass) return;
+        if (!audioCtx) audioCtx = new AudioClass();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const t = audioCtx.currentTime;
+
+        // Onde d'impact basse fréquence
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(140, t);
+        osc.frequency.exponentialRampToValueAtTime(28, t + 0.12);
+        gain.gain.setValueAtTime(0.9, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(t);
+        osc.stop(t + 0.15);
+
+        // Clac sec
+        const buff = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.06, audioCtx.sampleRate);
+        const data = buff.getChannelData(0);
+        for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buff;
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = "bandpass";
+        filter.frequency.setValueAtTime(1600, t);
+        const noiseGain = audioCtx.createGain();
+        noiseGain.gain.setValueAtTime(0.5, t);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(audioCtx.destination);
+        noise.start(t);
+      } catch (e) {
+        console.warn("Audio non initialisé", e);
+      }
+    }
+
+    // =========================================================================
+    // 2. ÉTAT DU JEU ET GESTION DES DOSSIERS
+    // =========================================================================
+    let indexActuel = 0;
+    let dossiersTraites = 0;
+    let blames = 0;
+    let tempsRestant = 26.0;
+    let tempsMax = 26.0;
+    let timerId = null;
+    let dernierTick = 0;
+    let estEnAttenteSuivant = false;
+    let estEnGameOver = false;
+
+    const zoneCentrale = document.getElementById("zone-centrale");
+    const barreTemps = document.getElementById("barre-temps");
+    const tempsTexte = document.getElementById("temps-texte");
+    const compteurElement = document.getElementById("compteur");
+    const statBlames = document.getElementById("stat-blames");
+    const statCadence = document.getElementById("stat-cadence");
+    const bodyElement = document.getElementById("app");
+
+    function calculerTempsTour(index) {
+      if (index < 3) return 26.0;
+      return Math.max(12.0, 26.0 / Math.pow(1.12, index - 2));
+    }
+
+    function afficherIntro() {
+      zoneCentrale.innerHTML = `
+        <div class="fenetre-modale">
+          <div class="modal-titre">BUREAU D'INSTRUCTION ET DE QUALIFICATION JURIDIQUE</div>
+          <div class="modal-message">Direction du Contentieux et des Affaires Juridiques</div>
+          <div class="modal-regles">
+            <strong>1. [NON-LIEU // USAGE CONFORME] :</strong> Usage de la force proportionné aux nécessités de l'ordre public, aléa médical spontané.<br/>
+            <strong>2. [VIOLENCES SUR DÉPOSITAIRE] :</strong> Préjudice matériel ou corporel subi par le service (blessure de l'agent lors du contact, dégradation d'effets).<br/>
+            <strong>3. [ENTRAVE & TAPAGE ILLICITE] :</strong> Trouble matériel à l'exécution du service (obstruction du passage, vociférations non autorisées).<br/><br/>
+            <em>Délai de traitement : 26s. Le chronomètre est suspendu dès l'apposition du tampon pour permettre la lecture du dossier.</em>
+          </div>
+          <button class="btn-action" onclick="demarrerPartie()">[ PRENDRE LE SERVICE D'INSTRUCTION (OU ENTRÉE) ]</button>
+        </div>
+      `;
+    }
+
+    function demarrerPartie() {
+      indexActuel = 0;
+      dossiersTraites = 0;
+      blames = 0;
+      estEnGameOver = false;
+      estEnAttenteSuivant = false;
+      mettreAJourCompteurs();
+      chargerDossier(0);
+      dernierTick = performance.now();
+      timerId = requestAnimationFrame(boucleJeu);
+    }
+
+    function chargerDossier(index) {
+      const d = dossiers[index];
+      tempsMax = calculerTempsTour(dossiersTraites);
+      tempsRestant = tempsMax;
+      estEnAttenteSuivant = false;
+
+      zoneCentrale.innerHTML = `
+        <div class="dossier-card" id="fiche-dossier">
+          <div class="dossier-meta">
+            <span>BORDEREAU N° ${d.id}</span>
+            <span>DOSSIER ${dossiersTraites + 1} / ${dossiers.length}</span>
+            <span id="statut-dossier">EN COURS D'EXAMEN</span>
+          </div>
+
+          <div class="dossier-body-grid">
+            <div class="dossier-col-text">
+              <div class="dossier-bloc-text">
+                <div class="dossier-section-title">
+                  <span>1. CONSTATATIONS MATÉRIELLES</span>
+                  <span style="color: #666; font-size: 9px;">DOC. SOURCE</span>
+                </div>
+                <div class="dossier-faits">${d.faits}</div>
+              </div>
+
+              <div class="dossier-bloc-text" id="bloc-rapport-officiel">
+                <div class="dossier-section-title">
+                  <span>2. RAPPORT DU CHEF DE DISPOSITIF</span>
+                  <span id="badge-scelle" style="color: #f59e0b; font-size: 9px; font-weight: bold;">[🔒 SOUS SCELLÉ CHIFFRÉ]</span>
+                </div>
+                <div id="contenu-rapport-officiel" style="color: #888; font-style: italic; font-size: 11px; line-height: 1.5;">
+                  🔒 SCELLÉ RÉGLEMENTAIRE : Le rapport d'engagement hiérarchique est chiffré. Il sera déverrouillé uniquement après qualification juridique conforme.
+                </div>
+              </div>
+            </div>
+
+            <div class="dossier-col-media">
+              <div class="piece-visuelle-cadre">
+                <div>
+                  <div class="piece-visuelle-entete">
+                    <span>
+                      <span class="point-enregistrement"></span>
+                      ${d.piece_visuelle.type === 'cctv' ? 'SAISIE CSU / VIDÉO' : 'CLICHÉ DE PRESSE'}
+                    </span>
+                    <span style="color: #ccc; font-weight: bold;">${d.piece_visuelle.horodatage}</span>
+                  </div>
+                  <div class="piece-visuelle-img-wrapper">
+                    <img src="${d.piece_visuelle.url}" class="piece-visuelle-img" alt="Preuve visuelle" />
+                    <div class="crt-scanline"></div>
+                    <div class="badge-confidentiel">CONFIDENTIEL DÉFENSE</div>
+                  </div>
+                </div>
+                <div class="piece-visuelle-ref">${d.piece_visuelle.reference}</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="zone-feedback"></div>
+
+          <div class="pupitre-tampons" id="pupitre-action">
+            <div class="pupitre-titre">SÉLECTIONNEZ LE VISA APPLICABLE [TOUCHES 1, 2, 3 OU CLIC SUR LE BLOC] :</div>
+            <div class="grille-tampons">
+              ${TAMPONS.map(t => `
+                <button class="btn-tampon" onclick="choisirTampon('${t.code}', event)">
+                  <div class="btn-tampon-entete">
+                    <span class="raccourci-badge">[${t.raccourci}]</span>
+                    <span style="font-size: 10px; color: #888;">VISA</span>
+                  </div>
+                  <div class="btn-tampon-label">${t.label}</div>
+                  <div class="btn-tampon-desc">${t.sousTitre}</div>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+
+      mettreAJourBarre();
+    }
+
+    function mettreAJourCompteurs() {
+      compteurElement.textContent = "DOSSIERS VISÉS : " + dossiersTraites;
+      statBlames.textContent = `RAPPELS À L'ORDRE : ${blames} / 3`;
+      if (blames > 0) statBlames.classList.add("alerte-rouge");
+      else statBlames.classList.remove("alerte-rouge");
+    }
+
+    function mettreAJourBarre() {
+      const ratio = Math.max(0, Math.min(1, tempsRestant / tempsMax));
+      barreTemps.style.width = (ratio * 100) + "%";
+
+      if (estEnAttenteSuivant) {
+        tempsTexte.textContent = "[FIGÉ]";
+        statCadence.textContent = "DÉLAI : FIGÉ [EN ATTENTE D'ÉMARGEMENT]";
+        barreTemps.style.backgroundColor = "#555555";
+      } else {
+        tempsTexte.textContent = tempsRestant.toFixed(1) + "s";
+        statCadence.textContent = "DÉLAI RÈGLEMENTAIRE : " + tempsRestant.toFixed(1) + "s";
+        if (tempsRestant < 6.0) {
+          barreTemps.style.backgroundColor = "#cc0000";
+        } else {
+          barreTemps.style.backgroundColor = "#ffffff";
+        }
+      }
+    }
+
+    function boucleJeu(now) {
+      if (estEnGameOver) return;
+      if (!dernierTick) dernierTick = now;
+      const delta = (now - dernierTick) / 1000;
+      dernierTick = now;
+
+      if (!estEnAttenteSuivant) {
+        tempsRestant -= delta;
+        if (tempsRestant <= 0) {
+          declencherGameOver("timeout");
+          return;
+        }
+        mettreAJourBarre();
+      }
+
+      timerId = requestAnimationFrame(boucleJeu);
+    }
+
+    function choisirTampon(codeChoisi, event) {
+      if (estEnGameOver || estEnAttenteSuivant) return;
+      if (event) event.stopPropagation();
+
+      const tamponObj = TAMPONS.find(t => t.code === codeChoisi);
+      const d = dossiers[indexActuel];
+      const estCorrect = (codeChoisi === d.categorie_attendue);
+
+      estEnAttenteSuivant = true;
+      jouerSonTampon();
+
+      bodyElement.classList.add("shaking");
+      setTimeout(() => bodyElement.classList.remove("shaking"), 180);
+
+      // Création du tampon apposé directement sur le cliché / pièce visuelle
+      const photoWrapper = document.querySelector(".piece-visuelle-img-wrapper") || document.getElementById("fiche-dossier");
+      const tamponEl = document.createElement("div");
+      tamponEl.id = "tampon-applique";
+      tamponEl.className = "tampon " + (estCorrect ? "succes" : "erreur");
+      const angle = -6 + Math.random() * 12;
+      tamponEl.style.setProperty("--angle", angle + "deg");
+      tamponEl.innerHTML = `
+        <div class="tampon-texte">${tamponObj.label}</div>
+        <div class="tampon-mention">${estCorrect ? "VISA HOMOLOGUÉ // PIÈCE COTÉE" : "VISA REJETÉ // MOTIF INOPÉRANT"}</div>
+      `;
+      if (photoWrapper) photoWrapper.appendChild(tamponEl);
+
+      const zoneFeedback = document.getElementById("zone-feedback");
+      const statutDossier = document.getElementById("statut-dossier");
+      const blocRapport = document.getElementById("bloc-rapport-officiel");
+      const badgeScelle = document.getElementById("badge-scelle");
+      const contenuRapport = document.getElementById("contenu-rapport-officiel");
+
+      if (statutDossier) statutDossier.textContent = "VISA APPOSÉ // EN ATTENTE D'ÉMARGEMENT";
+
+      if (estCorrect) {
+        if (badgeScelle) {
+          badgeScelle.textContent = "[🔓 SCELLÉ LEVÉ]";
+          badgeScelle.style.color = "#00ff66";
+        }
+        if (contenuRapport) {
+          contenuRapport.innerHTML = `<span style="color: #00ff66; font-size: 13px;">« ${d.jargon_officiel} »</span><div style="font-size: 9px; color: #888; margin-top: 6px; border-top: 1px solid #1e293b; padding-top: 4px;">✓ VERSION OFFICIELLE DU COMMANDEMENT ENREGISTRÉE POUR LE PARQUET</div>`;
+        }
+        if (blocRapport) {
+          blocRapport.style.borderColor = "#00ff66";
+          blocRapport.style.backgroundColor = "#001a07";
+        }
+        if (zoneFeedback) {
+          zoneFeedback.innerHTML = `
+            <div style="border: 2px solid #00ff66; background-color: #001a07; color: #00ff66; padding: 12px; margin: 10px 0; font-family: monospace;">
+              <div style="font-weight: bold; font-size: 13px; border-bottom: 1px solid rgba(0,255,102,0.4); padding-bottom: 6px; margin-bottom: 6px;">
+                [✓] HOMOLOGATION CONFIRMÉE — VISA CONFORME AUX DIRECTIVES
+              </div>
+              <div style="color: #fff; font-size: 11px;">
+                <strong>QUALIFICATION VALIDÉE :</strong> [${tamponObj.label}]<br/>
+                <span style="color: #aaa;">Le rapport du chef de dispositif est déverrouillé ci-dessus. Mémoire en défense rédigé pour le Parquet.</span>
+              </div>
+            </div>`;
+        }
+      } else {
+        blames++;
+        mettreAJourCompteurs();
+        if (badgeScelle) {
+          badgeScelle.textContent = "[⛔ SCELLÉ MAINTENU]";
+          badgeScelle.style.color = "#ff4444";
+        }
+        if (contenuRapport) {
+          contenuRapport.innerHTML = `<span style="color: #ff8888; font-size: 11px;">⛔ DÉCHIFFREMENT REFUSÉ // La pièce de commandement ne peut être versée sous une qualification inopérante.</span>`;
+        }
+        if (blocRapport) {
+          blocRapport.style.borderColor = "#ff4444";
+          blocRapport.style.backgroundColor = "#1a0000";
+        }
+        if (zoneFeedback) {
+          zoneFeedback.innerHTML = `
+            <div style="border: 2px solid #ff2222; background-color: #1a0000; color: #ff4444; padding: 12px; margin: 10px 0; font-family: monospace;" class="animate-alerte-erreur">
+              <div style="font-weight: bold; font-size: 13px; border-bottom: 1px solid rgba(255,34,34,0.4); padding-bottom: 6px; margin-bottom: 6px;">
+                [✗] REJET DU VISA ADMINISTRATIF — RAPPEL À L'ORDRE ${blames} / 3
+              </div>
+              <div style="color: #fff; font-size: 11px; line-height: 1.5;">
+                <strong style="color: #ff4444;">VISA SÉLECTIONNÉ :</strong> [${tamponObj.label}] → MOTIF INOPÉRANT<br/>
+                <strong style="color: #f59e0b;">QUALIFICATION IMPÉRATIVE :</strong> [${d.tampon_imposé}]<br/>
+                <div style="margin-top: 6px; background: rgba(0,0,0,0.6); padding: 6px; border: 1px solid #ff4444; color: #ddd; font-style: italic;">
+                  « ${d.justification_erreur} »
+                </div>
+                ${blames >= 3 ? '<div style="background: #cc0000; color: #fff; font-weight: bold; padding: 6px; text-align: center; margin-top: 8px;">⚠️ 3 RAPPELS À L\'ORDRE : SUSPENSION IMMÉDIATE DU BRIGADIER</div>' : ''}
+              </div>
+            </div>`;
+        }
+      }
+
+      // Remplacement du pupitre par le bouton de contrôle manuel
+      const pupitreAction = document.getElementById("pupitre-action");
+      if (pupitreAction) {
+        const estDernier = (indexActuel + 1 >= dossiers.length);
+        const estSuspendu = (blames >= 3);
+        let libelleBtn = "[ DOSSIER SUIVANT : ÉMARGER ET PRENDRE LE BORDEREAU SUIVANT (ENTRÉE OU ESPACE) → ]";
+        if (estSuspendu) {
+          libelleBtn = "[ 3 RAPPELS À L'ORDRE — CONSTATER LA SUSPENSION ADMINISTRATIVE (ENTRÉE OU ESPACE) ]";
+        } else if (estDernier) {
+          libelleBtn = "[ DERNIÈRE PIÈCE TRAITÉE — TRANSMETTRE LE REGISTRE AU PARQUET (ENTRÉE OU ESPACE) ]";
+        }
+
+        pupitreAction.innerHTML = `
+          <div style="font-size: 10px; color: #aaa; text-align: center; margin-bottom: 8px; font-family: monospace;">
+            PROCÉDURE SUSPENDUE — EXAMINEZ LES MOTIFS AVANT VALIDATION :
+          </div>
+          <button class="btn-suivant ${estSuspendu ? 'alerte-fin' : ''}" onclick="passerAuDossierSuivant()">
+            ${libelleBtn}
+          </button>
+        `;
+      }
+
+      mettreAJourBarre();
+    }
+
+    function passerAuDossierSuivant() {
+      if (!estEnAttenteSuivant) return;
+
+      if (blames >= 3) {
+        declencherGameOver("blames");
+        return;
+      }
+
+      dossiersTraites++;
+      mettreAJourCompteurs();
+      indexActuel++;
+
+      if (indexActuel >= dossiers.length) {
+        declencherFinVictoire();
+      } else {
+        chargerDossier(indexActuel);
+      }
+    }
+
+    function declencherFinVictoire() {
+      estEnGameOver = true;
+      cancelAnimationFrame(timerId);
+
+      zoneCentrale.innerHTML = `
+        <div class="fenetre-modale">
+          <div class="modal-titre">CLÔTURE DU REGISTRE CONTENTIEUX</div>
+          <div class="modal-message">
+            L'ensemble des procédures a fait l'objet d'une qualification conforme aux circulaires ministérielles.
+            Les réclamations sont éteintes et les mémoires en défense ont été transmis au Parquet.
+          </div>
+          <div class="modal-regles">
+            • AFFAIRES TRAITÉES : ${dossiersTraites}<br/>
+            • INCIDENTS DE DOCTRINE : ${blames} / 3<br/>
+            • ÉTAT DU CONTENTIEUX : PROCÉDURES INTÉGRALEMENT RÉGULARISÉES<br/>
+            <strong style="color: #cc0000;">• MENTION AU DOSSIER INDIVIDUEL : SERVICE EXEMPLAIRE</strong>
+          </div>
+          <button class="btn-action" onclick="demarrerPartie()">[ PRENDRE EN CHARGE LE REGISTRE SUIVANT (OU ENTRÉE) ]</button>
+        </div>
+      `;
+      barreTemps.style.width = "100%";
+      tempsTexte.textContent = "CLÔTURÉ";
+    }
+
+    function declencherGameOver(raison) {
+      estEnGameOver = true;
+      cancelAnimationFrame(timerId);
+
+      zoneCentrale.innerHTML = `
+        <div class="fenetre-modale alerte">
+          <div class="modal-titre" style="color: #cc0000;">
+            ${raison === "timeout" ? "CADUCITÉ DE LA PROCÉDURE" : "SUSPENSION ADMINISTRATIVE"}
+          </div>
+          <div class="modal-message">
+            ${raison === "timeout"
+              ? "Dépassement du délai impératif de traitement. Suspension des fonctions pour lenteur de service."
+              : "Constat de 3 erreurs matérielles de qualification juridique. Retrait immédiat de l'habilitation."}
+          </div>
+          <p style="font-size: 13px; color: #888888; margin-bottom: 24px;">
+            Total des bordereaux homologués au registre : ${dossiersTraites}
+          </p>
+          <button class="btn-action" onclick="demarrerPartie()">[ RÉOUVRIR LE REGISTRE D'INSTRUCTION (OU ENTRÉE) ]</button>
+        </div>
+      `;
+      barreTemps.style.width = "0%";
+      tempsTexte.textContent = "0.0s";
+    }
+
+    // Raccourcis clavier : 1, 2, 3 ou A, Z, E et validation avec Espace ou Entrée
+    window.addEventListener("keydown", (e) => {
+      if (estEnGameOver) {
+        if (e.code === "Space" || e.code === "Enter") {
+          e.preventDefault();
+          demarrerPartie();
+        }
+        return;
+      }
+
+      if (estEnAttenteSuivant) {
+        if (e.code === "Space" || e.code === "Enter") {
+          e.preventDefault();
+          passerAuDossierSuivant();
+        }
+        return;
+      }
+
+      if (e.key === "1" || e.key === "a" || e.key === "A" || e.key === "&") {
+        choisirTampon("impunite");
+      } else if (e.key === "2" || e.key === "z" || e.key === "Z" || e.key === "é") {
+        choisirTampon("victimisation");
+      } else if (e.key === "3" || e.key === "e" || e.key === "E" || e.key === '"') {
+        choisirTampon("mauvaise_foi");
+      }
+    });
+
+    afficherIntro();
+  </script>
+</body>
+</html>

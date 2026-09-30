@@ -1,0 +1,6 @@
+{
+  "name": "Impunité Administrative",
+  "description": "Jeu de simulation bureaucratique et satirique : qualification contentieuse d'interventions de police, caviardage de termes compromettants, substitution de scellés et glisser-déposer de visas ministériels.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,537 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    font-family: Tahoma, "Segoe UI", Arial, system-ui, sans-serif;
+  }
+
+  body {
+    background-color: #004e98;
+    color: #1a1a1a;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    overflow-x: hidden;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+}
+
+/* POLICES SPÉCIALISÉES */
+.font-tahoma {
+  font-family: Tahoma, "Segoe UI", Arial, sans-serif;
+}
+
+.font-win-mono {
+  font-family: Consolas, "Courier New", monospace;
+}
+
+/* STYLES OFFICIELS WIN32 / WINDOWS XP LUNA (PARODIE CHEOPS-OS) */
+.xp-bevel-outset {
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-bottom: 2px solid #808080;
+  border-right: 2px solid #808080;
+}
+
+.xp-bevel-inset {
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  background-color: #ffffff;
+}
+
+.xp-bevel-thin-inset {
+  border-top: 1px solid #7f9db9;
+  border-left: 1px solid #7f9db9;
+  border-bottom: 1px solid #ffffff;
+  border-right: 1px solid #ffffff;
+}
+
+.xp-btn {
+  background: linear-gradient(180deg, #ffffff 0%, #ece9d8 15%, #d8d4c4 100%);
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-bottom: 2px solid #707070;
+  border-right: 2px solid #707070;
+  color: #000000;
+  font-family: Tahoma, "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 3px 10px;
+  cursor: pointer;
+  box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.4);
+}
+
+.xp-btn:hover {
+  background: linear-gradient(180deg, #ffffff 0%, #f6f4eb 20%, #e8e4d2 100%);
+}
+
+.xp-btn:active {
+  background: linear-gradient(180deg, #c5c1b0 0%, #d8d4c4 80%, #ffffff 100%);
+  border-top: 2px solid #707070;
+  border-left: 2px solid #707070;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.4);
+  transform: translate(1px, 1px);
+}
+
+/* BARRE DE TITRE WINDOWS XP LUNA */
+.xp-titlebar-active {
+  background: linear-gradient(180deg, #0058e6 0%, #3a95f5 10%, #156fe8 50%, #0053e1 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+.xp-titlebar-inactive {
+  background: linear-gradient(180deg, #7697d7 0%, #8faee5 10%, #799ad8 50%, #688bcb 100%);
+  color: #d8e4f8;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+/* BOUTON FERMER XP LUNA (ROUGE VERMILLON) */
+.xp-btn-close {
+  background: linear-gradient(180deg, #f78d78 0%, #e23b20 20%, #bf1c05 60%, #e23b20 100%);
+  border: 1px solid #790800;
+  border-top-color: #ffb4a6;
+  border-left-color: #ffb4a6;
+  box-shadow: inset 0 0 1px #fff;
+}
+
+.xp-btn-close:hover {
+  background: linear-gradient(180deg, #ff9e8a 0%, #f04e33 20%, #d62208 60%, #f04e33 100%);
+}
+
+.xp-btn-close:active {
+  background: linear-gradient(180deg, #8a0c00 0%, #aa1505 50%, #d62208 100%);
+  box-shadow: inset 1px 1px 2px #000;
+}
+
+/* BOUTONS MIN / MAX XP LUNA (BLEU) */
+.xp-btn-control {
+  background: linear-gradient(180deg, #6ba5f5 0%, #2974e6 20%, #1458cc 60%, #2974e6 100%);
+  border: 1px solid #0c367a;
+  border-top-color: #a4ccff;
+  border-left-color: #a4ccff;
+  box-shadow: inset 0 0 1px #fff;
+}
+
+.xp-btn-control:hover {
+  background: linear-gradient(180deg, #8bc0ff 0%, #478cf5 20%, #256be3 60%, #478cf5 100%);
+}
+
+.xp-btn-control:active {
+  background: linear-gradient(180deg, #0e3d88 0%, #1752b0 50%, #2974e6 100%);
+  box-shadow: inset 1px 1px 2px #000;
+}
+
+/* BARRE DES TÂCHES XP LUNA */
+.xp-taskbar-bg {
+  background: linear-gradient(180deg, #245edb 0%, #3980f4 10%, #245edb 45%, #1941a5 100%);
+  border-top: 1px solid #5a8ef0;
+}
+
+/* BOUTON DÉMARRER XP LUNA (VERT POMME EMBLÉMATIQUE) */
+.xp-start-button {
+  background: linear-gradient(180deg, #49c445 0%, #388e3c 15%, #2e7d32 60%, #1b5e20 100%);
+  border-top: 1px solid #82e27e;
+  border-left: 1px solid #82e27e;
+  border-bottom: 2px solid #0f4014;
+  border-right: 2px solid #0f4014;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), 1px 1px 3px rgba(0, 0, 0, 0.4);
+  color: #ffffff;
+  font-family: "Franklin Gothic Medium", Tahoma, Arial, sans-serif;
+  font-style: italic;
+  font-weight: 900;
+  text-shadow: 1px 1px 2px #0b3d11;
+}
+
+.xp-start-button:hover {
+  background: linear-gradient(180deg, #5fe05b 0%, #43a047 15%, #388e3c 60%, #257428 100%);
+}
+
+.xp-start-button:active {
+  background: linear-gradient(180deg, #18521d 0%, #246a29 50%, #388e3c 100%);
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* ONGLETS DES FENÊTRES DANS LA BARRE DES TÂCHES */
+.xp-taskbar-tab {
+  background: linear-gradient(180deg, #3d7ee8 0%, #4d8df5 15%, #2a69db 60%, #1a4ab8 100%);
+  border-top: 1px solid #8bb5ff;
+  border-left: 1px solid #8bb5ff;
+  border-bottom: 1px solid #0f307a;
+  border-right: 1px solid #0f307a;
+  color: #ffffff;
+  text-shadow: 1px 1px 1px #0d2866;
+}
+
+.xp-taskbar-tab:hover {
+  background: linear-gradient(180deg, #5694f8 0%, #68a3ff 15%, #3d7ee8 60%, #2558c8 100%);
+}
+
+.xp-taskbar-tab-active {
+  background: linear-gradient(180deg, #153880 0%, #1a4294 40%, #153880 100%);
+  border-top: 1px solid #0a1f4d;
+  border-left: 1px solid #0a1f4d;
+  border-bottom: 1px solid #3d6dc2;
+  border-right: 1px solid #3d6dc2;
+  color: #ffffff;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.6);
+  font-weight: bold;
+}
+
+/* ZONE DE NOTIFICATION (SYSTRAY XP LUNA) */
+.xp-systray {
+  background: linear-gradient(180deg, #0c2d76 0%, #103b9b 20%, #0d3182 60%, #092361 100%);
+  border-left: 1px solid #1c52c4;
+  border-top: 1px solid #061945;
+  box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+/* Texture de balayage CRT et moniteur de terminal */
+.crt-monitor {
+  position: relative;
+  background-color: #04080e;
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 50, 100, 0.2);
+}
+
+.crt-monitor::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  z-index: 40;
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Clignotement du curseur de terminal */
+@keyframes terminalBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: terminalBlink 0.9s infinite;
+}
+
+/* Animations Brutalistes d'impact de tampon lourd avec rebond mécanique */
+@keyframes tamponImpact {
+  0% {
+    transform: translate(-50%, -50%) rotate(var(--stamp-angle, -5deg)) scale(3.2);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  30% {
+    transform: translate(-50%, -50%) rotate(var(--stamp-angle, -5deg)) scale(0.88);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  60% {
+    transform: translate(-50%, -50%) rotate(var(--stamp-angle, -5deg)) scale(1.08);
+  }
+  80% {
+    transform: translate(-50%, -50%) rotate(var(--stamp-angle, -5deg)) scale(0.97);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(var(--stamp-angle, -5deg)) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes screenShake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  15% { transform: translate(-7px, 5px) rotate(-0.5deg); }
+  35% { transform: translate(8px, -6px) rotate(0.6deg); }
+  55% { transform: translate(-6px, -4px) rotate(-0.3deg); }
+  75% { transform: translate(5px, 3px) rotate(0.2deg); }
+  90% { transform: translate(-2px, 1px); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.animate-tampon {
+  animation: tamponImpact 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-screen-shake {
+  animation: screenShake 0.24s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+/* Clignotement d'alerte rouge */
+@keyframes alerteClignotement {
+  0%, 100% { border-color: #ff2222; background-color: rgba(255, 34, 34, 0.15); }
+  50% { border-color: #ffffff; background-color: rgba(255, 34, 34, 0.05); }
+}
+
+.animate-alerte-erreur {
+  animation: alerteClignotement 1s infinite ease-in-out;
+}
+
+/* Effet glitch et brouillage caméra */
+@keyframes videoGlitch {
+  0% { filter: contrast(140%) brightness(100%); transform: translate(0, 0); }
+  20% { filter: contrast(200%) brightness(130%) hue-rotate(90deg); transform: translate(-3px, 2px); }
+  40% { filter: contrast(80%) brightness(80%) invert(20%); transform: translate(3px, -2px); }
+  60% { filter: contrast(180%) brightness(110%); transform: translate(-2px, -1px); }
+  80% { filter: contrast(120%) brightness(90%); transform: translate(2px, 1px); }
+  100% { filter: contrast(140%) brightness(100%); transform: translate(0, 0); }
+}
+
+.glitch-video {
+  animation: videoGlitch 0.3s infinite;
+}
+
+/* Ligne de parasite vidéo */
+.scanline-glitch {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.4),
+    rgba(0, 0, 0, 0.4) 2px,
+    rgba(255, 255, 255, 0.1) 2px,
+    rgba(255, 255, 255, 0.1) 4px
+  );
+}
+
+/* Clignotement urgent télégramme préfet */
+@keyframes alerteTelegramme {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+    border-color: #ef4444;
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(245, 158, 11, 0.8);
+    border-color: #f59e0b;
+  }
+}
+
+.animate-telegramme {
+  animation: alerteTelegramme 2s infinite ease-in-out;
+}
+
+/* Zone de glisser-déposer active */
+.zone-depose-active {
+  border-color: #00ff66 !important;
+  box-shadow: 0 0 16px rgba(0, 255, 102, 0.3) !important;
+  background-color: rgba(0, 255, 102, 0.06) !important;
+}
+
+/* Caviardage au feutre noir ministériel */
+.caviarde-barre {
+  background-color: #000000;
+  color: #00ff66;
+  text-decoration: line-through;
+  text-decoration-color: #ef4444;
+  text-decoration-thickness: 2px;
+  padding: 1px 4px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Animation vibration de broyeuse */
+@keyframes broyeurVibration {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 2px) rotate(-1deg); }
+  50% { transform: translate(2px, -1px) rotate(1deg); }
+  75% { transform: translate(-1px, -2px) rotate(0deg); }
+  100% { transform: translate(0, 0); }
+}
+
+.animate-broyeur {
+  animation: broyeurVibration 0.12s infinite;
+}
+
+/* Animations sensorielles de feedback et de gamification */
+@keyframes floatUpFade {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.85);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.08);
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(-16px) scale(1.02);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+}
+
+.animate-float-feedback {
+  animation: floatUpFade 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes inkSplash {
+  0% {
+    transform: scale(0.4);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.animate-ink-splash {
+  animation: inkSplash 0.45s ease-out forwards;
+}
+
+@keyframes flashGreenScreen {
+  0% { background-color: rgba(0, 255, 102, 0.22); }
+  100% { background-color: transparent; }
+}
+
+.flash-screen-success {
+  animation: flashGreenScreen 0.45s ease-out;
+}
+
+@keyframes flashRedScreen {
+  0% { background-color: rgba(239, 68, 68, 0.35); }
+  100% { background-color: transparent; }
+}
+
+.flash-screen-error {
+  animation: flashRedScreen 0.5s ease-out;
+}
+
+/* Barre de défilement discrète pour station de travail desktop */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #060a10;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 2px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* THÈME OS POLICIER DIÉGÉTIQUE (INSPIRÉ DE L'INTERFACE D'ENQUÊTE) */
+.diegetic-desktop {
+  background: radial-gradient(circle at 50% 30%, #081b2e 0%, #030a14 70%, #01050a 100%);
+}
+
+.diegetic-window {
+  background-color: rgba(3, 10, 20, 0.95);
+  border: 1px solid #005680;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(56, 189, 248, 0.15);
+}
+
+.diegetic-titlebar {
+  background: linear-gradient(90deg, #062b42 0%, #021a29 100%);
+  border-bottom: 1px solid #005680;
+  color: #38bdf8;
+}
+
+.diegetic-btn-close {
+  color: #7dd3fc;
+  transition: all 0.15s ease;
+}
+.diegetic-btn-close:hover {
+  color: #ffffff;
+  background-color: #ef4444;
+}
+
+.diegetic-btn-control {
+  color: #38bdf8;
+  transition: all 0.15s ease;
+}
+.diegetic-btn-control:hover {
+  color: #ffffff;
+  background-color: #0284c7;
+}
+
+.diegetic-chat-bubble-user {
+  background-color: #1e3a1f;
+  border-left: 2px solid #00ff66;
+  color: #d1fae5;
+}
+
+.diegetic-chat-bubble-incoming {
+  background-color: #072336;
+  border-left: 2px solid #38bdf8;
+  color: #bae6fd;
+}
+
+.diegetic-taskbar {
+  background: linear-gradient(180deg, #071927 0%, #020b13 100%);
+  border-top: 1px solid #005680;
+}
+
+.diegetic-taskbar-btn {
+  background-color: #06283d;
+  border: 1px solid #0284c7;
+  color: #e0f2fe;
+}
+.diegetic-taskbar-btn:hover {
+  background-color: #0c4a6e;
+  border-color: #38bdf8;
+}
+.diegetic-taskbar-btn.active {
+  background-color: #0369a1;
+  border-color: #7dd3fc;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+}
+
+/* GROS TAMPONS ADMINISTRATIFS RELIEF & SENSORIEL */
+.diegetic-stamp-card {
+  position: relative;
+  border-width: 3px;
+  border-style: solid;
+  transition: all 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.diegetic-stamp-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.diegetic-stamp-card:active {
+  transform: translateY(2px) scale(0.98);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.9), inset 0 3px 6px rgba(0, 0, 0, 0.6);
+}
+
+/* Sceau officiel d'encre administrative */
+.rubber-stamp-effect {
+  mask-image: radial-gradient(circle, black 85%, rgba(0, 0, 0, 0.8) 100%);
+  text-shadow: 0 0 2px currentColor;
+  letter-spacing: 0.1em;
+}
+
+/* Balayage scanner biométrique */
+@keyframes bioScanSweep {
+  0% { top: 0%; opacity: 0.8; }
+  50% { top: 96%; opacity: 1; }
+  100% { top: 0%; opacity: 0.8; }
+}
+
+.bio-scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00ff66, transparent);
+  box-shadow: 0 0 10px #00ff66;
+  animation: bioScanSweep 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+
