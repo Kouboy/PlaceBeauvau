@@ -5,8 +5,12 @@ import {defineConfig} from 'vite';
 import {VitePWA} from 'vite-plugin-pwa';
 
 export default defineConfig(() => {
+  const repoName = process.env.GITHUB_REPOSITORY
+    ? `/${process.env.GITHUB_REPOSITORY.split('/')[1]}/`
+    : process.env.BASE_PATH || './';
+
   return {
-    base: './',
+    base: repoName,
     plugins: [
       react(),
       tailwindcss(),
@@ -14,7 +18,7 @@ export default defineConfig(() => {
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icon.svg'],
         manifest: {
-          id: '/',
+          id: repoName,
           name: 'Impunité Administrative — CHEOPS Contentieux',
           short_name: 'CHEOPS',
           description: "Jeu de simulation bureaucratique et satirique : qualification contentieuse d'interventions de police, caviardage de termes compromettants, substitution de scellés et visas ministériels.",
@@ -22,8 +26,8 @@ export default defineConfig(() => {
           background_color: '#002244',
           display: 'standalone',
           orientation: 'any',
-          start_url: './',
-          scope: './',
+          start_url: repoName,
+          scope: repoName,
           icons: [
             {
               src: 'pwa-192x192.png',
@@ -47,6 +51,7 @@ export default defineConfig(() => {
         },
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,woff,woff2}'],
+          navigateFallback: repoName === './' ? 'index.html' : `${repoName}index.html`,
         },
         devOptions: {
           enabled: true,

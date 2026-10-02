@@ -297,13 +297,13 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
     }
   };
 
-  // Thème de fond d'écran (sans dominante jaune, bleu azur authentique ou surveillance)
-  const [wallpaperTheme, setWallpaperTheme] = useState<"azure" | "surveillance" | "classic">("azure");
+  // Thème de fond d'écran (Bliss Surveillance parodique Police Nationale par défaut)
+  const [wallpaperTheme, setWallpaperTheme] = useState<"azure" | "surveillance" | "classic">("surveillance");
   const activeWallpaperUrl =
-    wallpaperTheme === "azure"
-      ? blissWallpaperAzure
-      : wallpaperTheme === "surveillance"
+    wallpaperTheme === "surveillance"
       ? blissWallpaperSurveillance
+      : wallpaperTheme === "classic"
+      ? blissWallpaperAzure
       : blissWallpaperAzure;
 
   // Positions déplaçables des icônes du Bureau XP avec espacement vertical généreux (pas de superposition)
