@@ -225,9 +225,9 @@ export const DocumentViewerWindow: React.FC<DocumentViewerWindowProps> = ({
             <button
               type="button"
               onClick={onOpenQualification}
-              className="xp-btn-blue text-xs font-bold flex items-center gap-2"
+              className="xp-btn-blue bg-[#0055ea] hover:bg-[#0044cc] text-white text-xs font-bold flex items-center gap-2 px-3 py-1.5 border border-[#002266] shadow-sm cursor-pointer"
             >
-              <span>Appliquer le Visa de Qualification</span>
+              <span className="text-white font-bold">Appliquer le Visa de Qualification</span>
               <ArrowRight className="w-4 h-4 text-white" />
             </button>
           </div>

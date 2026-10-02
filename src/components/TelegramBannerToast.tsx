@@ -14,7 +14,7 @@ import { soundFx } from "../services/soundFx";
 
 export interface TelegramAlert {
   id: string;
-  source: "CABINET DU MINISTRE" | "IGPN DÉONTOLOGIE" | "SYNDICAT ALLIANCE" | "PARQUET DE BOBIGNY";
+  source: "CABINET DU MINISTRE" | "IGPN DÉONTOLOGIE" | "SYNDICAT ALLIANCE" | "PARQUET DE BOBIGNY" | "GREFFE & STATISTIQUES" | string;
   message: string;
   timestamp: string;
   priority: "urgente" | "sanction" | "consigne";
@@ -65,7 +65,7 @@ export const TelegramBannerToast: React.FC<TelegramBannerToastProps> = ({
 
         {/* CONTENU */}
         <div className="text-slate-100 font-bold leading-relaxed mb-2 text-xs sm:text-sm">
-          « {alert.message} »
+          « {typeof alert.message === "string" ? alert.message : (alert.message as any)?.alerte || JSON.stringify(alert.message)} »
         </div>
 
         {/* PIED AVEC HORODATAGE */}

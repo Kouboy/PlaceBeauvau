@@ -12,6 +12,8 @@ import {
   RotateCcw
 } from "lucide-react";
 import { soundFx } from "../services/soundFx";
+import blissWallpaperAzure from "../assets/images/xp_bliss_azure_1790841573015.jpg";
+import blissWallpaperSurveillance from "../assets/images/xp_bliss_surveillance_1790672405866.jpg";
 
 /* =======================================================================
    1. DÉMINEUR DE MAINTIEN DE L'ORDRE (WIN32 MINESWEEPER)
@@ -570,12 +572,43 @@ export const RunDialog: React.FC<RunDialogProps> = ({ isOpen, onClose, onRunComm
 interface DisplayPropertiesProps {
   isOpen: boolean;
   onClose: () => void;
+  wallpaperTheme?: "azure" | "surveillance" | "classic";
+  onSelectWallpaper?: (theme: "azure" | "surveillance" | "classic") => void;
 }
 
-export const DisplayPropertiesDialog: React.FC<DisplayPropertiesProps> = ({ isOpen, onClose }) => {
+export const DisplayPropertiesDialog: React.FC<DisplayPropertiesProps> = ({
+  isOpen,
+  onClose,
+  wallpaperTheme = "azure",
+  onSelectWallpaper,
+}) => {
   const [activeTab, setActiveTab] = useState<"theme" | "bureau" | "ecran">("bureau");
+  const [selectedTheme, setSelectedTheme] = useState<"azure" | "surveillance" | "classic">(wallpaperTheme);
+
+  useEffect(() => {
+    setSelectedTheme(wallpaperTheme);
+  }, [wallpaperTheme]);
 
   if (!isOpen) return null;
+
+  const previewBg =
+    selectedTheme === "azure"
+      ? blissWallpaperAzure
+      : selectedTheme === "surveillance"
+      ? blissWallpaperSurveillance
+      : "";
+
+  const handleApply = () => {
+    soundFx.playUiClick();
+    if (onSelectWallpaper) {
+      onSelectWallpaper(selectedTheme);
+    }
+  };
+
+  const handleOk = () => {
+    handleApply();
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-3 font-sans select-none">
@@ -631,35 +664,81 @@ export const DisplayPropertiesDialog: React.FC<DisplayPropertiesProps> = ({ isOp
         {/* CONTENU ONGLET */}
         <div className="p-3 space-y-3 text-black text-xs">
           {/* APERÇU MONITEUR CRT XP */}
-          <div className="mx-auto w-40 h-28 bg-[#2d3748] rounded-md p-2 flex flex-col items-center justify-center shadow-md border-4 border-[#cbd5e1]">
+          <div className="mx-auto w-44 h-32 bg-[#2d3748] rounded-md p-2 flex flex-col items-center justify-center shadow-md border-4 border-[#cbd5e1]">
             <div className="w-full h-full bg-[#004e98] border border-black overflow-hidden relative">
-              <div
-                className="w-full h-full bg-cover bg-center"
-                style={{ backgroundImage: `url('/src/assets/images/xp_bliss_surveillance_1790672405866.jpg')` }}
-              />
+              {previewBg ? (
+                <div
+                  className="w-full h-full bg-cover bg-center transition-all duration-200"
+                  style={{ backgroundImage: `url(${previewBg})` }}
+                />
+              ) : (
+                <div className="w-full h-full bg-[#004e98] flex items-center justify-center text-white/50 text-[10px]">
+                  CHEOPS Blue
+                </div>
+              )}
               <div className="absolute bottom-0 inset-x-0 h-2 bg-[#245edb]" />
             </div>
           </div>
 
           <fieldset className="border border-[#9c9a91] bg-[#f4f2ec] p-2.5 pt-1 shadow-[inset_1px_1px_0_#fff]">
             <legend className="px-1.5 font-bold text-xs text-[#003366] bg-[#ece9d8] border border-[#9c9a91]">
-              Arrière-plan officiel :
+              Arrière-plan officiel du poste :
             </legend>
-            <div className="mt-1 space-y-1">
-              <div className="bg-white border border-[#7f9db9] p-1.5 font-bold text-xs text-[#003366] flex justify-between items-center">
-                <span>Colline de Surveillance (Bliss Beauvau 2002)</span>
-                <span className="text-[10px] text-emerald-700">[ Actif ]</span>
-              </div>
-              <p className="text-[10px] text-slate-600">
-                Imposé par la circulaire préfectorale n°435. Modification verrouillée par l'administrateur réseau.
-              </p>
+            <div className="mt-1 space-y-1.5">
+              <button
+                type="button"
+                onClick={() => {
+                  soundFx.playUiClick();
+                  setSelectedTheme("azure");
+                }}
+                className={`w-full text-left p-1.5 text-xs flex justify-between items-center cursor-pointer border ${
+                  selectedTheme === "azure"
+                    ? "bg-[#316ac5] text-white font-bold border-[#003399]"
+                    : "bg-white hover:bg-slate-100 text-slate-800 border-[#7f9db9]"
+                }`}
+              >
+                <span>Colline Azur (Bliss Authentique)</span>
+                <span className="text-[10px]">{selectedTheme === "azure" ? "● Sélectionné" : ""}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  soundFx.playUiClick();
+                  setSelectedTheme("surveillance");
+                }}
+                className={`w-full text-left p-1.5 text-xs flex justify-between items-center cursor-pointer border ${
+                  selectedTheme === "surveillance"
+                    ? "bg-[#316ac5] text-white font-bold border-[#003399]"
+                    : "bg-white hover:bg-slate-100 text-slate-800 border-[#7f9db9]"
+                }`}
+              >
+                <span>Colline de Surveillance (Bliss Beauvau)</span>
+                <span className="text-[10px]">{selectedTheme === "surveillance" ? "● Sélectionné" : ""}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  soundFx.playUiClick();
+                  setSelectedTheme("classic");
+                }}
+                className={`w-full text-left p-1.5 text-xs flex justify-between items-center cursor-pointer border ${
+                  selectedTheme === "classic"
+                    ? "bg-[#316ac5] text-white font-bold border-[#003399]"
+                    : "bg-white hover:bg-slate-100 text-slate-800 border-[#7f9db9]"
+                }`}
+              >
+                <span>Bleu Ministère Luna (Couleur unie)</span>
+                <span className="text-[10px]">{selectedTheme === "classic" ? "● Sélectionné" : ""}</span>
+              </button>
             </div>
           </fieldset>
 
           <div className="flex justify-end gap-2 pt-2 border-t border-[#d8d4c4]">
-            <button type="button" onClick={onClose} className="xp-btn min-w-18">OK</button>
+            <button type="button" onClick={handleOk} className="xp-btn min-w-18">OK</button>
             <button type="button" onClick={onClose} className="xp-btn min-w-18">Annuler</button>
-            <button type="button" onClick={() => soundFx.playUiClick()} className="xp-btn min-w-18">Appliquer</button>
+            <button type="button" onClick={handleApply} className="xp-btn min-w-18">Appliquer</button>
           </div>
         </div>
       </div>

@@ -105,6 +105,11 @@ export default function App() {
   const [showMobileGuide, setShowMobileGuide] = useState<boolean>(false);
   const [urlCopied, setUrlCopied] = useState<boolean>(false);
 
+  // Chrono & Pointeuse Option A
+  const [isChronoStarted, setIsChronoStarted] = useState<boolean>(false);
+  const [chronoCadenceActive, setChronoCadenceActive] = useState<boolean>(true);
+  const [autoPunchNext, setAutoPunchNext] = useState<boolean>(false);
+
   // Satire procédurale & dynamisme
   const [primeTotale, setPrimeTotale] = useState<number>(0);
   const [dernierePrime, setDernierePrime] = useState<number | null>(null);
@@ -175,8 +180,6 @@ export default function App() {
     (id: WindowId) => {
       setOpenWindows((prev) => {
         const win = prev[id] || { isOpen: false, isMinimized: false, zIndex: 1 };
-        const newZ = nextZIndex + 1;
-        setNextZIndex(newZ);
 
         if (win.isOpen && !win.isMinimized && activeWindowId === id) {
           // Minimiser
@@ -186,23 +189,36 @@ export default function App() {
           };
         }
 
-        // Ouvrir ou Restaurer
+        // Ouvrir ou Restaurer au premier plan
+        const currentMax = Math.max(
+          ...Object.values(prev).map((w) => w?.zIndex || 0),
+          10
+        );
+        const newZ = currentMax + 1;
+        setNextZIndex(newZ + 1);
         setActiveWindowId(id);
+
         return {
           ...prev,
           [id]: { isOpen: true, isMinimized: false, zIndex: newZ },
         };
       });
     },
-    [nextZIndex, activeWindowId]
+    [activeWindowId]
   );
 
-  const handleFocusWindow = useCallback(
-    (id: WindowId) => {
-      const newZ = nextZIndex + 1;
-      setNextZIndex(newZ);
-      setActiveWindowId(id);
-      setOpenWindows((prev) => ({
+  const handleFocusWindow = useCallback((id: WindowId) => {
+    soundFx.playWindowOpen();
+    setActiveWindowId(id);
+    setOpenWindows((prev) => {
+      const currentMax = Math.max(
+        ...Object.values(prev).map((w) => w?.zIndex || 0),
+        10
+      );
+      const newZ = currentMax + 1;
+      setNextZIndex(newZ + 1);
+
+      return {
         ...prev,
         [id]: {
           ...(prev[id] || { isOpen: true, isMinimized: false }),
@@ -210,10 +226,9 @@ export default function App() {
           isMinimized: false,
           zIndex: newZ,
         },
-      }));
-    },
-    [nextZIndex]
-  );
+      };
+    });
+  }, []);
 
   const handleCloseWindow = useCallback((id: WindowId) => {
     setOpenWindows((prev) => ({
@@ -227,6 +242,7 @@ export default function App() {
 
   const handleOpenFile = useCallback(
     (file: VirtualFile) => {
+      soundFx.playHddSeek("short");
       // Marquer comme examiné pour le suivi d'enquête
       setDiscoveredFiles((prev) => {
         const next = new Set(prev);
@@ -277,15 +293,28 @@ export default function App() {
   const [telegramAlert, setTelegramAlert] = useState<TelegramAlert | null>(null);
 
   const declencherTelegramme = useCallback(
-    (source: TelegramAlert["source"], message: string, priority: TelegramAlert["priority"] = "urgente") => {
+    (source: TelegramAlert["source"], message: string | any, priority: TelegramAlert["priority"] = "urgente") => {
       const now = new Date();
       const h = String(now.getHours()).padStart(2, "0");
       const m = String(now.getMinutes()).padStart(2, "0");
       const s = String(now.getSeconds()).padStart(2, "0");
+
+      let textMessage = "";
+      if (typeof message === "string") {
+        textMessage = message;
+      } else if (message && typeof message === "object") {
+        const alerte = message.alerte || message.titre || "";
+        const ordre = message.ordre ? ` — Ordre : « ${message.ordre} »` : "";
+        const bonus = message.primeBonus ? ` (+${message.primeBonus} €)` : "";
+        textMessage = `${alerte}${ordre}${bonus}`.trim();
+      } else {
+        textMessage = String(message ?? "");
+      }
+
       setTelegramAlert({
         id: String(Date.now()),
         source,
-        message,
+        message: textMessage,
         timestamp: `${h}:${m}:${s}`,
         priority,
       });
@@ -310,7 +339,7 @@ export default function App() {
     return Math.max(12.0, Math.round(time * 10) / 10);
   }, []);
 
-  const startDossier = useCallback((index: number) => {
+  const startDossier = useCallback((index: number, shouldAutoStartChrono?: boolean) => {
     const current = dossiers[index];
     let allocated = calculateAllocatedTime(index);
     if (equipementsPossedes.has("cafe_syndical")) {
@@ -324,6 +353,13 @@ export default function App() {
     isProcessingRef.current = false;
     lastTickRef.current = performance.now();
     setCameraBloqueeNotice(false);
+
+    // Initialisation du chrono selon le pointage joueur (Option A)
+    const willStart = Boolean(shouldAutoStartChrono ?? autoPunchNext);
+    setIsChronoStarted(willStart);
+    if (willStart) {
+      soundFx.playPointeusePunch();
+    }
 
     // Réinitialisation des manipulations et arbitrages déductifs du dossier
     setCaviardagesFaits(new Set());
@@ -361,6 +397,7 @@ export default function App() {
 
     // Réinitialisation du système de fichiers pour la nouvelle affaire
     if (current) {
+      soundFx.playHddSeek("burst");
       const pvFile = getPrimaryCaseFile(current);
       setCurrentPath(`/C:/PROCEDURES_CONTENTIEUSES/EN_COURS/${current.id}`);
       setOpenedDocument(pvFile);
@@ -380,10 +417,14 @@ export default function App() {
 
       // Télégramme de prise en charge du dossier
       if (current.telegrammePrefet) {
-        declencherTelegramme("CABINET DU MINISTRE", current.telegrammePrefet, "urgente");
+        declencherTelegramme(
+          "CABINET DU MINISTRE",
+          `${current.telegrammePrefet.alerte} — Ordre : « ${current.telegrammePrefet.ordre} » (+${current.telegrammePrefet.primeBonus} €)`,
+          "urgente"
+        );
       }
     }
-  }, [calculateAllocatedTime, declencherTelegramme]);
+  }, [calculateAllocatedTime, declencherTelegramme, autoPunchNext]);
 
   // Rotation continue du bandeau d'actualités
   useEffect(() => {
@@ -393,10 +434,94 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Mode sans limite de temps : instruction approfondie des pièces sans contrainte d'horloge
-  useEffect(() => {
+  // Enclenchement manuel de l'horodateur par le joueur (Option A)
+  const lancerChronoDossier = useCallback(() => {
+    if (isAwaitingNext || isChronoStarted || gameState !== "playing") return;
+    soundFx.playPointeusePunch();
+    lastTickRef.current = performance.now();
+    setIsChronoStarted(true);
+    setFloatingBonus({ text: "⏱️ HORODATEUR ENCLENCHÉ", id: Date.now() });
+    setTimeout(() => setFloatingBonus(null), 1200);
+  }, [isAwaitingNext, isChronoStarted, gameState]);
+
+  // Pause café syndicale (+8s d'instruction)
+  const ajouterTempsCafe = useCallback(() => {
+    soundFx.playCoffeeSip();
+    setTimeRemaining((prev) => prev + 8.0);
+    setMaxTime((prev) => prev + 8.0);
+    setFloatingBonus({ text: "☕ PAUSE CAFÉ (+8s)", id: Date.now() });
+    setTimeout(() => setFloatingBonus(null), 1500);
+  }, []);
+
+  // Dépassement de délai réglementaire (Timeout)
+  const handleChronoTimeout = useCallback(() => {
     if (timerRef.current) cancelAnimationFrame(timerRef.current);
-  }, [gameState, isAwaitingNext]);
+    setIsChronoStarted(false);
+    soundFx.playSystemWarning();
+
+    setBlames((b) => {
+      const newBlames = b + 1;
+      declencherTelegramme(
+        "GREFFE & STATISTIQUES",
+        `DÉPASSEMENT DE DÉLAI RÉGLEMENTAIRE (+1 Blâme : ${newBlames}/3). Le greffe dénonce l'encombrement des tiroirs de l'instruction !`,
+        "sanction"
+      );
+      setFloatingBonus({ text: `⏱️ DÉLAI ÉCOULÉ (+1 BLÂME : ${newBlames}/3)`, id: Date.now() });
+      setTimeout(() => setFloatingBonus(null), 2500);
+
+      if (newBlames >= 3) {
+        setGameOverReason("timeout");
+        setGameState("gameover");
+      } else {
+        // Délai de grâce d'urgence de 12 secondes pour permettre au joueur de conclure
+        setMaxTime(12.0);
+        setTimeRemaining(12.0);
+        setIsChronoStarted(true);
+        lastTickRef.current = performance.now();
+      }
+      return newBlames;
+    });
+  }, [declencherTelegramme]);
+
+  // Boucle active du chronomètre (Option A)
+  useEffect(() => {
+    if (!isChronoStarted || isAwaitingNext || gameState !== "playing") {
+      if (timerRef.current) cancelAnimationFrame(timerRef.current);
+      return;
+    }
+
+    let lastTick = performance.now();
+    let lastAudioTickSec = Math.ceil(timeRemaining);
+
+    const tick = (now: number) => {
+      const dt = (now - lastTick) / 1000;
+      lastTick = now;
+
+      setTimeRemaining((prev) => {
+        const next = Math.max(0, prev - dt);
+        const curSec = Math.ceil(next);
+
+        // Tic-tac sec d'urgence dans les 5 dernières secondes
+        if (curSec <= 5 && curSec > 0 && curSec !== lastAudioTickSec) {
+          lastAudioTickSec = curSec;
+          soundFx.playChronoTick(true);
+        }
+
+        if (next <= 0) {
+          handleChronoTimeout();
+          return 0;
+        }
+        return next;
+      });
+
+      timerRef.current = requestAnimationFrame(tick);
+    };
+
+    timerRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (timerRef.current) cancelAnimationFrame(timerRef.current);
+    };
+  }, [isChronoStarted, isAwaitingNext, gameState, handleChronoTimeout]);
 
   // Détection du mode plein écran natif
   useEffect(() => {
@@ -471,18 +596,21 @@ export default function App() {
   };
 
   // Arbitrage déductif de la caméra piéton / carte SD (neutraliser vs conserver)
-  const trancherCamera = useCallback((decision: "neutraliser" | "conserver") => {
+  const trancherCamera = useCallback((decision: "neutralisee" | "conservee") => {
     const current = dossiers[currentIndex];
     if (cameraDecision !== null || !current?.incidentCamera) return;
 
-    const attendu = current.incidentCamera.doitEtreNeutralisee ? "neutraliser" : "conserver";
+    const attendu = current.incidentCamera.doitEtreNeutralisee ? "neutralisee" : "conservee";
     const estCorrect = decision === attendu;
 
     setCameraDecision(decision);
     setCameraNeutralisee(true);
-    if (decision === "neutraliser") {
+    if (decision === "neutralisee") {
       setCameraGlitchActive(true);
       jouerSonGlitch();
+      setTimeout(() => {
+        setCameraGlitchActive(false);
+      }, 400);
     } else {
       jouerSonSubstitut();
     }
@@ -500,7 +628,7 @@ export default function App() {
         bonus: gain,
       });
       setFlashNews(
-        `ARBITRAGE VIDÉO CONFORME : ${decision === "neutraliser" ? "Flux compromettant purgé" : "Preuve à charge conservée"} (+${gain} € / Crédibilité +10%).`
+        `ARBITRAGE VIDÉO CONFORME : ${decision === "neutralisee" ? "Flux compromettant purgé" : "Preuve à charge conservée"} (+${gain} € / Crédibilité +10%).`
       );
     } else {
       jouerSonBlame();
@@ -523,14 +651,14 @@ export default function App() {
         bonus: -perte,
       });
       setFlashNews(
-        `FAUTE PROCÉDURALE VIDÉO : ${decision === "neutraliser" ? "Preuve à charge effacée par erreur !" : "Vidéo compromettante laissée au dossier !"} (-${perte} € / Crédibilité -22%).`
+        `FAUTE PROCÉDURALE VIDÉO : ${decision === "neutralisee" ? "Preuve à charge effacée par erreur !" : "Vidéo compromettante laissée au dossier !"} (-${perte} € / Crédibilité -22%).`
       );
     }
     setTimeout(() => setFlashNews(null), 6000);
   }, [currentIndex, cameraDecision]);
 
   const neutraliserCamera = useCallback(() => {
-    trancherCamera("neutraliser");
+    trancherCamera("neutralisee");
   }, [trancherCamera]);
 
   // Prise de décision : application d'un visa de qualification
@@ -567,8 +695,9 @@ export default function App() {
     isProcessingRef.current = true;
     const isCorrect = tamponChoisi.code === currentDossier.categorie_attendue;
 
-    // Son de tampon administratif
+    // Son de tampon administratif et écriture disque
     jouerSonTampon();
+    soundFx.playHddSeek("burst");
 
     // Vibration tactile mobile
     if (isCorrect) {
@@ -595,12 +724,28 @@ export default function App() {
     });
 
     if (isCorrect) {
+      // Prime de célérité Option A si le chrono d'instruction était actif
+      let bonusCelerite = 0;
+      if (isChronoStarted && timeRemaining > 0) {
+        if (timeRemaining >= maxTime * 0.5) {
+          bonusCelerite = 30;
+          setFloatingBonus({ text: "⚡ CÉLÉRITÉ EXCEPTIONNELLE (+30 €)", id: Date.now() + 1 });
+        } else if (timeRemaining >= maxTime * 0.2) {
+          bonusCelerite = 15;
+          setFloatingBonus({ text: "⏱️ CADENCE RÉGLEMENTAIRE (+15 €)", id: Date.now() + 1 });
+        }
+        if (bonusCelerite > 0) {
+          soundFx.playBonusCoinsSound();
+        }
+      }
+      setIsChronoStarted(false);
+
       const newCombo = comboZeile + 1;
       setComboZeile(newCombo);
       const mult = 1 + newCombo * 0.25;
       const basePrime = Math.round(45 * mult);
       const bonusPrefet = currentDossier.telegrammePrefet ? currentDossier.telegrammePrefet.primeBonus : 0;
-      const gainDossier = basePrime + bonusPrefet;
+      const gainDossier = basePrime + bonusPrefet + bonusCelerite;
 
       setPrimeTotale((prev) => prev + gainDossier);
       setDernierePrime(gainDossier);
@@ -632,6 +777,7 @@ export default function App() {
         tamponAttendu: currentDossier.tampon_imposé
       });
     } else {
+      setIsChronoStarted(false);
       if (equipementsPossedes.has("immunite_blame")) {
         setEquipementsPossedes((prev) => {
           const next = new Set(prev);
@@ -686,13 +832,15 @@ export default function App() {
     }
 
     // Le chronomètre est arrêté pour laisser le temps de lire le rapport et les motifs
+    setIsChronoStarted(false);
     setIsAwaitingNext(true);
-  }, [gameState, currentIndex, blames, isAwaitingNext, cameraDecision, comboZeile, equipementsPossedes]);
+  }, [gameState, currentIndex, blames, isAwaitingNext, cameraDecision, comboZeile, equipementsPossedes, isChronoStarted, timeRemaining, maxTime]);
 
   // Passage manuel au dossier suivant
   const passerAuDossierSuivant = useCallback(() => {
     if (!isAwaitingNext) return;
 
+    soundFx.playHddSeek("heavy");
     declencherVibration(30);
     setFeedback(null);
 
@@ -715,9 +863,9 @@ export default function App() {
       setGameState("completed");
     } else {
       setCurrentIndex(nextIndex);
-      startDossier(nextIndex);
+      startDossier(nextIndex, autoPunchNext);
     }
-  }, [isAwaitingNext, blames, credibiliteMinistere, currentIndex, startDossier]);
+  }, [isAwaitingNext, blames, credibiliteMinistere, currentIndex, startDossier, autoPunchNext]);
 
   // Arbitrage déductif du matricule RIO (flouter vs valider)
   const trancherRio = useCallback((decision: "flouter" | "valider") => {
@@ -932,6 +1080,7 @@ export default function App() {
   // Actionnement de la déchiqueteuse / broyeuse de bureau
   const actionnerBroyeuse = useCallback(() => {
     jouerSonBroyeur();
+    soundFx.playHddSeek("short");
     declencherVibration([50, 40, 50]);
     setBroyeurAnime(true);
     setDocumentsBroyes((prev) => prev + 1);
@@ -1012,6 +1161,7 @@ export default function App() {
       // Écran d'accueil
       if (gameState === "intro" && (e.code === "Space" || e.code === "Enter")) {
         e.preventDefault();
+        soundFx.startAmbiance();
         setGameState("playing");
         setCurrentIndex(0);
         setTotalProcessed(0);
@@ -1026,6 +1176,7 @@ export default function App() {
       // Écrans de fin
       if ((gameState === "gameover" || gameState === "completed") && (e.code === "Space" || e.code === "Enter")) {
         e.preventDefault();
+        soundFx.startAmbiance();
         setGameState("playing");
         setCurrentIndex(0);
         setTotalProcessed(0);
@@ -1048,6 +1199,15 @@ export default function App() {
       // En cours d'examen du dossier
       if (gameState !== "playing" || isProcessingRef.current) return;
 
+      // [SUPPR] / [DEL] / [BACKSPACE] : Broyeuse administrative (détruit un blâme ou pièce sensible)
+      if (e.key === "Delete" || e.code === "Delete" || e.key === "Backspace" || e.code === "Backspace") {
+        const target = e.target as HTMLElement | null;
+        if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
+        e.preventDefault();
+        actionnerBroyeuse();
+        return;
+      }
+
       // [ESPACE] : Ouvrir la pièce maîtresse du dossier en cours
       if (e.code === "Space") {
         const target = e.target as HTMLElement | null;
@@ -1056,6 +1216,54 @@ export default function App() {
         }
         e.preventDefault();
         ouvrirPieceMaitresse();
+        return;
+      }
+
+      // [P] : Pointer la prise de dossier / Lancer le chrono (Option A)
+      if (e.key === "p" || e.key === "P") {
+        const target = e.target as HTMLElement | null;
+        if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) {
+          return;
+        }
+        e.preventDefault();
+        lancerChronoDossier();
+        return;
+      }
+
+      // [C] : Caviarder d'un coup tous les termes compromettants restants
+      if (e.key === "c" || e.key === "C") {
+        const target = e.target as HTMLElement | null;
+        if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
+        e.preventDefault();
+        caviarderTout();
+        return;
+      }
+
+      // [R] : Riposte immédiate au Parquet (Inversion accusatoire / Outrage)
+      if (e.key === "r" || e.key === "R") {
+        const target = e.target as HTMLElement | null;
+        if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
+        e.preventDefault();
+        declencherRiposteOutrage();
+        return;
+      }
+
+      // [F] : Arbitrage RIO (Flouter protecteur)
+      if (e.key === "f" || e.key === "F") {
+        const target = e.target as HTMLElement | null;
+        if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
+        e.preventDefault();
+        inspecterRio();
+        return;
+      }
+
+      // [B] : Ouvrir / Fermer la boutique de la Mutuelle Police
+      if (e.key === "b" || e.key === "B") {
+        const target = e.target as HTMLElement | null;
+        if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
+        e.preventDefault();
+        setIsBoutiqueOpen((prev) => !prev);
+        soundFx.playUiClick();
         return;
       }
 
@@ -1073,7 +1281,19 @@ export default function App() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [gameState, isAwaitingNext, passerAuDossierSuivant, appliquerTampon, startDossier, ouvrirPieceMaitresse]);
+  }, [
+    gameState,
+    isAwaitingNext,
+    passerAuDossierSuivant,
+    appliquerTampon,
+    startDossier,
+    ouvrirPieceMaitresse,
+    lancerChronoDossier,
+    actionnerBroyeuse,
+    caviarderTout,
+    declencherRiposteOutrage,
+    inspecterRio,
+  ]);
 
   const currentDossier: Dossier | undefined = dossiers[currentIndex] || dossiers[0];
   const progressRatio = Math.max(0, Math.min(1, timeRemaining / maxTime));
@@ -1085,21 +1305,24 @@ export default function App() {
   const hasMedaille = totalProcessed >= 6;
   const hasPortrait = totalProcessed >= 8;
 
-  const restartGame = (e: MouseEvent) => {
-    e.stopPropagation();
+  const restartGame = (e?: React.MouseEvent | MouseEvent) => {
+    e?.stopPropagation();
+    soundFx.startAmbiance();
     setGameState("playing");
     setCurrentIndex(0);
     setTotalProcessed(0);
     setBlames(0);
     setPrimeTotale(0);
     setDernierePrime(null);
-    startDossier(0);
+    startDossier(0, chronoCadenceActive);
   };
 
   return (
     <div
       id="main-viewport"
-      className={`relative w-full min-h-[100dvh] lg:h-screen lg:max-h-screen bg-[#03060a] text-[#e2e8f0] select-none flex flex-col justify-between p-1.5 sm:p-2 lg:p-2.5 overflow-x-hidden overflow-y-auto lg:overflow-hidden crt-monitor pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))] ${
+      className={`relative w-full min-h-[100dvh] lg:h-screen lg:max-h-screen bg-[#004e98] text-slate-100 select-none flex flex-col justify-between overflow-x-hidden overflow-y-auto lg:overflow-hidden ${
+        gameState === "playing" ? "p-0" : "p-1.5 sm:p-2 lg:p-3 bg-[#001c54]"
+      } ${
         screenShake ? "animate-screen-shake" : ""
       } ${
         screenFlash === "success" ? "flash-screen-success" : screenFlash === "error" ? "flash-screen-error" : ""
@@ -1153,153 +1376,211 @@ export default function App() {
       )}
 
       {/* ZONE CENTRALE DE TRAITEMENT DU DOSSIER - BUREAU PLEIN ÉCRAN LORS DU JEU */}
-      <main className={`flex-1 min-h-0 flex flex-col items-center justify-center relative w-full overflow-hidden ${gameState === "playing" ? "p-0 m-0 max-w-none" : "my-0.5 sm:my-1 max-w-[1700px] mx-auto px-0 sm:px-1"}`}>
-        {/* ÉCRAN D'ACCUEIL : PRISE DE SERVICE */}
+      <main className={`flex-1 min-h-0 flex flex-col items-center justify-center relative w-full overflow-hidden ${gameState === "playing" ? "p-0 m-0 max-w-none" : "w-full my-auto"}`}>
+        {/* ÉCRAN D'ACCUEIL : OUVERTURE DE SESSION WINDOWS XP PROFESSIONNEL (CHEOPS XP) */}
         {gameState === "intro" && (
-          <div className="border-2 sm:border-3 border-[#334155] p-4 sm:p-6 md:p-8 text-center max-w-3xl bg-[#080d14] shadow-2xl font-mono w-full my-auto">
-            <div className="inline-block bg-[#1e293b] text-[#00ff66] text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-1 border border-[#334155] mb-3 sm:mb-4">
-              [ TERMINAL D'INSTRUCTION ET DE QUALIFICATION CONTENTIEUSE ]
-            </div>
-
-            <h1 className="text-lg sm:text-xl md:text-2xl font-black tracking-wider sm:tracking-widest mb-2 sm:mb-3 text-white">
-              POLICE NATIONALE — APUREMENT DU CONTENTIEUX
-            </h1>
-
-            <p className="text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4 text-[#cbd5e1]">
-              Sous la supervision de la hiérarchie policière et des circulaires d'engagement,
-              vous êtes chargé de qualifier chaque intervention litigieuse pour garantir la
-              continuité du service et neutraliser les actions contentieuses contre l'administration.
-            </p>
-
-            <div className="border-2 border-[#1e293b] p-3 sm:p-4 mb-3 sm:mb-4 text-xs text-left bg-[#04080e] space-y-2.5 sm:space-y-3">
-              <div className="text-[#94a3b8] font-bold border-b border-[#1e293b] pb-1 uppercase tracking-wider text-[11px] sm:text-xs">
-                LES 3 QUALIFICATIONS DE DOCTRINE MINISTÉRIELLE :
-              </div>
-              <div>
-                <span className="font-bold text-white bg-[#1e293b] px-1.5 sm:px-2 py-0.5 mr-1.5 text-[11px] sm:text-xs">[1] NON-LIEU // USAGE CONFORME</span>
-                <span className="text-[#94a3b8] text-[11px] sm:text-xs block sm:inline mt-0.5 sm:mt-0">
-                  Usage régulier de la force ou défaillance physiologique autonome de l'administré.
-                </span>
-              </div>
-              <div>
-                <span className="font-bold text-white bg-[#1e293b] px-1.5 sm:px-2 py-0.5 mr-1.5 text-[11px] sm:text-xs">[2] VIOLENCES SUR DÉPOSITAIRE</span>
-                <span className="text-[#94a3b8] text-[11px] sm:text-xs block sm:inline mt-0.5 sm:mt-0">
-                  Préjudice matériel ou corporel subi par le service (blessure de l'agent, sang projeté sur la tenue).
-                </span>
-              </div>
-              <div>
-                <span className="font-bold text-white bg-[#1e293b] px-1.5 sm:px-2 py-0.5 mr-1.5 text-[11px] sm:text-xs">[3] ENTRAVE & TAPAGE ILLICITE</span>
-                <span className="text-[#94a3b8] text-[11px] sm:text-xs block sm:inline mt-0.5 sm:mt-0">
-                  Agitation corporelle désordonnée, cris perçants ou encombrement au sol perturbant l'intervention.
-                </span>
-              </div>
-            </div>
-
-            {/* Manipulations tactiles et administratives autorisées */}
-            <div className="border border-[#1e293b] bg-[#02060b] p-2.5 sm:p-3 mb-3 sm:mb-4 text-left text-xs font-mono">
-              <div className="text-[#00ff66] font-bold text-[10px] sm:text-xs uppercase mb-1.5 flex items-center gap-1.5">
-                <span>⚡</span>
-                <span>OUTILS ET MANIPULATIONS TACTILES DU BUREAU :</span>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] sm:text-[11px] text-[#cbd5e1]">
-                <div className="bg-[#0b131e] p-2 border border-[#1e293b]">
-                  <strong className="text-white">🖐️ GLISSER-DÉPOSER LE TAMPON :</strong> Saisissez le tampon à la souris ou au doigt et glissez-le directement sur la vidéo ou le bordereau (ou simple clic direct).
+          <div className="w-full max-w-5xl my-auto font-sans select-none p-2 sm:p-4">
+            {/* BOÎTE DU LOGON XP PROFESSIONNEL */}
+            <div className="bg-[#003399] border-2 border-[#002266] shadow-[0_25px_60px_rgba(0,0,0,0.8)] overflow-hidden rounded-xs text-white">
+              
+              {/* BANDEAU SUPÉRIEUR BLEU PROFOND AVEC LISERÉ ORANGE XP */}
+              <div className="bg-gradient-to-r from-[#001c54] via-[#003399] to-[#001c54] px-4 py-3 flex items-center justify-between border-b border-[#001c54]">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-white/20 border border-white/80 flex items-center justify-center text-sm shadow-xs">
+                    🇫🇷
+                  </div>
+                  <div>
+                    <h1 className="font-bold text-base sm:text-lg tracking-wide drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
+                      CHEOPS Professionnel
+                    </h1>
+                    <div className="text-[11px] text-sky-200">
+                      Système d'Information et d'Apurement du Contentieux // DGPN
+                    </div>
+                  </div>
                 </div>
-                <div className="bg-[#0b131e] p-2 border border-[#1e293b]">
-                  <strong className="text-white">🖍️ CAVIARDAGE AU FEUTRE NOIR :</strong> Biffez les termes médicaux alarmistes dans les constats pour toucher votre prime de censure (+20 €).
-                </div>
-                <div className="bg-[#0b131e] p-2 border border-[#1e293b]">
-                  <strong className="text-white">🔄 SUBSTITUTION DE SCELLÉ :</strong> Glissez ou cliquez pour remplacer une pièce compromettante par un PV homologué pour le parquet.
-                </div>
-                <div className="bg-[#0b131e] p-2 border border-[#1e293b]">
-                  <strong className="text-white">🗑️ DÉCHIQUETEUSE CHEOPS :</strong> Actionnez la broyeuse en haut à droite pour détruire des notes et effacer vos blâmes disciplinaires.
+
+                <div className="hidden sm:block text-right text-[10px] text-sky-200">
+                  <div>Direction Générale de la Police Nationale</div>
+                  <div className="font-mono text-amber-300 font-bold">CIRCULAIRE L. 435-1</div>
                 </div>
               </div>
-            </div>
+              <div className="h-0.5 bg-gradient-to-r from-transparent via-[#d76b00] to-transparent" />
 
-            <div className="text-[10px] sm:text-[11px] text-[#e2e8f0] mb-4 sm:mb-5 bg-[#152336] p-2 sm:p-2.5 border border-[#3b82f6]/40 text-left">
-              <strong className="text-[#60a5fa]">FONCTIONNEMENT RÉGLEMENTAIRE :</strong> Le rapport officiel du chef de dispositif est
-              placé sous scellé chiffré et ne sera déverrouillé qu'en cas de qualification conforme. 3 erreurs entraînent la suspension immédiate du matricule.
-            </div>
+              {/* CORPS DE L'ÉCRAN DE LOGON EN 2 VOLETS (GAUCHE & DROITE) */}
+              <div className="p-4 sm:p-8 bg-gradient-to-b from-[#0a3596] to-[#052269] flex flex-col md:flex-row gap-6 md:gap-8 items-stretch">
+                
+                {/* VOLET GAUCHE : DOCTRINE & CADRE LÉGAL */}
+                <div className="md:w-1/2 flex flex-col justify-between space-y-4">
+                  <div>
+                    <div className="text-amber-300 font-bold text-xs uppercase tracking-wider mb-1">
+                      Vacation contentieuse ministérielle :
+                    </div>
+                    <h2 className="text-base sm:text-xl font-bold leading-tight mb-2 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
+                      Pour commencer votre service, ouvrez votre session d'officier instructeur.
+                    </h2>
+                    <p className="text-xs text-sky-100 leading-relaxed mb-3">
+                      Sous la supervision de la hiérarchie et des circulaires d'engagement,
+                      votre mission est de qualifier chaque intervention litigieuse pour garantir la
+                      continuité du service et neutraliser les poursuites pénales contre l'administration.
+                    </p>
+                  </div>
 
-            <div className="flex flex-col sm:flex-row gap-2.5 justify-center items-stretch sm:items-center mb-4">
-              <button
-                type="button"
-                id="btn-start-fullscreen"
-                onClick={() => {
-                  basculerPleinEcran();
-                  setGameState("playing");
-                  setCurrentIndex(0);
-                  setTotalProcessed(0);
-                  setBlames(0);
-                  startDossier(0);
-                  jouerSonTampon();
-                  declencherVibration(40);
-                }}
-                className="w-full sm:w-auto min-h-[48px] text-xs sm:text-sm font-black tracking-wider border-2 border-[#00ff66] py-3 px-6 bg-[#00ff66] text-black hover:bg-[#00cc52] active:scale-[0.98] cursor-pointer uppercase transition-transform font-mono shadow-lg flex items-center justify-center gap-2"
-              >
-                <span>⛶</span>
-                <span>[ JOUER EN PLEIN ÉCRAN (RECOMMANDÉ) ]</span>
-              </button>
+                  {/* 3 QUALIFICATIONS DE DOCTRINE MINISTÉRIELLE (CADRE EN RELIEF) */}
+                  <div className="bg-[#ece9d8] text-black border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white p-3 shadow-inner space-y-2 text-xs">
+                    <div className="font-bold text-[#003366] border-b border-[#9c9a91] pb-1 text-[11px] uppercase">
+                      Doctrine d'instruction (Objectif : 98% rejets) :
+                    </div>
+                    <div>
+                      <strong className="text-[#0055ea]">[1] NON-LIEU // USAGE CONFORME :</strong>
+                      <span className="text-slate-800 text-[11px] block">Défaillance physiologique autonome de l'administré ou force régulière.</span>
+                    </div>
+                    <div>
+                      <strong className="text-[#990000]">[2] VIOLENCES SUR DÉPOSITAIRE :</strong>
+                      <span className="text-slate-800 text-[11px] block">Préjudice matériel ou corporel subi par l'agent ou la tenue.</span>
+                    </div>
+                    <div>
+                      <strong className="text-[#664400]">[3] ENTRAVE & TAPAGE :</strong>
+                      <span className="text-slate-800 text-[11px] block">Cris perçants, agitation corporelle ou refus d'obtempérer.</span>
+                    </div>
+                  </div>
+                </div>
 
-              <button
-                type="button"
-                id="btn-start-game"
-                onClick={() => {
-                  setGameState("playing");
-                  setCurrentIndex(0);
-                  setTotalProcessed(0);
-                  setBlames(0);
-                  startDossier(0);
-                  jouerSonTampon();
-                  declencherVibration(30);
-                }}
-                className="w-full sm:w-auto min-h-[48px] text-xs sm:text-sm font-bold tracking-wider border border-[#334155] py-3 px-5 bg-[#0f172a] text-[#cbd5e1] hover:bg-[#1e293b] hover:text-white active:scale-[0.98] cursor-pointer uppercase transition-transform font-mono"
-              >
-                [ OUVRIR EN MODE FENÊTRE ]
-              </button>
-            </div>
+                {/* SÉPARATEUR VERTICAL XP */}
+                <div className="hidden md:block w-px bg-gradient-to-b from-transparent via-white/30 to-transparent" />
 
-            {/* Guide d'installation et jeu plein écran sur smartphone */}
-            <div className="border border-[#1e293b] bg-[#050b12] text-left p-3 text-xs">
-              <div className="flex items-center justify-between">
+                {/* VOLET DROIT : COMPTE UTILISATEUR XP & CONNEXION */}
+                <div className="md:w-1/2 flex flex-col justify-between space-y-4">
+                  {/* TUILE UTILISATEUR WINDOWS XP AUTHENTIQUE */}
+                  <div className="p-3 bg-white/10 hover:bg-white/15 border border-white/20 rounded-xs transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="w-14 h-14 rounded-xs border-2 border-white/80 bg-[#002266] flex items-center justify-center text-3xl shadow-md shrink-0">
+                        👮
+                      </div>
+                      <div className="min-w-0">
+                        <div className="font-bold text-sm sm:text-base leading-tight text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] truncate">
+                          Major Christian Dupuis
+                        </div>
+                        <div className="text-xs text-sky-200">
+                          Matricule #7501923 // Agent de conformité
+                        </div>
+                        <div className="text-[10px] text-amber-300 font-mono mt-0.5">
+                          Direction Centrale de la Sécurité Publique
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* OPTION HORODATEUR DE VACATION (OPTION A) */}
+                    <div className="mt-3 bg-white/10 p-2.5 border border-white/20 text-xs">
+                      <label className="flex items-center gap-2 cursor-pointer select-none text-sky-100">
+                        <input
+                          type="checkbox"
+                          checked={chronoCadenceActive}
+                          onChange={(e) => setChronoCadenceActive(e.target.checked)}
+                          className="cursor-pointer"
+                        />
+                        <span className="font-bold text-amber-300">⏱️ Enclencher l'horodateur dès la prise de poste</span>
+                      </label>
+                      <p className="text-[10px] text-sky-200 mt-1 leading-snug">
+                        {chronoCadenceActive
+                          ? "Pointeuse activée dès votre arrivée sur le bureau (avec primes de cadence de +30 €)."
+                          : "Vous pointerez manuellement sur votre bureau d'instruction quand vous serez prêt."}
+                      </p>
+                    </div>
+
+                    {/* BOUTONS D'OUVERTURE DE SESSION XP */}
+                    <div className="mt-3 flex flex-col sm:flex-row gap-2">
+                      <button
+                        type="button"
+                        id="btn-start-fullscreen"
+                        onClick={() => {
+                          soundFx.startAmbiance();
+                          basculerPleinEcran();
+                          setGameState("playing");
+                          setCurrentIndex(0);
+                          setTotalProcessed(0);
+                          setBlames(0);
+                          startDossier(0, chronoCadenceActive);
+                          jouerSonTampon();
+                          declencherVibration(40);
+                        }}
+                        className="flex-1 xp-btn text-xs sm:text-sm py-2 px-3 text-[#003366] font-bold shadow-md cursor-pointer flex items-center justify-center gap-1.5"
+                      >
+                        <span>⛶</span>
+                        <span>Prendre le poste (Plein écran)</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        id="btn-start-game"
+                        onClick={() => {
+                          soundFx.startAmbiance();
+                          setGameState("playing");
+                          setCurrentIndex(0);
+                          setTotalProcessed(0);
+                          setBlames(0);
+                          startDossier(0, chronoCadenceActive);
+                          jouerSonTampon();
+                          declencherVibration(30);
+                        }}
+                        className="xp-btn text-xs py-2 px-3 text-slate-800 font-bold shadow-xs cursor-pointer"
+                      >
+                        Mode fenêtré
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* GUIDE D'ACCÈS SMARTPHONE ET PWA */}
+                  <div className="bg-[#041a4a] border border-[#1a44a7] p-2.5 text-xs text-sky-100">
+                    <div className="flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={() => setShowMobileGuide(!showMobileGuide)}
+                        className="text-[11px] text-sky-300 hover:text-white font-bold flex items-center gap-1.5 cursor-pointer uppercase"
+                      >
+                        <span>📲</span>
+                        <span>{showMobileGuide ? "[-] Masquer guide smartphone" : "[+] Mode smartphone & plein écran"}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={copierUrlDirect}
+                        className="xp-btn text-[10px] py-0.5 px-2"
+                      >
+                        {urlCopied ? "✓ Lien copié !" : "Copier URL"}
+                      </button>
+                    </div>
+
+                    {showMobileGuide && (
+                      <div className="mt-2.5 pt-2 border-t border-[#1a44a7] space-y-1 text-[11px] text-sky-200 leading-relaxed font-sans">
+                        <div>
+                          <strong>Safari (iOS) :</strong> Icône Partage ⎋ puis <em>« Sur l'écran d'accueil »</em> ➕.
+                        </div>
+                        <div>
+                          <strong>Chrome (Android) :</strong> Menu ⋮ puis <em>« Ajouter à l'écran d'accueil »</em>.
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+              </div>
+
+              {/* BANDEAU INFÉRIEUR XP ARRÊTER L'ORDINATEUR */}
+              <div className="h-0.5 bg-gradient-to-r from-transparent via-[#d76b00] to-transparent" />
+              <div className="bg-gradient-to-r from-[#001c54] via-[#003399] to-[#001c54] px-4 py-2.5 flex items-center justify-between text-xs">
                 <button
                   type="button"
-                  onClick={() => setShowMobileGuide(!showMobileGuide)}
-                  className="text-[11px] sm:text-xs text-[#60a5fa] hover:text-[#93c5fd] font-bold flex items-center gap-1.5 cursor-pointer font-mono uppercase"
+                  onClick={() => alert("CHEOPS XP : La continuité républicaine interdit d'éteindre ce terminal !")}
+                  className="px-2 py-1 bg-red-700 hover:bg-red-600 text-white font-bold flex items-center gap-1.5 rounded-xs border border-red-400 cursor-pointer shadow-xs text-xs"
                 >
-                  <span>📲</span>
-                  <span>{showMobileGuide ? "[-] MASQUER LE GUIDE SMARTPHONE" : "[+] ACCÈS DIRECT SMARTPHONE & PLEIN ÉCRAN"}</span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
+                  <span>Arrêter l'ordinateur</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={copierUrlDirect}
-                  className="text-[10px] bg-[#1e293b] hover:bg-[#334155] active:bg-[#00ff66] active:text-black text-[#00ff66] border border-[#334155] px-2 py-0.5 font-mono cursor-pointer"
-                >
-                  {urlCopied ? "✓ LIEN COPIÉ !" : "COPIER L'URL DU JEU"}
-                </button>
+
+                <div className="text-[11px] text-sky-200 hidden sm:block">
+                  Après avoir ouvert votre session, vous pourrez consulter les pièces et viser les dossiers.
+                </div>
               </div>
 
-              {showMobileGuide && (
-                <div className="mt-3 pt-2.5 border-t border-[#1e293b] space-y-2 text-[11px] text-[#94a3b8] font-mono leading-relaxed">
-                  <div>
-                    <strong className="text-white">1. URL DIRECTE :</strong> Ouvrez le jeu dans le navigateur de votre téléphone (Safari ou Chrome).
-                  </div>
-                  <div>
-                    <strong className="text-white">2. PLEIN ÉCRAN RAPIDE :</strong> Appuyez sur le bouton vert <span className="text-[#00ff66] font-bold">[⛶ PLEIN ÉCRAN]</span> en haut ou au lancement.
-                  </div>
-                  <div>
-                    <strong className="text-white">3. APPLICATION SANS BARRE D'ADRESSE :</strong>
-                    <ul className="list-disc list-inside ml-2 mt-1 space-y-0.5 text-gray-300">
-                      <li><strong>Sur iPhone (Safari) :</strong> Touchez l'icône de partage ⎋ puis choisissez <em>« Sur l'écran d'accueil »</em> ➕.</li>
-                      <li><strong>Sur Android (Chrome) :</strong> Touchez les trois points ⋮ puis <em>« Installer l'application »</em> ou <em>« Ajouter à l'écran d'accueil »</em>.</li>
-                    </ul>
-                  </div>
-                  <div className="text-[10px] text-gray-400 italic">
-                    L'application se lance alors comme un jeu natif plein écran sans aucune bordure ni barre d'adresse.
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         )}
@@ -1398,6 +1679,13 @@ export default function App() {
                 onOpenBoutique={() => setIsBoutiqueOpen(true)}
                 isFullscreen={isFullscreen}
                 onToggleFullscreen={basculerPleinEcran}
+                isChronoStarted={isChronoStarted}
+                timeRemaining={timeRemaining}
+                maxTime={maxTime}
+                onStartChrono={lancerChronoDossier}
+                autoPunchNext={autoPunchNext}
+                onToggleAutoPunch={() => setAutoPunchNext((prev) => !prev)}
+                onAddCoffeeTime={ajouterTempsCafe}
               />
             </div>
 
@@ -1420,6 +1708,7 @@ export default function App() {
           <OfficerEvaluationReportModal
             isVictory={gameState === "completed"}
             onRestart={restartGame}
+            gameOverReason={gameOverReason}
             stats={{
               totalProcessed,
               totalDossiers: dossiers.length,
@@ -1437,21 +1726,23 @@ export default function App() {
         )}
       </main>
 
-      {/* FIL D'ACTUALITÉ EN CONTINU (SATIRE DES DÉCLARATIONS OFFICIELLES) */}
-      <footer className="w-full bg-[#05090f] border-t border-[#1e293b] py-1 px-2 font-mono text-[9px] sm:text-[11px] flex items-center gap-2 overflow-hidden shrink-0">
-        <span className="bg-[#cc0000] text-white px-1.5 py-0.5 font-black text-[8px] sm:text-[9px] shrink-0 tracking-wider flex items-center gap-1 animate-pulse">
-          <span className="inline-block w-1.5 h-1.5 bg-white rounded-full"></span>
-          FLASH INFO
-        </span>
-        <div className="truncate text-gray-300 flex-1 font-mono">
-          {flashNews ? (
-            <span className="text-[#00ff66] font-bold animate-pulse">{flashNews}</span>
-          ) : (
-            <span>{ACTUALITES_CONTINU[newsTickerIndex]}</span>
-          )}
-        </div>
-        <span className="text-gray-600 text-[8px] sm:text-[9px] shrink-0 hidden sm:inline">CHEOPS-NEWS v2.4 // INTRANET MINISTÈRE</span>
-      </footer>
+      {/* FIL D'ACTUALITÉ EN CONTINU HORS DU BUREAU DE JEU */}
+      {gameState !== "playing" && (
+        <footer className="w-full bg-[#001c54] border-t border-[#003399] py-1 px-3 font-sans text-xs flex items-center gap-2 overflow-hidden shrink-0 text-white select-none">
+          <span className="bg-[#cc0000] text-white px-1.5 py-0.5 font-bold text-[10px] shrink-0 tracking-wider flex items-center gap-1 shadow-xs">
+            <span className="inline-block w-1.5 h-1.5 bg-white rounded-full animate-ping"></span>
+            DÉPÊCHE OFFICIELLE
+          </span>
+          <div className="truncate text-sky-100 flex-1 font-mono text-[11px]">
+            {flashNews ? (
+              <span className="text-amber-300 font-bold">{flashNews}</span>
+            ) : (
+              <span>{ACTUALITES_CONTINU[newsTickerIndex]}</span>
+            )}
+          </div>
+          <span className="text-sky-300 text-[10px] shrink-0 hidden sm:inline font-mono">CHEOPS-NEWS v2.4 // INTRANET BEAUVAU</span>
+        </footer>
+      )}
 
       {/* BANNIÈRE TÉLÉGRAMME CRYPTÉE RÉACTIVE DU MINISTÈRE */}
       <TelegramBannerToast
@@ -1479,107 +1770,123 @@ export default function App() {
         </div>
       )}
 
-      {/* BOUTIQUE DE LA MUTUELLE POLICE & MATÉRIEL DU CENSEUR */}
+      {/* BOUTIQUE DE LA MUTUELLE POLICE & MATÉRIEL DU CENSEUR (STYLE WIN32 XP DIALOG) */}
       {isBoutiqueOpen && (
-        <div className="fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-3 sm:p-4 backdrop-blur-xs">
-          <div className="bg-[#080d14] border-2 sm:border-3 border-[#3b82f6] max-w-2xl w-full max-h-[90vh] overflow-y-auto p-3 sm:p-5 font-mono shadow-2xl flex flex-col justify-between">
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-3 font-sans select-none">
+          <div className="bg-[#ece9d8] border-3 border-[#0055ea] max-w-2xl w-full max-h-[90vh] shadow-[0_20px_50px_rgba(0,0,0,0.8)] rounded-t-lg rounded-b-xs overflow-hidden flex flex-col justify-between text-black">
             <div>
-              {/* En-tête de la Boutique */}
-              <div className="flex justify-between items-center border-b-2 border-[#1e293b] pb-2 mb-3">
+              {/* BARRE DE TITRE XP LUNA BLEUE */}
+              <div className="xp-titlebar-active h-7.5 px-2 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-2">
-                  <span className="bg-[#1e3a5f] text-white px-2 py-1 text-xs font-black">
-                    CHEOPS // INTRANET
-                  </span>
-                  <span className="text-white font-bold text-xs sm:text-sm tracking-wide">
-                    MUTUELLE & DOTATION DU CENSEUR
+                  <span className="text-sm">🛍️</span>
+                  <span className="font-bold text-xs text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
+                    Catalogue de la Mutuelle & Dotation de Censure — CHEOPS XP
                   </span>
                 </div>
                 <button
                   type="button"
                   id="btn-fermer-boutique"
                   onClick={() => setIsBoutiqueOpen(false)}
-                  className="bg-[#1e293b] hover:bg-[#ef4444] text-white px-2.5 py-1 text-xs font-black cursor-pointer transition-colors"
+                  className="xp-btn-close w-5 h-5 flex items-center justify-center text-white text-xs font-bold rounded-xs cursor-pointer"
                 >
-                  ✕ FERMER
+                  ✕
                 </button>
               </div>
 
-              {/* Solde des primes disponibles */}
-              <div className="flex justify-between items-center bg-[#04080e] p-2.5 border border-[#1e293b] mb-3 text-xs">
-                <span className="text-gray-400">SOLDE DU MATRICULE #7501923 :</span>
-                <span className="text-[#fbbf24] font-black text-sm sm:text-base">
-                  {primeTotale} € <span className="text-[10px] text-gray-500 font-normal">(Primes de zèle acquises)</span>
-                </span>
-              </div>
+              {/* CORPS DE LA BOÎTE DE DIALOGUE */}
+              <div className="p-3 sm:p-4 space-y-3 overflow-y-auto max-h-[calc(90vh-90px)]">
+                {/* SOLDE DES PRIMES (CADRE EN RELIEF WIN32) */}
+                <div className="bg-white border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white p-2.5 flex items-center justify-between shadow-inner">
+                  <div>
+                    <span className="text-slate-600 text-xs font-bold">SOLDE DU MATRICULE #7501923 :</span>
+                    <div className="text-[11px] text-slate-500">Primes de zèle et de caviardage acquises</div>
+                  </div>
+                  <div className="text-emerald-700 font-black text-lg font-mono">
+                    {primeTotale} €
+                  </div>
+                </div>
 
-              {/* Grille des équipements */}
-              <div className="space-y-2 mb-4">
-                {BOUTIQUE_EQUIPEMENTS.map((eq) => {
-                  const possede = equipementsPossedes.has(eq.id);
-                  const achetable = primeTotale >= eq.cout && !possede;
+                {/* GROUPBOX ÉQUIPEMENTS DE CENSURE */}
+                <fieldset className="border border-[#9c9a91] bg-[#f4f2ec] p-3 pt-1 shadow-[inset_1px_1px_0_#fff]">
+                  <legend className="px-1.5 font-bold text-xs text-[#003366] bg-[#ece9d8] border border-[#9c9a91]">
+                    Articles agréés par la Direction Centrale :
+                  </legend>
 
-                  return (
-                    <div
-                      key={eq.id}
-                      className={`p-2.5 sm:p-3 border transition-all ${
-                        possede
-                          ? "bg-[#06170d] border-[#00ff66]/60"
-                          : achetable
-                          ? "bg-[#0c1420] border-[#3b82f6]/60 hover:border-[#60a5fa]"
-                          : "bg-[#090e15] border-[#1e293b] opacity-65"
-                      }`}
-                    >
-                      <div className="flex flex-wrap justify-between items-start gap-1 mb-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xl">{eq.icone}</span>
-                          <div>
-                            <span className="font-bold text-white text-xs sm:text-sm block">
-                              {eq.nom}
-                            </span>
-                            <span className="text-[9px] text-[#60a5fa] font-bold">
-                              EFFET : {eq.effetDescription}
-                            </span>
+                  <div className="space-y-2 mt-2">
+                    {BOUTIQUE_EQUIPEMENTS.map((eq) => {
+                      const possede = equipementsPossedes.has(eq.id);
+                      const achetable = primeTotale >= eq.cout && !possede;
+
+                      return (
+                        <div
+                          key={eq.id}
+                          className={`p-2.5 border transition-all text-xs ${
+                            possede
+                              ? "bg-[#e8f8f0] border-[#2e7d32]"
+                              : achetable
+                              ? "bg-white border-[#7f9db9] hover:border-[#0055ea]"
+                              : "bg-[#ece9d8] border-[#9c9a91] opacity-65"
+                          }`}
+                        >
+                          <div className="flex justify-between items-start gap-2 mb-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xl">{eq.icone}</span>
+                              <div>
+                                <span className="font-bold text-slate-900 text-xs block">
+                                  {eq.nom}
+                                </span>
+                                <span className="text-[10px] text-[#0055ea] font-bold">
+                                  EFFET : {eq.effetDescription}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="text-right font-mono font-bold text-slate-800 shrink-0">
+                              {eq.cout} €
+                            </div>
+                          </div>
+
+                          <p className="text-[11px] text-slate-600 leading-snug my-1">
+                            {eq.description}
+                          </p>
+
+                          <div className="mt-1.5 flex justify-end">
+                            {possede ? (
+                              <span className="text-emerald-800 font-bold text-[11px] flex items-center gap-1 bg-white px-2 py-0.5 border border-[#2e7d32]">
+                                ✓ En dotation officielle
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => acheterEquipement(eq)}
+                                disabled={!achetable}
+                                className={`xp-btn text-xs py-1 px-3 ${
+                                  achetable ? "text-[#003366]" : "opacity-50 cursor-not-allowed"
+                                }`}
+                              >
+                                {primeTotale < eq.cout ? `Fonds insuffisants (${eq.cout - primeTotale} €)` : `Commander (${eq.cout} €)`}
+                              </button>
+                            )}
                           </div>
                         </div>
-                        <div className="text-right">
-                          <span className="font-black text-xs sm:text-sm text-[#fbbf24] block">
-                            {eq.cout} €
-                          </span>
-                        </div>
-                      </div>
-
-                      <p className="text-[10px] sm:text-[11px] text-gray-300 leading-snug my-1">
-                        {eq.description}
-                      </p>
-
-                      <div className="mt-2 flex justify-end">
-                        {possede ? (
-                          <span className="bg-[#00ff66]/20 text-[#00ff66] border border-[#00ff66] px-3 py-1 text-[10px] font-black uppercase tracking-wider">
-                            ✓ EN DOTATION OFFICIELLE
-                          </span>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={() => acheterEquipement(eq)}
-                            disabled={!achetable}
-                            className={`px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-wider border transition-all cursor-pointer ${
-                              achetable
-                                ? "bg-[#3b82f6] hover:bg-[#2563eb] text-white border-white active:scale-95 shadow"
-                                : "bg-[#1e293b] text-gray-500 border-[#334155] cursor-not-allowed"
-                            }`}
-                          >
-                            {primeTotale < eq.cout ? `FONDS INSUFFISANTS (${eq.cout - primeTotale} €)` : `COMMANDER (${eq.cout} €)`}
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+                      );
+                    })}
+                  </div>
+                </fieldset>
               </div>
             </div>
 
-            <div className="text-[9px] text-gray-500 border-t border-[#1e293b] pt-2 text-center">
-              CIRCULAIRE INTERNE DCAJ : Les achats de matériel de censure n'ouvrent aucun droit de recours syndical.
+            {/* PIED DE BOÎTE DIALOGUE */}
+            <div className="bg-[#ece9d8] border-t border-[#9c9a91] p-2.5 px-4 flex items-center justify-between text-xs">
+              <span className="text-[10px] text-slate-500 italic">
+                Achat subventionné par la caisse d'entraide de la Préfecture.
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsBoutiqueOpen(false)}
+                className="xp-btn min-w-20"
+              >
+                Fermer
+              </button>
             </div>
           </div>
         </div>

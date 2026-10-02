@@ -310,13 +310,14 @@ export const DiegeticTaskbar: React.FC<DiegeticTaskbarProps> = ({
                 ? "bg-red-600 border-white text-white animate-shake"
                 : "bg-[#180505] hover:bg-[#2b0808] border-red-500/80 text-rose-300"
             }`}
-            title="Détruire des pièces compromettantes (+50€)"
+            title="Détruire des pièces compromettantes ou effacer un blâme (Raccourci clavier : Touche Suppr / Del)"
           >
             <Trash2 className="w-3.5 h-3.5 text-red-400" />
             <span className="hidden sm:inline text-xs font-bold">BROYEUR :</span>
             <span className="font-black text-white bg-red-950 px-1.5 py-0.2 border border-red-500 text-[11px]">
               {documentsBroyes}
             </span>
+            <span className="text-[10px] text-amber-300 font-mono hidden md:inline ml-0.5">[Suppr]</span>
           </button>
 
           {/* Prime Totale Cumulée */}

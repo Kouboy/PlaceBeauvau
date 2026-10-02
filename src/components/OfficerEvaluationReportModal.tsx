@@ -40,12 +40,14 @@ interface OfficerEvaluationReportModalProps {
   stats: SessionReportStats;
   onRestart: () => void;
   isVictory?: boolean;
+  gameOverReason?: "timeout" | "blames" | "credibilite";
 }
 
 export const OfficerEvaluationReportModal: React.FC<OfficerEvaluationReportModalProps> = ({
   stats,
   onRestart,
   isVictory = true,
+  gameOverReason,
 }) => {
   const [copied, setCopied] = useState<boolean>(false);
 
@@ -61,6 +63,18 @@ export const OfficerEvaluationReportModal: React.FC<OfficerEvaluationReportModal
         tampon: "AUDITION PARLEMENTAIRE",
         tamponColor: "border-purple-400 text-purple-300",
         description: `Vous avez refusé d'étouffer les affaires. Les ${stats.fuitesCount} dossiers transmis clandestinement à Me Camille Sorel ont fait la Une de la presse nationale. Le préfet Didier de Courcelles a dû s'expliquer en direct, le Brigadier Marc Vasseur est suspendu avec retrait d'arme, et l'Assemblée Nationale a ouvert une commission d'enquête sur les violences d'État. Révoqué de Beauvau, vous devenez le symbole de la probité républicaine.`,
+      };
+    }
+
+    if (gameOverReason === "timeout") {
+      return {
+        titre: "RÉVOCATION POUR LENTEUR ADMINISTRATIVE ET ENCOMBREMENT DU GREFFE",
+        badge: "CADENCE DÉFAILLANTE",
+        color: "text-rose-400 border-rose-500 bg-rose-950/40",
+        verdict: "Dépassement systématique des délais de rigueur fixés par la circulaire ministérielle.",
+        tampon: "DÉPASSEMENT DES DÉLAIS",
+        tamponColor: "border-red-600 text-red-500",
+        description: "Vos hésitations procédurales ont laissé le temps aux avocats des victimes d'enregistrer des plaintes avec constitution de partie civile avant le classement sans suite. Le Préfet vous rétrograde au dépoussiérage des microfilms d'archives.",
       };
     }
 
@@ -244,10 +258,10 @@ export const OfficerEvaluationReportModal: React.FC<OfficerEvaluationReportModal
               soundFx.playStampSound(true);
               onRestart();
             }}
-            className="xp-btn-blue text-xs font-bold flex items-center gap-2 shadow-sm"
+            className="xp-btn-blue bg-[#0055ea] hover:bg-[#0044cc] text-white text-xs font-bold flex items-center gap-2 shadow-md px-3.5 py-1.5 border border-[#002266] cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5 text-white" />
-            <span>Ouvrir une nouvelle session d'instruction</span>
+            <span className="text-white font-bold">Ouvrir une nouvelle session d'instruction</span>
           </button>
         </div>
 

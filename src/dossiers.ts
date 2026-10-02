@@ -206,14 +206,14 @@ export const GRADES: GradeInfo[] = [
     echelon: 3,
     titre: "Auditeur principal à l'inspection générale",
     description: "Expert certifié en défaillances techniques opportunes et non-imputabilité.",
-    seuilDossiers: 6,
+    seuilDossiers: 7,
     badge: "IGPN-OFF"
   },
   {
     echelon: 4,
     titre: "Conseiller spécial au Cabinet Ministériel",
     description: "Architecte de la doctrine du zéro bavure statistique.",
-    seuilDossiers: 9,
+    seuilDossiers: 11,
     badge: "MIN-CAB"
   }
 ];
@@ -233,7 +233,7 @@ export const ACTUALITES_CONTINU = [
 
 export const dossiers: Dossier[] = [
   {
-    id: "DOS-2024-0814",
+    id: "DOS-B75-0814",
     faits: "Interpellation par la BST-4B (Brigadier Marc Vasseur, RIO #754981). 4 fractures costales, traumatisme crânien et énucléation définitive suite à un tir de lanceur de balles de défense tendu à 2 mètres.",
     jargon_officiel: "Usage strictement nécessaire et proportionné des armes de dotation face à une posture manifestement non coopérative et hostile au dispositif de sécurité.",
     categorie_attendue: "impunite",
@@ -316,7 +316,7 @@ export const dossiers: Dossier[] = [
     }
   },
   {
-    id: "DOS-2024-0942",
+    id: "DOS-B75-0942",
     faits: "Un passant reçoit un impact de bâton de défense à la tempe. S'effondrant sur le trottoir, il présente de vives convulsions musculaires consécutives au traumatisme.",
     jargon_officiel: "Agitation corporelle désordonnée et persistante sur le sol de la voie publique, entravant la libre circulation piétonne et mobilisant indûment les effectifs.",
     categorie_attendue: "mauvaise_foi",
@@ -390,7 +390,7 @@ export const dossiers: Dossier[] = [
     }
   },
   {
-    id: "DOS-2024-1108",
+    id: "DOS-B75-1108",
     faits: "Interpellation par le Brigadier Marc Vasseur (BST-4B, RIO #754981). Le fonctionnaire présente une fracture du cinquième métacarpien suite à une frappe directe portée à la mâchoire de Bilal M., immobilisé au sol.",
     jargon_officiel: "Interposition cinétique brutale de la structure maxillo-faciale de l'administré ayant causé une incapacité totale de travail de 21 jours au Brigadier Marc Vasseur.",
     categorie_attendue: "victimisation",
@@ -457,7 +457,7 @@ export const dossiers: Dossier[] = [
     }
   },
   {
-    id: "DOS-2024-1247",
+    id: "DOS-B75-1247",
     faits: "Décès d'Adama D. par asphyxie positionnelle lors d'un maintien prolongé en décubitus ventral dans le sas de garde à vue, sous la direction du Brigadier Marc Vasseur. Les enregistrements vidéo du poste sont inaccessibles par anomalie technique.",
     jargon_officiel: "Défaillance cardio-respiratoire autonome intervenue de manière concomitante aux manœuvres de contention réglementaire. Absence de lien de causalité juridique établi.",
     categorie_attendue: "impunite",
@@ -537,7 +537,7 @@ export const dossiers: Dossier[] = [
     }
   },
   {
-    id: "DOS-2024-2011",
+    id: "DOS-B75-2011",
     faits: "Contrôle d'identité à répétition (8e fouille en 7 jours) d'un étudiant se rendant en cours à la Gare du Nord. Plaquage au sol violent suite à une demande polie du numéro RIO de l'agent.",
     jargon_officiel: "Vérification administrative préventive des flux voyageurs avec neutralisation physique d'une attitude défiante contestant la légitimité républicaine du contrôle.",
     categorie_attendue: "impunite",
@@ -612,7 +612,7 @@ export const dossiers: Dossier[] = [
     }
   },
   {
-    id: "DOS-2024-2144",
+    id: "DOS-B75-2144",
     faits: "Un notaire et avocat d'affaires de 58 ans en état d'ébriété avancée grille deux feux rouges en Porsche Cayenne, insulte les motards et hurle 'Vous savez qui je connais à la Chancellerie ?!'.",
     jargon_officiel: "Dialogue feutré de régulation civique avec un citoyen contributif de haut rang. Clémence déontologique et reconduite bienveillante à l'hôtel particulier sans inscription TAJ.",
     categorie_attendue: "impunite",
@@ -678,7 +678,7 @@ export const dossiers: Dossier[] = [
     }
   },
   {
-    id: "DOS-2024-1389",
+    id: "DOS-B75-1389",
     faits: "Une requérante blessée au cuir chevelu par dispersion lacrymogène projette des écoulements sanguins abondants sur le pantalon et les brodequins d'un gradé.",
     jargon_officiel: "Dégradation délibérée d'effets d'habillement administratifs par projection de substances biologiques et exposition de l'agent à un risque sanitaire non régulé.",
     categorie_attendue: "victimisation",
@@ -721,7 +721,7 @@ export const dossiers: Dossier[] = [
     }
   },
   {
-    id: "DOS-2024-1502",
+    id: "DOS-B75-1502",
     faits: "Une étudiante projetée à terre par un balayage des membres inférieurs pousse des cris prolongés suite à une luxation acromio-claviculaire droite.",
     jargon_officiel: "Manifestations vocales stridentes et répétitives à fort volume acoustique, perturbant l'ordre public sonore et la sérénité des opérations de police.",
     categorie_attendue: "mauvaise_foi",
@@ -755,7 +755,7 @@ export const dossiers: Dossier[] = [
     }
   },
   {
-    id: "DOS-2024-1620",
+    id: "DOS-B75-1620",
     faits: "Déclenchement d'une munition de désencerclement au dos d'un manifestant marchant à distance du cordon de sécurité, causant une perforation cutanée et une surdité partielle.",
     jargon_officiel: "Réaction d'anticipation tactique face à une manœuvre d'esquive équivoque susceptible de dissimuler la réorganisation d'un groupe hostile à revers.",
     categorie_attendue: "impunite",
@@ -803,7 +803,7 @@ export const dossiers: Dossier[] = [
     }
   },
   {
-    id: "DOS-2024-1733",
+    id: "DOS-B75-1733",
     faits: "Le Brigadier Marc Vasseur (BST-4B) trébuche sur son bouclier individuel en tentant de rattraper un cycliste circulant à allure modérée, entraînant une entorse bénigne du genou.",
     jargon_officiel: "Mise en danger délibérée d'autrui et entrave à la circulation par manœuvre cycliste incitative ayant directement induit l'accident de service d'un agent assermenté.",
     categorie_attendue: "victimisation",
@@ -837,7 +837,7 @@ export const dossiers: Dossier[] = [
     }
   },
   {
-    id: "DOS-2024-1890",
+    id: "DOS-B75-1890",
     faits: "Un conducteur émet un avertissement sonore bref après une immobilisation de 45 minutes provoquée par le stationnement d'un fourgon de service devant une issue privée.",
     jargon_officiel: "Usage intempestif et prohibé d'un avertisseur sonore constituant une pression acoustique et une insubordination caractérisée envers des agents en mission.",
     categorie_attendue: "mauvaise_foi",
@@ -868,6 +868,171 @@ export const dossiers: Dossier[] = [
       type: "cctv",
       reference: "DISPOSITIF SURVEILLANCE CARREFOUR COMMERCIAL // CSU",
       horodatage: "13:05:18 REC"
+    }
+  },
+  {
+    id: "DOS-B75-2104",
+    faits: "Lors d'une perquisition matinale sans suite, un équipage de la BAC s'approprie l'intégralité du présentoir de croissants et chocolatines d'un artisan boulanger sans émargement financier.",
+    jargon_officiel: "Réquisition conservatoire de denrées glucidiques d'urgence au titre du maintien impératif de la glycémie opérationnelle des forces engagées en milieu hostile.",
+    categorie_attendue: "impunite",
+    tampon_imposé: "NON-LIEU // USAGE CONFORME",
+    justification_erreur: "La préservation du potentiel calorique des effectifs engagés prévaut sur le droit de propriété commerciale ordinaire (Art. L. 435-1).",
+    profilage: {
+      identite: "M. Jean-Luc B., 54 ans, artisan boulanger Meilleur Ouvrier de France",
+      classeSociale: "Petite bourgeoisie artisanale indépendante",
+      territoireZonage: "Centre-ville commerçant sous tension tarifaire",
+      faciesApparence: "Tablier enfariné, posture outrée, réclame un bon de réquisition en vain",
+      coefficientVulnerabilite: 62,
+      analyseRisqueJudiciaire: "Administré récalcitrant aux devoirs patriotiques de subsistance. Risque de tribune dans la presse locale. Extinction sans délai."
+    },
+    statutRio: {
+      constat: "Équipage en civil, brassards police dans la poche arrière et absence totale de matricule RIO.",
+      decision: "Discrétion tactique alimentaire. Aucune faute déontologique retenue.",
+      bonneDecision: "flouter",
+      explicationBonneDecision: "Secret opérationnel : la filière d'approvisionnement sucré des unités d'élite est protégée par la discrétion de service.",
+      explicationErreur: "BLÂME : Vous avez divulgué l'identité d'agents en mission de ravitaillement sucré !",
+      primeBonus: 20
+    },
+    termesCaviardes: [
+      {
+        id: "c_viennoiseries",
+        texteBrut: "saisie brute de 24 chocolatines sans indemnisation",
+        texteCensure: "prélèvement conservatoire de glucides tactiques d'appoint",
+        motifCensure: "qualification de pillage à écarter d'office",
+        estCompromettant: true
+      },
+      {
+        id: "c_menace_hygiene",
+        texteBrut: "boulanger menacé d'un contrôle d'hygiène inopiné",
+        texteCensure: "sensibilisation pédagogique aux normes sanitaires d'État",
+        motifCensure: "intimidation caractérisée à occulter",
+        estCompromettant: true
+      },
+      {
+        id: "c_farine_fraude",
+        texteBrut: "sac de farine T65 conforme et traçable",
+        texteCensure: "matière pulvérulente blanche d'origine indéterminée",
+        motifCensure: "preuve de bonne foi du commerçant à conserver !",
+        estCompromettant: false
+      }
+    ],
+    pieceASubstituer: {
+      id: "sub_croissant",
+      scelleCompromettant: "Ticket de caisse n° 481 réclamant 38,40 € TTC non réglés",
+      scelleType: "Facture impayée",
+      substitutOfficiel: "Reçu de don spontané au profit des œuvres sociales de la brigade",
+      justificationDoctrine: "Substitue la créance commerciale par un acte de solidarité citoyenne républicaine.",
+      primeBonus: 30
+    },
+    telegrammePrefet: {
+      titre: "URGENCE DIRECTEUR DU CABINET // BEAUVAU",
+      alerte: "Le syndicat de la boulangerie menace de suspendre les livraisons du commissariat central.",
+      ordre: "Homologuer immédiatement en exercice de réquisition d'urgence vitale !",
+      primeBonus: 60
+    },
+    riposteOutrage: {
+      motifRiposte: "Outrage et refus d'obtempérer par réclamation pécuniaire intempestive en temps de service.",
+      qualificationsInverses: [
+        "Trouble à l'approvisionnement des forces d'intervention",
+        "Refus de solidarité républicaine alimentaire",
+        "Outrage à la tenue par dénigrement de l'appétit de service"
+      ],
+      primeRiposte: 35
+    },
+    novlangue: {
+      faitBrut: "Emportement de 24 viennoiseries sans payer",
+      termeMinisteriel: "Réquisition conservatoire de denrées glucidiques d'urgence"
+    },
+    piece_visuelle: {
+      url: imgPoliceVanBlocked,
+      type: "cctv",
+      reference: "CAMÉRA SURVEILLANCE BOULANGERIE DU PARC // CSU",
+      horodatage: "06:45:12 REC"
+    }
+  },
+  {
+    id: "DOS-B75-2245",
+    faits: "Lors d'une déambulation ministérielle, une retraitée fait tinter une casserole en inox avec une cuillère en bois, provoquant une gêne auditive alléguée chez trois officiers d'escorte.",
+    jargon_officiel: "Émission réitérée d'ondes de choc acoustiques dirigées constituant un projectile sonore et une tentative d'altération de la vigilance d'escorte.",
+    categorie_attendue: "mauvaise_foi",
+    tampon_imposé: "ENTRAVE & TAPAGE ILLICITE",
+    justification_erreur: "Le tintement rythmé d'un ustensile ménager en zone de périmètre de sécurité est assimilable à un trouble majeur à l'ordre public.",
+    profilage: {
+      identite: "Mme Monique D., 68 ans, institutrice honoraire retraitée",
+      classeSociale: "Retraitée de la fonction publique d'État (Éducation nationale)",
+      territoireZonage: "Quartier préfectoral sous arrêté d'interdiction de rassemblement",
+      faciesApparence: "Imperméable beige, sac cabas à roulettes, casserole Tefal 24cm",
+      coefficientVulnerabilite: 88,
+      analyseRisqueJudiciaire: "Cynisme ménager caractérisé. Verbalisation forfaitaire majorée et transmission pour trouble à la tranquillité d'État."
+    },
+    statutRio: {
+      constat: "Officiers de sécurité en costume civil sans matricule RIO apparent.",
+      decision: "Protection rapprochée VIP : exemption déontologique de port de matricule.",
+      bonneDecision: "flouter",
+      explicationBonneDecision: "Sécurité des personnalités : l'anonymat des gardes du corps est impératif pour l'escorte.",
+      explicationErreur: "BLÂME : Vous avez compromis le service de protection rapprochée du Ministre !",
+      primeBonus: 20
+    },
+    incidentCamera: {
+      intitule: "CAPTATION VIDÉO : CASSEROLADE CITOYENNE",
+      actionBouton: "REQUALIFIER EN ATTENTAT ACOUSTIQUE CONCERTÉ",
+      doitEtreNeutralisee: true,
+      explicationBonneDecision: "Neutralisation de la vidéo montrant une grand-mère inoffensive de 68 ans face à 12 robocops casqués.",
+      explicationErreur: "NÉGLIGENCE : Diffuser cette image ridiculise l'institution policière à l'échelle nationale !",
+      rapportOfficiel: "Incident neutralisé, ustensile placé sous scellé sonore de discrétion."
+    },
+    novlangue: {
+      faitBrut: "Coup de cuillère en bois sur une casserole",
+      termeMinisteriel: "Projection d'ondes de choc acoustiques dirigées"
+    },
+    piece_visuelle: {
+      url: imgPressProtest,
+      type: "presse",
+      reference: "PHOTOJOURNALISME INDÉPENDANT // CORDON DE SÉCURITÉ",
+      horodatage: "14:15:30 ARCHIVE"
+    }
+  },
+  {
+    id: "DOS-B75-2391",
+    faits: "Un passant immobilisé sur un passage piéton soutient le regard d'un brigadier pendant 4,2 secondes avec une expression qualifiée de sourcilleuse, provocatrice et défiante.",
+    jargon_officiel: "Agression visuelle prolongée et défi postural hostile constitutif d'une pression morale et d'une violence psychologique sur personne dépositaire de l'autorité.",
+    categorie_attendue: "victimisation",
+    tampon_imposé: "VIOLENCES SUR DÉPOSITAIRE",
+    justification_erreur: "Le regard fixe et non déférent porte atteinte à l'intégrité morale du fonctionnaire et constitue une voie de fait passive.",
+    profilage: {
+      identite: "M. Thomas R., 31 ans, graphiste indépendant",
+      classeSociale: "Petite bourgeoisie culturelle urbaine",
+      territoireZonage: "Carrefour République / Voltaire",
+      faciesApparence: "Lunettes rondes en écaille, écouteurs sans fil, fixité oculaire",
+      coefficientVulnerabilite: 78,
+      analyseRisqueJudiciaire: "Posture séditieuse passive. Action récursoire de la brigade pour préjudice d'anxiété professionnelle."
+    },
+    statutRio: {
+      constat: "Brigadier Marc Vasseur présent, RIO #754981 bien visible sur le baudrier.",
+      decision: "Attestation d'atteinte morale certifiée par la brigade pour préjudice d'anxiété.",
+      bonneDecision: "valider",
+      explicationBonneDecision: "Matricule validé pour permettre au brigadier de réclamer ses 500 € d'indemnité pour traumatisme oculaire.",
+      explicationErreur: "ERREUR : En masquant le RIO, vous privez le fonctionnaire de sa constitution de partie civile !",
+      primeBonus: 20
+    },
+    riposteOutrage: {
+      motifRiposte: "Outrage oculaire et rébellion silencieuse en récidive visuelle.",
+      qualificationsInverses: [
+        "Voie de fait visuelle sur dépositaire de l'autorité",
+        "Pression psychologique par fixité oculaire hostile",
+        "Atteinte au respect de la fonction républicaine par sourcillement"
+      ],
+      primeRiposte: 40
+    },
+    novlangue: {
+      faitBrut: "Regard d'incompréhension de 4 secondes",
+      termeMinisteriel: "Pression morale et violence psychologique oculaire hostile"
+    },
+    piece_visuelle: {
+      url: imgStudentCctv,
+      type: "cctv",
+      reference: "CSU TRAFFIC CAM // AXE RÉPUBLIQUE",
+      horodatage: "18:40:02 REC"
     }
   }
 ];

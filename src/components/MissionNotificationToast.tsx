@@ -28,7 +28,7 @@ export const MissionNotificationToast: React.FC<MissionNotificationToastProps> =
   return (
     <div
       id="mission-notification-toast"
-      className="absolute top-3 right-3 z-40 max-w-md w-[calc(100%-24px)] sm:w-96 font-sans bg-[#ece9d8] border-2 border-[#0055ea] shadow-[0_10px_25px_rgba(0,0,0,0.6)] rounded-t-lg rounded-b-xs overflow-hidden select-none animate-fadeIn"
+      className="absolute top-3 left-1/2 -translate-x-1/2 z-40 max-w-md w-[calc(100%-24px)] sm:w-96 font-sans bg-[#ece9d8] border-2 border-[#0055ea] shadow-[0_10px_25px_rgba(0,0,0,0.6)] rounded-t-lg rounded-b-xs overflow-hidden select-none animate-fadeIn"
     >
       {/* EN-TÊTE DE LA NOTIFICATION LUNA BLEU */}
       <div className="bg-gradient-to-r from-[#0055ea] via-[#215dc6] to-[#0055ea] px-2.5 py-1 border-b border-[#003399] flex items-center justify-between text-white text-xs font-bold shadow-xs">
@@ -84,10 +84,10 @@ export const MissionNotificationToast: React.FC<MissionNotificationToastProps> =
                 onOpenPieceMaitresse();
                 onClose();
               }}
-              className="w-full xp-btn-blue text-xs font-bold py-1.5 flex items-center justify-center gap-1.5 shadow-sm"
+              className="w-full xp-btn-blue bg-[#0055ea] hover:bg-[#0044cc] text-white text-xs font-bold py-1.5 px-3 flex items-center justify-center gap-1.5 shadow-sm border border-[#002266] cursor-pointer"
             >
               <FileText className="w-4 h-4 shrink-0 text-white" />
-              <span>Consulter le PV Principal</span>
+              <span className="text-white font-bold">Consulter le PV Principal</span>
               <span className="text-[9px] bg-white/20 text-white px-1 py-0.2 rounded-none font-mono">
                 [ESPACE]
               </span>

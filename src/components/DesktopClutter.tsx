@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { soundFx } from "../services/soundFx";
 
-interface SatiricalFile {
+export interface SatiricalFile {
   id: string;
   name: string;
   subLabel: string;
@@ -33,13 +33,13 @@ interface SatiricalFile {
 export const SATIRICAL_DESK_FILES: SatiricalFile[] = [
   {
     id: "circulaire-pas-de-vagues",
-    name: "CIRCULAIRE_BEAUVAU_2024.pdf",
+    name: "CIRCULAIRE_BEAUVAU_DOCTRINE.pdf",
     subLabel: "Directive ministérielle",
     icon: FileText,
     color: "text-red-400",
     badge: "URGENT",
     badgeColor: "bg-red-950 text-red-300 border-red-500",
-    titre: "CIRCULAIRE N°2024-88/DGPN // DIRECTIVE DU 'PAS DE VAGUES'",
+    titre: "CIRCULAIRE N°88/DGPN // DIRECTIVE DU 'PAS DE VAGUES'",
     classification: "DIFFUSION INTERNE STRICTE",
     emetteur: "Cabinet du Ministre // Direction de la Police Nationale",
     content: `RÉPUBLIQUE FRANÇAISE - MINISTÈRE DE L'INTÉRIEUR
@@ -58,7 +58,7 @@ Le Ministre compte sur le zèle patriotique de ses agents.`
   },
   {
     id: "trombinoscope-hierarchie",
-    name: "TROMBINOSCOPE_HIERARCHIE_2024.xls",
+    name: "TROMBINOSCOPE_HIERARCHIE.xls",
     subLabel: "Feuille de notation",
     icon: FileSpreadsheet,
     color: "text-emerald-400",
@@ -79,7 +79,7 @@ Le Ministre compte sur le zèle patriotique de ses agents.`
   - Règle d'or : Toute contestation d'un agent de la brigade 4B est réputée calomnieuse.
 
 • LIEUTENANT P. (BUREAU DÉONTOLOGIE IGPN) :
-  - En congé formation 'Gestion des crises médiatiques' jusqu'en 2026.
+  - En congé formation 'Gestion des crises médiatiques' jusqu'à nouvel ordre.
   - Répondeur automatique : « L'usage de la force était proportionné. Dossier classé. »`
   },
   {
@@ -101,7 +101,7 @@ Camarades officiers et gradés,
 Suite à notre déjeuner de travail à Beauvau, la prime de neutralisation du contentieux est revalorisée de +15 € par non-lieu prononcé. 
 
 2. GESTION DES FLUX VIDÉO :
-Rappel fraternel : si un journaliste ou un passant a capté l'intégralité d'un placage ventral au sol, ne paniquez pas. Le bouton « PANNE CARTE SD / BUG CHIP CSU » de la console CCTV a été validé par la jurisprudence préfectorale de 2021.
+Rappel fraternel : si un journaliste ou un passant a capté l'intégralité d'un placage ventral au sol, ne paniquez pas. Le bouton « PANNE CARTE SD / BUG CHIP CSU » de la console CCTV a été validé par la jurisprudence préfectorale constante.
 
 3. REPAS DU SERVICE :
 Le barbecue inter-brigades aura lieu jeudi au stand de tir. Munitions traçantes interdites pendant les grillades.`
@@ -165,7 +165,7 @@ export const DesktopClutter: React.FC<DesktopClutterProps> = ({
       {
         id: "cert-exp",
         title: "CHEOPS-SECURITY v2.4",
-        message: "Certificat SSL ministériel expiré depuis 2004. Les poursuites judiciaires sont temporairement suspendues.",
+        message: "Certificat SSL ministériel non renouvelé. Les poursuites judiciaires sont temporairement suspendues.",
         time: "Il y a 1 min",
         urgent: false,
       },
@@ -258,7 +258,7 @@ export const DesktopClutter: React.FC<DesktopClutterProps> = ({
       </div>
 
       {/* 2. PENSE-BÊTE AMICALE & MOTS DE PASSE (STYLE POST-IT BLEU/VERT AU BAS DU BUREAU) */}
-      <div className="absolute bottom-12 right-6 z-10 hidden lg:flex flex-col items-end pointer-events-auto select-none -rotate-1">
+      <div className="absolute bottom-28 right-6 z-10 hidden lg:flex flex-col items-end pointer-events-auto select-none -rotate-1">
         <div className="w-64 bg-[#e8f4d9] border border-[#bcdba0] shadow-[3px_3px_10px_rgba(0,0,0,0.35)] p-3 text-black">
           <div className="flex items-center justify-between border-b border-[#b2d494] pb-1 mb-1.5">
             <span className="font-bold text-xs flex items-center gap-1">
@@ -292,43 +292,12 @@ export const DesktopClutter: React.FC<DesktopClutterProps> = ({
             {activeTab === "session" && (
               <div className="font-mono text-xs space-y-0.5">
                 <div>Login : <strong>Agent_7501923</strong></div>
-                <div>Pass : <strong className="text-blue-800">Beauvau2024!</strong></div>
+                <div>Pass : <strong className="text-blue-800">BeauvauSecure!</strong></div>
                 <div className="text-[10px] text-slate-500 italic mt-1">(Ne pas jeter - Circulaire SSI)</div>
               </div>
             )}
           </div>
         </div>
-      </div>
-
-      {/* 3. FICHIERS DU BUREAU (ICÔNES VERTICALES WINDOWS XP CLASSIQUES DANS LE BUREAU) */}
-      <div className="absolute top-12 left-32 z-0 flex flex-col gap-4 pointer-events-auto select-none">
-        {SATIRICAL_DESK_FILES.map((file) => {
-          return (
-            <button
-              key={file.id}
-              type="button"
-              onDoubleClick={() => handleOpenFile(file)}
-              onClick={() => soundFx.playUiClick()}
-              className="group flex flex-col items-center gap-1 p-1 w-20 text-center cursor-pointer rounded-none hover:bg-[#316ac5]/20 focus:bg-[#316ac5]/40 focus:ring-1 focus:ring-white/50"
-              title="Double-cliquer pour ouvrir"
-            >
-              <div className="w-10 h-10 flex items-center justify-center">
-                {file.name.endsWith(".pdf") ? (
-                  <span className="text-3xl">📕</span>
-                ) : file.name.endsWith(".xls") ? (
-                  <span className="text-3xl">📗</span>
-                ) : file.name.endsWith(".msg") ? (
-                  <span className="text-3xl">✉️</span>
-                ) : (
-                  <span className="text-3xl">📄</span>
-                )}
-              </div>
-              <span className="text-[11px] font-sans font-medium text-white text-center leading-tight line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,1)] px-0.5">
-                {file.name}
-              </span>
-            </button>
-          );
-        })}
       </div>
 
       {/* 4. MODALE DE LECTURE D'UN DOCUMENT (FENÊTRE STYLE BLOC-NOTES / ACROBAT XP) */}

@@ -80,6 +80,68 @@
   transform: translate(1px, 1px);
 }
 
+/* BOUTON D'ACTION PRINCIPALE BLEU XP LUNA */
+.xp-btn-blue {
+  background: linear-gradient(180deg, #3d88f6 0%, #1a64e8 25%, #0d4dc7 60%, #083ea8 100%);
+  border: 1px solid #002b80;
+  border-top-color: #8bb6ff;
+  border-left-color: #8bb6ff;
+  border-bottom-color: #001f5c;
+  border-right-color: #001f5c;
+  color: #ffffff !important;
+  font-family: Tahoma, "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 12px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+.xp-btn-blue:hover {
+  background: linear-gradient(180deg, #5b99f9 0%, #2974f0 25%, #155bd8 60%, #0d4ab5 100%);
+  color: #ffffff !important;
+}
+
+.xp-btn-blue:active {
+  background: linear-gradient(180deg, #09348c 0%, #0d42a8 50%, #1555c9 100%);
+  border-top-color: #001f5c;
+  border-left-color: #001f5c;
+  border-bottom-color: #8bb6ff;
+  border-right-color: #8bb6ff;
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.6);
+  transform: translate(1px, 1px);
+}
+
+/* BOUTON D'HOMOLOGATION VERT XP */
+.xp-btn-green {
+  background: linear-gradient(180deg, #34a853 0%, #2e7d32 30%, #1b5e20 100%);
+  border: 1px solid #0d3810;
+  border-top-color: #81c784;
+  border-left-color: #81c784;
+  border-bottom-color: #0d3810;
+  border-right-color: #0d3810;
+  color: #ffffff !important;
+  font-family: Tahoma, "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 12px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+.xp-btn-green:hover {
+  background: linear-gradient(180deg, #43b863 0%, #388e3c 30%, #25702b 100%);
+  color: #ffffff !important;
+}
+
+.xp-btn-green:active {
+  background: linear-gradient(180deg, #0d3810 0%, #1b5e20 60%, #2e7d32 100%);
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.6);
+  transform: translate(1px, 1px);
+}
+
 /* BARRE DE TITRE WINDOWS XP LUNA */
 .xp-titlebar-active {
   background: linear-gradient(180deg, #0058e6 0%, #3a95f5 10%, #156fe8 50%, #0053e1 100%);
@@ -275,18 +337,14 @@
   animation: alerteClignotement 1s infinite ease-in-out;
 }
 
-/* Effet glitch et brouillage caméra */
+/* Effet glitch et brouillage caméra (stabilisé, sans vibration ni secousse physique) */
 @keyframes videoGlitch {
-  0% { filter: contrast(140%) brightness(100%); transform: translate(0, 0); }
-  20% { filter: contrast(200%) brightness(130%) hue-rotate(90deg); transform: translate(-3px, 2px); }
-  40% { filter: contrast(80%) brightness(80%) invert(20%); transform: translate(3px, -2px); }
-  60% { filter: contrast(180%) brightness(110%); transform: translate(-2px, -1px); }
-  80% { filter: contrast(120%) brightness(90%); transform: translate(2px, 1px); }
-  100% { filter: contrast(140%) brightness(100%); transform: translate(0, 0); }
+  0%, 100% { filter: contrast(115%) brightness(100%); }
+  50% { filter: contrast(130%) brightness(105%) hue-rotate(15deg); }
 }
 
 .glitch-video {
-  animation: videoGlitch 0.3s infinite;
+  animation: videoGlitch 0.8s ease-in-out infinite;
 }
 
 /* Ligne de parasite vidéo */

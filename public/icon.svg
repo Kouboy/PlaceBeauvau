@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#003366"/>
+      <stop offset="50%" stop-color="#002244"/>
+      <stop offset="100%" stop-color="#001122"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5d77f"/>
+      <stop offset="50%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#aa820a"/>
+    </linearGradient>
+    <linearGradient id="lunaBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#245edb"/>
+      <stop offset="100%" stop-color="#103b9b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fond avec bordure dorée républicaine -->
+  <rect width="512" height="512" rx="96" fill="url(#bgGrad)"/>
+  <rect x="16" y="16" width="480" height="480" rx="84" fill="none" stroke="url(#goldGrad)" stroke-width="8"/>
+  <rect x="28" y="28" width="456" height="456" rx="72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.3"/>
+
+  <!-- Écusson central -->
+  <path d="M 256 70 L 390 120 C 390 280 256 390 256 420 C 256 390 122 280 122 120 Z" fill="url(#lunaBlue)" stroke="url(#goldGrad)" stroke-width="6"/>
+
+  <!-- Balance de Thémis ministérielle -->
+  <!-- Fléau central -->
+  <rect x="250" y="130" width="12" height="180" fill="url(#goldGrad)" rx="3"/>
+  <rect x="180" y="150" width="152" height="10" fill="url(#goldGrad)" rx="3"/>
+  <!-- Plateau gauche -->
+  <path d="M 180 160 L 160 210 L 210 210 Z" fill="none" stroke="url(#goldGrad)" stroke-width="4"/>
+  <ellipse cx="185" cy="215" rx="30" ry="10" fill="url(#goldGrad)"/>
+  <!-- Plateau droit (légèrement déséquilibré au profit de l'administration) -->
+  <path d="M 332 160 L 312 230 L 362 230 Z" fill="none" stroke="url(#goldGrad)" stroke-width="4"/>
+  <ellipse cx="337" cy="235" rx="30" ry="10" fill="url(#goldGrad)"/>
+  <!-- Socle -->
+  <rect x="220" y="300" width="72" height="14" fill="url(#goldGrad)" rx="4"/>
+  <rect x="200" y="314" width="112" height="16" fill="url(#goldGrad)" rx="4"/>
+
+  <!-- Tampon rouge "HOMOLOGUÉ / SANS SUITE" -->
+  <g transform="rotate(-12 256 360)">
+    <rect x="110" y="330" width="292" height="60" rx="8" fill="#cc0000" stroke="#ffffff" stroke-width="4" opacity="0.95"/>
+    <text x="256" y="372" font-family="Arial Black, Impact, sans-serif" font-size="26" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="2">SANS SUITE</text>
+  </g>
+</svg>

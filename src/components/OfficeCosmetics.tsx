@@ -106,7 +106,7 @@ export const OfficeCosmetics: React.FC<OfficeCosmeticsProps> = ({
               <div className="bg-white border border-[#9c9a91] p-2.5 shadow-xs text-xs">
                 <div className="font-bold text-[#990000] flex items-center gap-1.5 border-b border-[#e0dcd0] pb-1 mb-1.5">
                   <FileWarning className="w-3.5 h-3.5 text-[#cc0000]" />
-                  <span>NOTE CADRE SÉMANTIQUE #2024-B</span>
+                  <span>NOTE CADRE SÉMANTIQUE #B-435</span>
                 </div>
                 <p className="text-slate-800 text-[11px] leading-relaxed">
                   Ne jamais écrire <strong className="text-red-700">« Tir dans le dos »</strong>. Utiliser le vocable officiel : <strong className="text-[#003366]">« Trajectoire balistique interceptant un vecteur d'échappée non maîtrisé »</strong>.

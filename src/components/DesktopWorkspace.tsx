@@ -31,8 +31,12 @@ import {
   ChevronRight,
   Search,
   HelpCircle,
-  Sparkles
+  Sparkles,
+  Volume2,
+  VolumeX,
+  Download,
 } from "lucide-react";
+import { usePWAInstall } from "../hooks/usePWAInstall";
 import { VirtualFile, VirtualFolder } from "../fileSystem";
 import { Dossier } from "../dossiers";
 import { soundFx } from "../services/soundFx";
@@ -48,6 +52,8 @@ import { MessagingWindow } from "./MessagingWindow";
 import { MissionNotificationToast } from "./MissionNotificationToast";
 import { CaseMissionChecklist } from "./CaseMissionChecklist";
 import { DesktopClutter } from "./DesktopClutter";
+import blissWallpaperAzure from "../assets/images/xp_bliss_azure_1790841573015.jpg";
+import blissWallpaperSurveillance from "../assets/images/xp_bliss_surveillance_1790672405866.jpg";
 import {
   MinesweeperDialog,
   NotepadDialog,
@@ -74,14 +80,14 @@ export interface WindowState {
 
 // Rectangles par défaut stables hors composant avec des proportions ergonomiques et équilibrées
 const DEFAULT_WINDOW_RECTS: Record<WindowId, WindowRect> = {
-  explorer: { x: 24, y: 20, width: 700, height: 535 },
-  qualification: { x: 740, y: 20, width: 560, height: 535 },
-  document: { x: 24, y: 20, width: 700, height: 535 },
-  video: { x: 180, y: 30, width: 760, height: 530 },
-  humandb: { x: 160, y: 35, width: 700, height: 520 },
-  rio: { x: 220, y: 45, width: 620, height: 480 },
-  scelles: { x: 230, y: 50, width: 620, height: 480 },
-  messages: { x: 200, y: 40, width: 680, height: 510 },
+  explorer: { x: 216, y: 16, width: 680, height: 535 },
+  qualification: { x: 740, y: 16, width: 560, height: 535 },
+  document: { x: 216, y: 16, width: 680, height: 535 },
+  video: { x: 230, y: 24, width: 760, height: 530 },
+  humandb: { x: 220, y: 24, width: 700, height: 520 },
+  rio: { x: 230, y: 30, width: 620, height: 480 },
+  scelles: { x: 240, y: 35, width: 620, height: 480 },
+  messages: { x: 220, y: 24, width: 680, height: 510 },
 };
 
 interface DesktopWorkspaceProps {
@@ -168,6 +174,14 @@ interface DesktopWorkspaceProps {
   onOpenBoutique?: () => void;
   isFullscreen?: boolean;
   onToggleFullscreen?: () => void;
+  // Chrono & Pointeuse Option A
+  isChronoStarted?: boolean;
+  timeRemaining?: number;
+  maxTime?: number;
+  onStartChrono?: () => void;
+  autoPunchNext?: boolean;
+  onToggleAutoPunch?: () => void;
+  onAddCoffeeTime?: () => void;
 }
 
 export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
@@ -242,6 +256,13 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
   onOpenBoutique = () => {},
   isFullscreen = false,
   onToggleFullscreen = () => {},
+  isChronoStarted = false,
+  timeRemaining = 26.0,
+  maxTime = 26.0,
+  onStartChrono,
+  autoPunchNext = false,
+  onToggleAutoPunch,
+  onAddCoffeeTime,
 }) => {
   const desktopBoundsRef = useRef<HTMLDivElement | null>(null);
   const [startMenuOpen, setStartMenuOpen] = useState<boolean>(false);
@@ -256,79 +277,103 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
   const [showDisplayProps, setShowDisplayProps] = useState<boolean>(false);
   const [desktopContextMenu, setDesktopContextMenu] = useState<{ x: number; y: number } | null>(null);
 
-  // Positions déplaçables des icônes du Bureau XP
+  // Contrôles Audio & Ambiance Rétro
+  const [showVolumeControl, setShowVolumeControl] = useState<boolean>(false);
+  const [isMuted, setIsMuted] = useState<boolean>(soundFx.getIsMuted());
+  const [isAmbianceActive, setIsAmbianceActive] = useState<boolean>(soundFx.getIsAmbianceActive());
+  const [ambianceVol, setAmbianceVol] = useState<number>(soundFx.getAmbianceVolume());
+  const [isRetroMouse, setIsRetroMouse] = useState<boolean>(soundFx.getIsRetroMouseActive());
+
+  // Installation autonome PWA (Standalone)
+  const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
+  const [showInstallHelp, setShowInstallHelp] = useState<boolean>(false);
+
+  const handlePWAInstallClick = () => {
+    soundFx.playUiClick();
+    if (isInstallable) {
+      install();
+    } else {
+      setShowInstallHelp(true);
+    }
+  };
+
+  // Thème de fond d'écran (sans dominante jaune, bleu azur authentique ou surveillance)
+  const [wallpaperTheme, setWallpaperTheme] = useState<"azure" | "surveillance" | "classic">("azure");
+  const activeWallpaperUrl =
+    wallpaperTheme === "azure"
+      ? blissWallpaperAzure
+      : wallpaperTheme === "surveillance"
+      ? blissWallpaperSurveillance
+      : blissWallpaperAzure;
+
+  // Positions déplaçables des icônes du Bureau XP avec espacement vertical généreux (pas de superposition)
   const DEFAULT_ICON_POSITIONS: Record<string, { x: number; y: number }> = {
     active_case: { x: 16, y: 16 },
-    explorer: { x: 16, y: 104 },
-    qualification: { x: 16, y: 192 },
-    messages: { x: 16, y: 280 },
-    broyeur: { x: 16, y: 368 },
-    notepad: { x: 108, y: 16 },
-    minesweeper: { x: 108, y: 104 },
-    calc: { x: 108, y: 192 },
+    explorer: { x: 16, y: 124 },
+    qualification: { x: 16, y: 232 },
+    messages: { x: 16, y: 340 },
+    broyeur: { x: 16, y: 448 },
+    notepad: { x: 112, y: 16 },
+    minesweeper: { x: 112, y: 124 },
+    calc: { x: 112, y: 232 },
   };
 
   const [iconPositions, setIconPositions] = useState<Record<string, { x: number; y: number }>>(DEFAULT_ICON_POSITIONS);
   const [draggingIconId, setDraggingIconId] = useState<string | null>(null);
-  const draggingIconRef = useRef<{
-    id: string;
-    startX: number;
-    startY: number;
-    origX: number;
-    origY: number;
-    moved: boolean;
-  } | null>(null);
 
+  // Gestion du Drag & Drop des icônes avec écouteurs globaux window (ultra-réactif, aucun blocage)
   const handleIconPointerDown = (id: string, e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button === 2) return; // ignorer clic droit
     e.stopPropagation();
+    e.preventDefault();
+
     const orig = iconPositions[id] || { x: 16, y: 16 };
-    draggingIconRef.current = {
-      id,
-      startX: e.clientX,
-      startY: e.clientY,
-      origX: orig.x,
-      origY: orig.y,
-      moved: false,
-    };
+    let hasMoved = false;
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const origX = orig.x;
+    const origY = orig.y;
+
     setDraggingIconId(id);
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-  };
 
-  const handleIconPointerMove = (id: string, e: React.PointerEvent<HTMLDivElement>) => {
-    if (!draggingIconRef.current || draggingIconRef.current.id !== id) return;
-    const dx = e.clientX - draggingIconRef.current.startX;
-    const dy = e.clientY - draggingIconRef.current.startY;
-    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
-      draggingIconRef.current.moved = true;
-    }
-    const bounds = desktopBoundsRef.current?.getBoundingClientRect();
-    const maxW = bounds ? Math.max(100, bounds.width - 85) : 1000;
-    const maxH = bounds ? Math.max(100, bounds.height - 95) : 700;
+    const onPointerMove = (moveEvent: PointerEvent) => {
+      const dx = moveEvent.clientX - startX;
+      const dy = moveEvent.clientY - startY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        hasMoved = true;
+      }
+      const bounds = desktopBoundsRef.current?.getBoundingClientRect();
+      const maxW = bounds ? Math.max(100, bounds.width - 90) : window.innerWidth - 90;
+      const maxH = bounds ? Math.max(100, bounds.height - 110) : window.innerHeight - 110;
 
-    const newX = Math.max(8, Math.min(maxW, draggingIconRef.current.origX + dx));
-    const newY = Math.max(8, Math.min(maxH, draggingIconRef.current.origY + dy));
+      const newX = Math.max(8, Math.min(maxW, origX + dx));
+      const newY = Math.max(8, Math.min(maxH, origY + dy));
 
-    setIconPositions((prev) => ({
-      ...prev,
-      [id]: { x: newX, y: newY },
-    }));
-  };
+      setIconPositions((prev) => ({
+        ...prev,
+        [id]: { x: newX, y: newY },
+      }));
+    };
 
-  const handleIconPointerUp = (id: string, e: React.PointerEvent<HTMLDivElement>, clickAction: () => void) => {
-    if (!draggingIconRef.current || draggingIconRef.current.id !== id) return;
-    const wasMoved = draggingIconRef.current.moved;
-    draggingIconRef.current = null;
-    setDraggingIconId(null);
-    try {
-      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-    } catch {}
+    const onPointerUp = () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
+      setDraggingIconId(null);
 
-    if (wasMoved) {
-      soundFx.playUiClick();
-    } else {
-      clickAction();
-    }
+      if (hasMoved) {
+        soundFx.playUiClick();
+      } else {
+        const item = desktopIcons.find((i) => i.id === id);
+        if (item?.onClick) {
+          item.onClick();
+        }
+      }
+    };
+
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerUp);
   };
 
   const snapIconsToGrid = () => {
@@ -337,8 +382,8 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
       const next: Record<string, { x: number; y: number }> = {};
       (Object.entries(prev) as [string, { x: number; y: number }][]).forEach(([key, pos]) => {
         next[key] = {
-          x: Math.round((pos.x - 16) / 92) * 92 + 16,
-          y: Math.round((pos.y - 16) / 88) * 88 + 16,
+          x: Math.round((pos.x - 16) / 96) * 96 + 16,
+          y: Math.round((pos.y - 16) / 108) * 108 + 16,
         };
       });
       return next;
@@ -429,12 +474,12 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
     },
     {
       id: "broyeur",
-      label: "Corbeille CHEOPS",
-      subLabel: "Détruire blâmes",
+      label: "Broyeuse [Suppr]",
+      subLabel: "Détruire blâmes & pièces [Suppr]",
       icon: Trash2,
       color: "text-red-400",
       border: "hover:border-red-400 bg-[#160606]/80",
-      badge: documentsBroyes > 0 ? `${documentsBroyes}` : null,
+      badge: documentsBroyes > 0 ? `${documentsBroyes} [Del]` : "[Del]",
       onClick: onBroyerPiece,
     },
     {
@@ -521,19 +566,16 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
         ref={desktopBoundsRef}
         className="relative flex-1 min-h-0 w-full overflow-hidden bg-[#004e98]"
       >
-        {/* FOND D'ÉCRAN OFFICIEL DU MINISTÈRE (PARODIE WINDOWS XP BLISS SURVEILLANCE) */}
+        {/* FOND D'ÉCRAN OFFICIEL DU MINISTÈRE (PARODIE WINDOWS XP BLISS SURVEILLANCE OU AZUR) */}
         <div
-          className="absolute inset-0 bg-cover bg-center pointer-events-none"
-          style={{ backgroundImage: `url('/src/assets/images/xp_bliss_surveillance_1790672405866.jpg')` }}
+          className="absolute inset-0 bg-cover bg-center pointer-events-none transition-all duration-300"
+          style={{ backgroundImage: activeWallpaperUrl ? `url(${activeWallpaperUrl})` : "none" }}
         />
-        
-        {/* LÉGÈRE COUCHE DE BALAYAGE RÉTRO */}
-        <div className="absolute inset-0 pointer-events-none bg-black/10 mix-blend-multiply" />
 
         {/* WATERMARK OFFICIEL WINDOWS XP DU MINISTÈRE */}
-        <div className="absolute bottom-12 right-6 pointer-events-none select-none text-right font-sans z-0">
+        <div className="absolute bottom-8 right-6 pointer-events-none select-none text-right font-sans z-0">
           <div className="text-white text-sm font-black tracking-wide drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
-            CHEOPS Professionnel 2002
+            CHEOPS Professionnel
           </div>
           <div className="text-white/90 text-[11px] drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
             Système d'Information Policier v2.4 (Service Pack 2)
@@ -580,21 +622,19 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
             <div
               key={item.id}
               onPointerDown={(e) => handleIconPointerDown(item.id, e)}
-              onPointerMove={(e) => handleIconPointerMove(item.id, e)}
-              onPointerUp={(e) => handleIconPointerUp(item.id, e, item.onClick)}
               style={{
                 left: `${pos.x}px`,
                 top: `${pos.y}px`,
                 touchAction: "none",
               }}
-              className={`absolute z-10 group flex flex-col items-center justify-start p-1.5 w-21 text-center cursor-grab active:cursor-grabbing select-none border transition-shadow rounded-none ${
+              className={`absolute group flex flex-col items-center justify-start p-1.5 w-21 text-center cursor-grab active:cursor-grabbing select-none border transition-shadow rounded-none ${
                 isDragging
-                  ? "bg-[#316ac5]/60 border-dotted border-white shadow-xl scale-105 z-20"
+                  ? "bg-[#316ac5]/70 border-dotted border-white shadow-2xl scale-105 z-30 ring-2 ring-sky-300"
                   : isTrash && broyeurAnime
-                  ? "bg-red-600 text-white animate-shake border-white"
+                  ? "bg-red-600 text-white animate-shake border-white z-10"
                   : isOpen
-                  ? "bg-[#316ac5]/45 border-[#316ac5] shadow-xs"
-                  : "border-transparent hover:bg-[#316ac5]/30 hover:border-[#316ac5]"
+                  ? "bg-[#316ac5]/45 border-[#316ac5] shadow-xs z-10"
+                  : "border-transparent hover:bg-[#316ac5]/30 hover:border-[#316ac5] z-10"
               }`}
               title={item.subLabel}
             >
@@ -712,7 +752,7 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
             isOpen={true}
             isMinimized={Boolean(openWindows.document?.isMinimized)}
             isActive={activeWindowId === "document"}
-            zIndex={openWindows.document?.zIndex || 20}
+            zIndex={openWindows.document?.zIndex || 10}
             defaultRect={windowRects.document}
             onFocus={() => onFocusWindow("document")}
             onMinimize={() => onToggleWindow("document")}
@@ -741,7 +781,7 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
           isOpen={Boolean(openWindows.qualification?.isOpen)}
           isMinimized={Boolean(openWindows.qualification?.isMinimized)}
           isActive={activeWindowId === "qualification"}
-          zIndex={openWindows.qualification?.zIndex || 15}
+          zIndex={openWindows.qualification?.zIndex || 10}
           defaultRect={windowRects.qualification}
           onFocus={() => onFocusWindow("qualification")}
           onMinimize={() => onToggleWindow("qualification")}
@@ -774,6 +814,14 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
             rioDecision={rioDecision}
             substitutionFaite={substitutionsFaites.size > 0}
             onOpenApp={(appId) => onFocusWindow(appId as WindowId)}
+            isChronoStarted={isChronoStarted}
+            timeRemaining={timeRemaining}
+            maxTime={maxTime}
+            onStartChrono={onStartChrono}
+            autoPunchNext={autoPunchNext}
+            onToggleAutoPunch={onToggleAutoPunch}
+            onAddCoffeeTime={onAddCoffeeTime}
+            hasCoffee={equipementsPossedes.has("cafe_syndical")}
           />
         </DesktopWindow>
 
@@ -786,7 +834,7 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
           isOpen={Boolean(openWindows.video?.isOpen)}
           isMinimized={Boolean(openWindows.video?.isMinimized)}
           isActive={activeWindowId === "video"}
-          zIndex={openWindows.video?.zIndex || 12}
+          zIndex={openWindows.video?.zIndex || 10}
           defaultRect={windowRects.video}
           onFocus={() => onFocusWindow("video")}
           onMinimize={() => onToggleWindow("video")}
@@ -825,7 +873,7 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
           isOpen={Boolean(openWindows.humandb?.isOpen)}
           isMinimized={Boolean(openWindows.humandb?.isMinimized)}
           isActive={activeWindowId === "humandb"}
-          zIndex={openWindows.humandb?.zIndex || 12}
+          zIndex={openWindows.humandb?.zIndex || 10}
           defaultRect={windowRects.humandb}
           onFocus={() => onFocusWindow("humandb")}
           onMinimize={() => onToggleWindow("humandb")}
@@ -855,7 +903,7 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
           isOpen={Boolean(openWindows.messages?.isOpen)}
           isMinimized={Boolean(openWindows.messages?.isMinimized)}
           isActive={activeWindowId === "messages"}
-          zIndex={openWindows.messages?.zIndex || 12}
+          zIndex={openWindows.messages?.zIndex || 10}
           defaultRect={windowRects.messages}
           onFocus={() => onFocusWindow("messages")}
           onMinimize={() => onToggleWindow("messages")}
@@ -890,7 +938,7 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
           isOpen={Boolean(openWindows.scelles?.isOpen)}
           isMinimized={Boolean(openWindows.scelles?.isMinimized)}
           isActive={activeWindowId === "scelles"}
-          zIndex={openWindows.scelles?.zIndex || 12}
+          zIndex={openWindows.scelles?.zIndex || 10}
           defaultRect={windowRects.scelles}
           onFocus={() => onFocusWindow("scelles")}
           onMinimize={() => onToggleWindow("scelles")}
@@ -914,7 +962,7 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
           isOpen={Boolean(openWindows.rio?.isOpen)}
           isMinimized={Boolean(openWindows.rio?.isMinimized)}
           isActive={activeWindowId === "rio"}
-          zIndex={openWindows.rio?.zIndex || 12}
+          zIndex={openWindows.rio?.zIndex || 10}
           defaultRect={windowRects.rio}
           onFocus={() => onFocusWindow("rio")}
           onMinimize={() => onToggleWindow("rio")}
@@ -1258,6 +1306,27 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
                         <Trash2 className="w-3.5 h-3.5" />
                         <span>Vider corbeille</span>
                       </button>
+
+                      {/* INSTALLATION STANDALONE PWA */}
+                      {!isInstalled && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setStartMenuOpen(false);
+                            handlePWAInstallClick();
+                          }}
+                          className="px-2 py-1.5 bg-[#eaf2ff] hover:bg-[#316ac5] text-[#003366] hover:text-white flex items-center justify-between cursor-pointer text-left group text-xs border border-[#7f9db9] font-bold mt-1"
+                          title="Installer CHEOPS en application autonome sur votre poste ou smartphone"
+                        >
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <Download className="w-3.5 h-3.5 text-[#0055ea] group-hover:text-white shrink-0" />
+                            <span className="truncate">Installer application</span>
+                          </div>
+                          <span className="text-[9px] bg-[#0055ea] text-white px-1 py-0.2 group-hover:bg-white group-hover:text-[#0055ea] font-mono shrink-0">
+                            APP
+                          </span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1402,6 +1471,19 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
             </button>
           )}
 
+          {/* Bouton d'installation Standalone (PWA) */}
+          {!isInstalled && (
+            <button
+              type="button"
+              onClick={handlePWAInstallClick}
+              className="p-1 border border-emerald-400/80 bg-emerald-950 text-emerald-300 hover:text-white hover:bg-emerald-800 rounded-none cursor-pointer flex items-center gap-1 text-[10px] font-bold"
+              title="Installer CHEOPS en application autonome (PWA)"
+            >
+              <Download className="w-3 h-3 text-emerald-400" />
+              <span className="hidden xl:inline">INSTALLER APP</span>
+            </button>
+          )}
+
           {/* Crédibilité */}
           <div
             className={`hidden sm:flex items-center gap-1 px-1.5 py-0.5 border text-[11px] font-bold ${
@@ -1437,10 +1519,196 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
             <span>+{primeTotale}€</span>
           </div>
 
+          {/* Pointeuse / Horodateur de vacation (Option A) */}
+          {!isChronoStarted ? (
+            <button
+              type="button"
+              id="systray-btn-chrono"
+              onClick={() => {
+                if (onStartChrono) {
+                  onStartChrono();
+                }
+              }}
+              className="flex items-center gap-1 bg-[#003366] hover:bg-[#002244] border border-[#7f9db9] px-1.5 py-0.5 text-[11px] font-bold text-amber-300 cursor-pointer shadow-xs active:translate-y-0.5"
+              title="Enclencher l'horodateur ministériel (Raccourci P)"
+            >
+              <Clock className="w-3 h-3 text-amber-300 animate-pulse" />
+              <span className="hidden sm:inline">POINTER</span>
+              <span className="text-[10px] text-white font-mono">[P]</span>
+            </button>
+          ) : (
+            <div
+              className={`flex items-center gap-1 px-1.5 py-0.5 border text-[11px] font-bold font-mono ${
+                timeRemaining <= 5
+                  ? "bg-red-950 border-red-500 text-red-300 animate-pulse"
+                  : timeRemaining <= 10
+                  ? "bg-amber-950 border-amber-500 text-amber-300"
+                  : "bg-[#001c54] border-sky-400 text-[#00ff66]"
+              }`}
+              title="Délai d'instruction en cours"
+            >
+              <Clock className="w-3 h-3" />
+              <span>{timeRemaining.toFixed(1)}s</span>
+            </div>
+          )}
+
           {/* Horloge numérique XP */}
           <div className="hidden md:flex items-center gap-1 text-white text-[11px] font-bold px-1">
             <Clock className="w-3 h-3 text-sky-300" />
             <span>{timeStr}</span>
+          </div>
+
+          {/* CONTRÔLE DU VOLUME & AMBIANCE PC SYSTRAY (SndVol32) */}
+          <div className="relative">
+            <button
+              type="button"
+              id="systray-btn-volume"
+              onClick={() => {
+                soundFx.playUiClick();
+                setShowVolumeControl((prev) => !prev);
+              }}
+              className={`p-1 border rounded-none cursor-pointer flex items-center justify-center ${
+                showVolumeControl
+                  ? "bg-[#225ad9] text-white border-white"
+                  : isMuted
+                  ? "bg-red-950 border-red-500 text-red-300"
+                  : isAmbianceActive
+                  ? "bg-[#0b3366] border-[#316ac5] text-[#00ff66] hover:text-white"
+                  : "bg-[#082055] border-[#1a44a7] text-sky-300 hover:text-white"
+              }`}
+              title="Contrôle du volume & Ambiance bureau (SndVol32)"
+            >
+              {isMuted ? (
+                <VolumeX className="w-3 h-3 text-red-400" />
+              ) : (
+                <Volume2 className={`w-3 h-3 ${isAmbianceActive ? "text-[#00ff66]" : "text-sky-300"}`} />
+              )}
+            </button>
+
+            {/* POPUP SndVol32 STYLE WINDOWS XP */}
+            {showVolumeControl && (
+              <div
+                className="absolute bottom-full right-0 mb-2 w-72 bg-[#ece9d8] border-2 border-t-white border-l-white border-b-[#808080] border-r-[#808080] shadow-[3px_3px_12px_rgba(0,0,0,0.65)] font-sans text-xs text-black p-2 z-50 select-none animate-fadeIn"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Barre de titre Win32 */}
+                <div className="bg-gradient-to-r from-[#0a246a] via-[#1e57c8] to-[#a6caf0] text-white px-2 py-1 font-bold text-[11px] flex items-center justify-between shadow-xs mb-2">
+                  <div className="flex items-center gap-1.5">
+                    <Volume2 className="w-3.5 h-3.5" />
+                    <span>Contrôle du volume // SndVol32</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowVolumeControl(false)}
+                    className="w-4 h-4 bg-[#ece9d8] hover:bg-red-600 text-black hover:text-white border border-t-white border-l-white border-b-[#808080] border-r-[#808080] font-bold text-[10px] flex items-center justify-center cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* Section 1 : Master Mute */}
+                <div className="bg-[#f5f3ec] border border-[#9c9a91] p-2 mb-2 shadow-[inset_1px_1px_0_#fff]">
+                  <div className="font-bold text-[#003366] text-[11px] mb-1 flex items-center justify-between">
+                    <span>AUDIO GÉNÉRAL</span>
+                    <span className={isMuted ? "text-red-600 font-bold" : "text-emerald-700 font-bold"}>
+                      {isMuted ? "● MODE SILENCIEUX" : "● ACTIF"}
+                    </span>
+                  </div>
+                  <label className="flex items-center gap-2 cursor-pointer text-[11px]">
+                    <input
+                      type="checkbox"
+                      checked={isMuted}
+                      onChange={() => {
+                        const next = !isMuted;
+                        soundFx.setMuted(next);
+                        setIsMuted(next);
+                      }}
+                      className="cursor-pointer"
+                    />
+                    <span>Couper tous les sons (Muet)</span>
+                  </label>
+                </div>
+
+                {/* Section 2 : Ambiance Tour PC & Bureau Administratif */}
+                <div className="bg-[#f5f3ec] border border-[#9c9a91] p-2 mb-2 shadow-[inset_1px_1px_0_#fff]">
+                  <div className="font-bold text-[#003366] text-[11px] mb-1 flex items-center justify-between">
+                    <span>AMBIANCE BUREAU & TOUR PC</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = soundFx.toggleAmbiance();
+                        setIsAmbianceActive(next);
+                      }}
+                      className={`px-2 py-0.5 border text-[10px] font-bold cursor-pointer transition-colors ${
+                        isAmbianceActive
+                          ? "bg-[#2e7d32] text-white border-[#1b5e20]"
+                          : "bg-[#808080] text-white border-black"
+                      }`}
+                    >
+                      {isAmbianceActive ? "ACTIF [ON]" : "COUPÉ [OFF]"}
+                    </button>
+                  </div>
+
+                  <div className="text-[10px] text-slate-600 mb-1.5 leading-snug">
+                    Souffle continu du ventilateur Pentium 4, vibration de tôle et néon 50 Hz.
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-slate-500 font-mono">Doux</span>
+                    <input
+                      type="range"
+                      min="0.05"
+                      max="0.8"
+                      step="0.05"
+                      value={ambianceVol}
+                      disabled={!isAmbianceActive || isMuted}
+                      onChange={(e) => {
+                        const val = parseFloat(e.target.value);
+                        setAmbianceVol(val);
+                        soundFx.setAmbianceVolume(val);
+                      }}
+                      className="flex-1 cursor-pointer accent-[#0055ea]"
+                    />
+                    <span className="text-[10px] text-slate-500 font-mono">Fort</span>
+                  </div>
+                </div>
+
+                {/* Section 3 : Bruitage Souris Vintage */}
+                <div className="bg-[#f5f3ec] border border-[#9c9a91] p-2 mb-2 shadow-[inset_1px_1px_0_#fff]">
+                  <label className="flex items-center justify-between cursor-pointer text-[11px]">
+                    <div className="flex flex-col pr-2">
+                      <span className="font-bold text-[#003366]">Clic de vieille souris</span>
+                      <span className="text-[10px] text-slate-600">
+                        Bruitage tactile microswitch à chaque clic
+                      </span>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={isRetroMouse}
+                      onChange={() => {
+                        const next = !isRetroMouse;
+                        soundFx.setRetroMouseActive(next);
+                        setIsRetroMouse(next);
+                      }}
+                      className="cursor-pointer"
+                    />
+                  </label>
+                </div>
+
+                {/* Section 4 : Test Disque Dur */}
+                <div className="flex items-center justify-between gap-2 pt-1 border-t border-[#9c9a91]">
+                  <span className="text-[10px] text-slate-600">Disque dur ATA IDE :</span>
+                  <button
+                    type="button"
+                    onClick={() => soundFx.playHddSeek("heavy")}
+                    className="px-2 py-1 bg-[#ece9d8] hover:bg-[#d8d4c4] border-2 border-t-white border-l-white border-b-[#808080] border-r-[#808080] active:border-t-[#808080] active:border-l-[#808080] active:border-b-white active:border-r-white text-[10px] font-bold text-black flex items-center gap-1 cursor-pointer"
+                  >
+                    <HardDrive className="w-3 h-3 text-slate-600" />
+                    <span>Gratter le disque dur</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Plein Écran */}
@@ -1472,7 +1740,12 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
           else onFocusWindow("explorer");
         }}
       />
-      <DisplayPropertiesDialog isOpen={showDisplayProps} onClose={() => setShowDisplayProps(false)} />
+      <DisplayPropertiesDialog
+        isOpen={showDisplayProps}
+        onClose={() => setShowDisplayProps(false)}
+        wallpaperTheme={wallpaperTheme}
+        onSelectWallpaper={setWallpaperTheme}
+      />
     </div>
   );
 };

@@ -36,7 +36,7 @@ interface VideoPlayerWindowProps {
   cameraGlitchActive: boolean;
   cameraNeutralisee: boolean;
   cameraDecision?: "neutralisee" | "conservee" | null;
-  onTrancherCamera?: (decision: "neutraliser" | "conserver") => void;
+  onTrancherCamera?: (decision: "neutralisee" | "conservee") => void;
   cameraFeedback?: { valide: boolean; explication: string; bonus: number } | null;
   onNeutraliserCamera: () => void;
   isDropZoneOver: boolean;
@@ -81,6 +81,7 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [videoFilter, setVideoFilter] = useState<"standard" | "thermique" | "forensique">("standard");
   const [highlightTarget, setHighlightTarget] = useState<boolean>(false);
+  const [stabilizedMode, setStabilizedMode] = useState<boolean>(true);
 
   const togglePlay = () => {
     soundFx.playUiClick();
@@ -116,7 +117,7 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <span className="bg-red-600 text-white font-bold px-2 py-0.2 text-[10px] uppercase tracking-wider flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-white inline-block"></span>
             <span>DIRECT ● ENR</span>
           </span>
           <span className="hidden sm:inline-block text-[10px] text-slate-700 bg-white px-1.5 py-0.2 border border-[#808080] font-mono">
@@ -128,7 +129,7 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
       {/* ÉTIQUETTE DYMO DIÉGÉTIQUE SATIRIQUE SUR LE MONITEUR */}
       <div className="bg-[#fffae6] border-b border-[#d4c185] px-3 py-1 flex items-center justify-between text-[11px] text-[#5c4908] shrink-0 font-sans">
         <span className="flex items-center gap-1.5 font-bold">
-          <span className="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
+          <span className="w-2 h-2 rounded-full bg-red-600 inline-block"></span>
           <span>CONSIGNE CCTV : EN CAS DE FORCE DISPROPORTIONNÉE FILMÉE, INVOQUER "PANNE CARTE SD"</span>
         </span>
         <span className="text-slate-600 hidden md:inline text-[10px]">CHEOPS-VIDEO v3.12</span>
@@ -147,6 +148,20 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
 
         {/* OUTILS FORENSIQUES D'INSPECTION (BOUTONS XP-BTN) */}
         <div className="flex items-center gap-1">
+          {/* Stabilisation & Confort visuel */}
+          <button
+            type="button"
+            onClick={() => {
+              soundFx.playUiClick();
+              setStabilizedMode(!stabilizedMode);
+            }}
+            className={`xp-btn flex items-center gap-1 text-[11px] ${stabilizedMode ? "bg-[#e8f8f0] border-emerald-600 font-bold text-emerald-950" : ""}`}
+            title="Activer/désactiver la stabilisation d'image pour éliminer les vibrations"
+          >
+            <ShieldCheck className="w-3 h-3 text-emerald-600" />
+            <span>{stabilizedMode ? "Stabilisé [ON]" : "Stabiliser"}</span>
+          </button>
+
           {/* Pause / Play */}
           <button
             type="button"
@@ -224,18 +239,18 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
                   : videoFilter === "thermique"
                   ? "filter contrast-150 saturate-200 hue-rotate-90"
                   : "filter contrast-125 brightness-95 grayscale"
-              } ${cameraGlitchActive ? "glitch-video" : ""}`}
+              } ${!stabilizedMode && cameraGlitchActive ? "glitch-video" : ""}`}
             />
 
-            {/* Balayage scanner forensique actif */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-sky-400/10 to-transparent pointer-events-none animate-pulse" />
+            {/* Balayage scanner forensique actif (subtil, sans pulsation violente) */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-sky-400/5 to-transparent pointer-events-none" />
           </div>
 
           {/* RÉTICULES FORENSIQUES & OVERLAY POLICE */}
           <div className="absolute inset-0 pointer-events-none p-2.5 sm:p-3 flex flex-col justify-between z-10 font-mono">
             <div className="flex justify-between items-start gap-2">
               <div className="bg-black/90 px-2.5 py-1 text-xs text-[#38bdf8] border border-[#0284c7] font-bold shadow tracking-wide flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
                 <span>CAM_004 // FIXE CSU-VOIE-PUBLIQUE</span>
               </div>
               <div className="bg-black/90 px-2.5 py-1 text-xs text-amber-300 border border-amber-500/60 font-bold shadow">
@@ -245,7 +260,7 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
 
             {/* Réticule central ou ciblage suspect */}
             {highlightTarget && (
-              <div className="self-center flex flex-col items-center bg-black/75 p-2 border-2 border-rose-500 text-rose-300 rounded-xs shadow-2xl animate-pulse">
+              <div className="self-center flex flex-col items-center bg-black/75 p-2 border-2 border-rose-500 text-rose-300 rounded-xs shadow-2xl">
                 <div className="flex items-center gap-2 text-xs font-black">
                   <Crosshair className="w-4 h-4 text-rose-400" />
                   <span>[MENACE IMMINENTE CARACTÉRISÉE]</span>
@@ -259,7 +274,7 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
             {!highlightTarget && (
               <div className="self-center flex flex-col items-center opacity-70">
                 <div className="w-12 h-12 border-2 border-dashed border-sky-400 rounded-full flex items-center justify-center">
-                  <div className="w-2 h-2 bg-sky-400 rounded-full animate-ping"></div>
+                  <div className="w-2 h-2 bg-sky-400 rounded-full"></div>
                 </div>
                 <span className="text-[9px] text-sky-300 font-bold mt-1 tracking-widest bg-black/80 px-1.5 py-0.5 border border-sky-500/40">
                   [ANALYSE BALLISTIQUE CONFORME]
@@ -275,7 +290,7 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
 
           {/* INDICATEUR DE SURVOL / GLISSER-DÉPOSER DU TAMPON */}
           {isDropZoneOver && (
-            <div className="absolute inset-0 bg-[#00ff66]/25 border-4 border-dashed border-[#00ff66] flex flex-col items-center justify-center p-4 z-35 backdrop-blur-xs font-mono text-center animate-pulse">
+            <div className="absolute inset-0 bg-[#00ff66]/25 border-4 border-dashed border-[#00ff66] flex flex-col items-center justify-center p-4 z-35 backdrop-blur-xs font-mono text-center">
               <div className="text-black bg-[#00ff66] font-black text-sm sm:text-base md:text-lg px-4 py-2 uppercase shadow-2xl flex items-center gap-2">
                 <Stamp className="w-6 h-6" />
                 <span>RELÂCHEZ ICI POUR APPOSER LE VISA</span>
@@ -290,7 +305,7 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
           {dossier.incidentCamera && cameraDecision === null && (
             <div className="absolute inset-0 bg-black/95 flex flex-col items-center justify-center p-4 text-center z-25 font-mono border-3 border-amber-500 shadow-2xl">
               <div className="text-amber-400 font-black text-sm sm:text-base md:text-lg mb-2 flex items-center justify-center gap-2 uppercase tracking-wide">
-                <AlertTriangle className="w-5 h-5 text-amber-400 animate-bounce" />
+                <AlertTriangle className="w-5 h-5 text-amber-400" />
                 <span>ARBITRAGE DU FLUX VIDÉO // ÉVALUATION REQUISE</span>
               </div>
               
@@ -316,7 +331,7 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
                   type="button"
                   id="btn-neutraliser-flux"
                   onClick={() => {
-                    if (onTrancherCamera) onTrancherCamera("neutraliser");
+                    if (onTrancherCamera) onTrancherCamera("neutralisee");
                     else onNeutraliserCamera();
                   }}
                   className="bg-gradient-to-r from-red-800 to-rose-700 hover:from-red-700 hover:to-rose-600 active:scale-98 text-white font-black p-3 text-xs uppercase border-2 border-red-400 cursor-pointer shadow-lg transition-all flex flex-col items-center justify-center gap-1 rounded-xs"
@@ -334,7 +349,7 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
                   type="button"
                   id="btn-conserver-flux"
                   onClick={() => {
-                    if (onTrancherCamera) onTrancherCamera("conserver");
+                    if (onTrancherCamera) onTrancherCamera("conservee");
                   }}
                   className="bg-gradient-to-r from-emerald-800 to-teal-700 hover:from-emerald-700 hover:to-teal-600 active:scale-98 text-white font-black p-3 text-xs uppercase border-2 border-emerald-400 cursor-pointer shadow-lg transition-all flex flex-col items-center justify-center gap-1 rounded-xs"
                 >
@@ -500,10 +515,10 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
                     type="button"
                     id="btn-feutre-triple-caviarder"
                     onClick={onCaviarderTout}
-                    className="mt-2 w-full xp-btn-blue py-1.5 px-3 text-xs font-bold uppercase flex items-center justify-center gap-2"
+                    className="mt-2 w-full xp-btn-blue bg-[#0055ea] hover:bg-[#0044cc] text-white py-1.5 px-3 text-xs font-bold uppercase flex items-center justify-center gap-2 border border-[#002266] shadow-sm cursor-pointer"
                   >
                     <Zap className="w-4 h-4 text-amber-300" />
-                    <span>[ Tout purger en 1 clic — Feutre triple-mine ]</span>
+                    <span className="text-white font-bold">[ Tout purger en 1 clic — Feutre triple-mine ]</span>
                   </button>
                 )}
             </div>

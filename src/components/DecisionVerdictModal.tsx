@@ -16,8 +16,8 @@ export interface DecisionVerdictModalProps {
   feedback: {
     correct: boolean;
     tamponTente: string;
-    tamponAttendu: string;
-    motifErreur: string;
+    tamponAttendu?: string;
+    motifErreur?: string;
   };
   blames: number;
   primeTotale: number;
@@ -149,10 +149,10 @@ export const DecisionVerdictModal: React.FC<DecisionVerdictModalProps> = ({
               soundFx.playStampSound(true);
               onPasserSuivant();
             }}
-            className="xp-btn-blue text-xs font-bold flex items-center gap-2 shadow-sm"
+            className="xp-btn-blue bg-[#0055ea] hover:bg-[#0044cc] text-white text-xs font-bold flex items-center gap-2 shadow-md px-3.5 py-1.5 border border-[#002266]"
           >
-            <span>{isRevocation ? "Constater la suspension" : "Prendre en charge l'affaire suivante"}</span>
-            <span className="text-[10px] opacity-75 font-mono">[ENTRÉE]</span>
+            <span className="text-white font-bold">{isRevocation ? "Constater la suspension" : "Prendre en charge l'affaire suivante"}</span>
+            <span className="text-[10px] bg-white/20 px-1 py-0.2 rounded-none font-mono text-white">[ENTRÉE]</span>
             <ArrowRight className="w-4 h-4 text-white" />
           </button>
         </div>

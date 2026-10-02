@@ -10,7 +10,10 @@ import {
   BookOpen,
   FileCheck2,
   Coins,
-  Scale
+  Scale,
+  Clock,
+  Timer,
+  Coffee
 } from "lucide-react";
 import { Dossier, TamponOption, TAMPONS_DISPONIBLES } from "../dossiers";
 import { soundFx } from "../services/soundFx";
@@ -18,7 +21,7 @@ import { soundFx } from "../services/soundFx";
 interface QualificationDeskWindowProps {
   dossier: Dossier;
   isAwaitingNext: boolean;
-  activeStamp: { code: string; label: string; isCorrect: boolean } | null;
+  activeStamp: { code: string; label: string; isCorrect: boolean; angle?: number } | null;
   cameraBlocked: boolean;
   onApplyTampon: (t: TamponOption) => void;
   draggedTampon: TamponOption | null;
@@ -42,6 +45,15 @@ interface QualificationDeskWindowProps {
   rioDecision?: "flouter" | "valider" | null;
   substitutionFaite?: boolean;
   onOpenApp?: (appId: string) => void;
+  // Chrono & Pointeuse Option A
+  isChronoStarted?: boolean;
+  timeRemaining?: number;
+  maxTime?: number;
+  onStartChrono?: () => void;
+  autoPunchNext?: boolean;
+  onToggleAutoPunch?: () => void;
+  onAddCoffeeTime?: () => void;
+  hasCoffee?: boolean;
 }
 
 export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = ({
@@ -70,6 +82,14 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
   rioDecision,
   substitutionFaite = false,
   onOpenApp,
+  isChronoStarted = false,
+  timeRemaining = 26.0,
+  maxTime = 26.0,
+  onStartChrono,
+  autoPunchNext = false,
+  onToggleAutoPunch,
+  onAddCoffeeTime,
+  hasCoffee = false,
 }) => {
   const medicalBlocked = Boolean(
     dossier.termesCaviardes &&
@@ -161,7 +181,173 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
         onWheel={() => soundFx.playScrollTick()}
         className="flex-1 overflow-y-auto p-3 sm:p-4 flex flex-col gap-3 custom-scrollbar bg-[#ece9d8]"
       >
-        
+        {/* GROUPBOX 0 : HORODATEUR DE CADENCE // POINTEUSE ADMINISTRATIVE (OPTION A) */}
+        <fieldset
+          className={`border-2 p-2.5 pt-1 rounded-none shadow-[inset_1px_1px_0_#fff] transition-colors ${
+            !isChronoStarted && !isAwaitingNext
+              ? "border-[#003366] bg-[#f0f4fc]"
+              : isChronoStarted && !isAwaitingNext
+              ? timeRemaining <= 5
+                ? "border-[#c00000] bg-[#fff0f0]"
+                : timeRemaining <= 10
+                ? "border-[#cc6600] bg-[#fffbe6]"
+                : "border-[#0055ea] bg-[#f0f6ff]"
+              : "border-[#2e7d32] bg-[#f0fff4]"
+          }`}
+        >
+          <legend className="px-2 font-sans text-[11px] font-black text-[#003366] uppercase tracking-wide bg-[#ece9d8] border border-[#7f9db9] flex items-center gap-1.5">
+            <Timer className="w-3.5 h-3.5 text-[#0055ea]" />
+            <span>HORODATEUR DE CADENCE // POINTEUSE DE SERVICE MINISTÉRIELLE</span>
+          </legend>
+
+          {/* CAS 1 : EN ATTENTE DU POINTAGE DU JOUEUR */}
+          {!isChronoStarted && !isAwaitingNext && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-1">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping inline-block" />
+                  <span className="text-xs font-bold text-[#002244] uppercase tracking-wide">
+                    Dossier en attente d'horodatage
+                  </span>
+                  <span className="bg-white px-1.5 py-0.2 border border-[#7f9db9] text-[10px] text-slate-600 font-mono">
+                    {Math.round(maxTime)}s allouées
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-700 leading-snug">
+                  Inspectez les pièces forensiques (CCTV, scellés, TAJ, IML). Dès que vous êtes prêt à qualifier,
+                  <strong> enclenchez la pointeuse</strong> pour lancer le décompte réglementaire et concourir à la <strong>Prime de Célérité (+30 €)</strong>.
+                </p>
+              </div>
+
+              <div className="flex flex-col items-center sm:items-end gap-1.5 shrink-0 w-full sm:w-auto">
+                <button
+                  type="button"
+                  id="btn-pointer-chrono"
+                  onClick={() => {
+                    if (onStartChrono) {
+                      onStartChrono();
+                    }
+                  }}
+                  className="w-full sm:w-auto px-4 py-2 bg-[#0055ea] hover:bg-[#0044cc] text-white font-sans font-bold text-xs sm:text-sm uppercase tracking-wide flex items-center justify-center gap-2 cursor-pointer shadow-md border-2 border-t-white border-l-white border-b-[#002266] border-r-[#002266] active:translate-y-0.5"
+                >
+                  <span className="text-base">⏱️</span>
+                  <span>POINTER LA PRISE DE DOSSIER</span>
+                  <span className="bg-white/20 text-[10px] px-1.5 py-0.5 rounded-xs font-mono ml-1">[P]</span>
+                </button>
+
+                {onToggleAutoPunch && (
+                  <label className="text-[10px] text-slate-600 flex items-center gap-1 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={autoPunchNext}
+                      onChange={onToggleAutoPunch}
+                      className="cursor-pointer"
+                    />
+                    <span>Enchaîner automatiquement les dossiers suivants</span>
+                  </label>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* CAS 2 : CHRONOMÈTRE EN COURS D'ÉCOULEMENT */}
+          {isChronoStarted && !isAwaitingNext && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-1">
+              {/* COMPTEUR NUMÉRIQUE EN RELIEF & JAUGE */}
+              <div className="flex items-center gap-3 w-full sm:w-auto flex-1">
+                <div
+                  className={`font-mono font-black text-xl sm:text-2xl px-3 py-1 border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white shadow-inner shrink-0 tracking-wider flex items-center gap-2 ${
+                    timeRemaining <= 5
+                      ? "bg-red-950 text-red-400 border-red-700 animate-pulse"
+                      : timeRemaining <= 10
+                      ? "bg-amber-950 text-amber-300"
+                      : "bg-black text-[#00ff66]"
+                  }`}
+                >
+                  <Clock className="w-5 h-5 opacity-80" />
+                  <span>{timeRemaining.toFixed(1)}s</span>
+                </div>
+
+                <div className="flex-1 min-w-[140px]">
+                  <div className="flex justify-between text-[10px] font-bold mb-1">
+                    <span
+                      className={`uppercase tracking-wide ${
+                        timeRemaining <= 5
+                          ? "text-red-700 font-black animate-bounce"
+                          : timeRemaining <= 10
+                          ? "text-amber-800"
+                          : "text-[#003366]"
+                      }`}
+                    >
+                      {timeRemaining <= 5
+                        ? "🚨 URGENCE : DÉPASSEMENT PROCÉDURAL IMMINENT !"
+                        : timeRemaining <= 10
+                        ? "⚠️ Cadence critique : concluez l'instruction"
+                        : "✓ Décompte officiel en cours"}
+                    </span>
+                    <span className="font-mono text-slate-600">
+                      {Math.max(0, Math.round((timeRemaining / (maxTime || 26)) * 100))}%
+                    </span>
+                  </div>
+
+                  {/* BARRE DE PROGRESSION WIN32 XP SUNKEN */}
+                  <div className="h-3.5 bg-white border border-[#7f9db9] p-0.5 shadow-inner overflow-hidden">
+                    <div
+                      style={{ width: `${Math.max(0, Math.min(100, (timeRemaining / (maxTime || 26)) * 100))}%` }}
+                      className={`h-full transition-all duration-100 ${
+                        timeRemaining <= 5
+                          ? "bg-red-600 animate-pulse"
+                          : timeRemaining <= 10
+                          ? "bg-amber-500"
+                          : "bg-gradient-to-r from-emerald-600 to-[#0055ea]"
+                      }`}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* PRIMES DE CÉLÉRITÉ & BOUTON PAUSE CAFÉ */}
+              <div className="flex items-center gap-2.5 shrink-0 justify-end w-full sm:w-auto">
+                <div className="text-[10px] text-right bg-white/70 px-2 py-1 border border-[#7f9db9]">
+                  <span className="font-bold text-emerald-800 block">
+                    {timeRemaining >= (maxTime || 26) * 0.5
+                      ? "⚡ Prime célérité (+30 €)"
+                      : timeRemaining >= (maxTime || 26) * 0.2
+                      ? "⏱️ Prime cadence (+15 €)"
+                      : "⏱️ Délai de rigueur"}
+                  </span>
+                  <span className="text-slate-500 text-[9px]">Apposez le visa pour encaisser</span>
+                </div>
+
+                {hasCoffee && onAddCoffeeTime && (
+                  <button
+                    type="button"
+                    onClick={onAddCoffeeTime}
+                    className="xp-btn text-xs py-1 px-2.5 text-[#663300] font-bold flex items-center gap-1.5"
+                    title="Prendre une gorgée de café syndical pour gagner +8 secondes"
+                  >
+                    <Coffee className="w-3.5 h-3.5 text-amber-700" />
+                    <span>+8s CAFÉ</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* CAS 3 : DOSSIER VISÉ // CHRONO STOPPÉ */}
+          {isAwaitingNext && (
+            <div className="flex items-center justify-between p-1 text-xs">
+              <div className="flex items-center gap-2 text-emerald-800 font-bold">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>HORODATAGE CLÔTURÉ // Le chronomètre est suspendu pour analyse du rapport.</span>
+              </div>
+              <span className="text-[10px] text-slate-600 font-mono bg-white px-2 py-0.5 border border-[#7f9db9]">
+                Temps final : {timeRemaining.toFixed(1)}s restantes
+              </span>
+            </div>
+          )}
+        </fieldset>
+
         {/* GROUPBOX 1 : SYNTHÈSE DES FAITS & DOCTRINE */}
         <fieldset className="border border-[#9c9a91] bg-[#f4f2ec] p-3 pt-1 rounded-none shadow-[inset_1px_1px_0_#fff]">
           <legend className="px-2 font-sans text-[11px] font-bold text-[#003366] uppercase tracking-wide bg-[#ece9d8] border border-[#9c9a91]">
@@ -240,7 +426,7 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
             >
               <div className="font-bold uppercase flex items-center justify-between border-b border-black/10 pb-0.5 mb-1">
                 <span>🖍️ RAPPORT IML</span>
-                <span className="text-[9px] font-mono">↗</span>
+                <span className="text-[9px] font-mono font-black text-amber-800 bg-amber-100 px-1 border border-amber-300">[C] ↗</span>
               </div>
               <div className="text-[10px] font-mono font-bold">
                 {!dossier.termesCaviardes || dossier.termesCaviardes.length === 0
@@ -263,7 +449,7 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
             >
               <div className="font-bold uppercase flex items-center justify-between border-b border-black/10 pb-0.5 mb-1">
                 <span>🎖️ MATRICULE RIO</span>
-                <span className="text-[9px] font-mono">↗</span>
+                <span className="text-[9px] font-mono font-black text-blue-800 bg-blue-100 px-1 border border-blue-300">[F] ↗</span>
               </div>
               <div className="text-[10px] font-mono font-bold">
                 {!dossier.statutRio
@@ -432,9 +618,26 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
       </div>
 
       {/* PIED DE PAGE FORMULAIRE */}
-      <div className="bg-[#ece9d8] border-t border-[#9c9a91] px-3 py-1 flex items-center justify-between text-[11px] text-slate-700 shrink-0 font-sans">
-        <span>BUREAU D'INSTRUCTION CONTENTIEUSE // CHEOPS WIN32</span>
-        <span className="text-emerald-800 font-bold">● FORMULAIRE CERFA CONFORME</span>
+      <div className="bg-[#ece9d8] border-t border-[#9c9a91] px-3 py-1 flex flex-wrap items-center justify-between gap-1 text-[11px] text-slate-700 shrink-0 font-sans">
+        <div className="flex items-center gap-2 overflow-x-auto text-[10px] text-slate-600 font-mono">
+          <span className="font-bold text-[#003366]">RACCOURCIS :</span>
+          <span>[1-3] Sceaux</span>
+          <span>•</span>
+          <span>[P] Pointer</span>
+          <span>•</span>
+          <span>[Suppr] Broyeuse</span>
+          <span>•</span>
+          <span>[C] Caviarder</span>
+          <span>•</span>
+          <span>[R] Riposte</span>
+          <span>•</span>
+          <span>[F] RIO</span>
+          <span>•</span>
+          <span>[B] Boutique</span>
+          <span>•</span>
+          <span>[Espace] Pièce</span>
+        </div>
+        <span className="text-emerald-800 font-bold text-[10px]">● FORMULAIRE CERFA CONFORME</span>
       </div>
 
     </div>

@@ -247,7 +247,7 @@ export const DesktopWindow: React.FC<DesktopWindowProps> = ({
       onMouseDown={onFocus}
       onTouchStart={onFocus}
       style={{
-        zIndex,
+        zIndex: isActive ? Math.max(zIndex, 25) : zIndex,
         ...(isMaximized
           ? { left: 0, top: 0, right: 0, bottom: 0, width: "100%", height: "100%" }
           : {
@@ -479,7 +479,7 @@ export const DesktopWindow: React.FC<DesktopWindowProps> = ({
           {activeMenu === "doctrine" && (
             <div className="absolute top-full left-0 mt-0.5 w-72 bg-[#ece9d8] border-2 border-t-white border-l-white border-b-[#808080] border-r-[#808080] shadow-2xl p-2.5 text-xs text-black z-50 font-sans">
               <div className="font-bold text-[#003366] pb-1 mb-1 border-b border-[#808080]">
-                CIRCULAIRE BEAUVAU 2024 :
+                CIRCULAIRE BEAUVAU // CIRCULAIRE INTERNE :
               </div>
               <p className="text-[11px] text-slate-800 font-sans leading-relaxed">
                 « L'action républicaine ne saurait être entravée par la matérialité objective des procès-verbaux contradictoires. »
@@ -505,7 +505,7 @@ export const DesktopWindow: React.FC<DesktopWindowProps> = ({
                 CHEOPS-OS v2.4 (Service Contentieux)
               </div>
               <div className="text-[10px] text-slate-600">
-                Ministère de l'Intérieur // 1998-2004
+                Ministère de l'Intérieur // Direction Générale
               </div>
               <div className="text-[11px] text-emerald-800 mt-2 font-bold">
                 Permanence syndicale : poste 44-12
