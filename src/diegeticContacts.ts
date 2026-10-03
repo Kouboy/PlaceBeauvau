@@ -38,11 +38,11 @@ export const CONTACTS_DIEGETIQUES: ContactDiegetique[] = [
         msgs.push("Le tireur est le Brigadier Marc Vasseur (BST-4B). Le syndicat veille au grain, il est hors de question que son nom sorte.");
         msgs.push("Biffez les mentions de chirurgie maxillo-faciale, mais conservez l'attroupement hostile pour faire tenir le non-lieu politique.");
       } else if (id === "DOS-B75-0942") {
-        msgs.push("Béatrice : Grosse tension : le plaignant convulse sur une vidéo captée par une équipe locale.");
-        msgs.push("Ligne officielle de communication : 'malaise vagal autonome d'origine émotionnelle'. Si le flux interne montre le coup de tonfa, vous connaissez la procédure pour carte SD défaillante.");
+        msgs.push("Béatrice : Grosse tension : le plaignant convulse sur une photo imprimée en Une d'un grand quotidien.");
+        msgs.push("Le Cabinet veut couper court à tout soupçon : ne touchez surtout pas au cliché de presse, ce serait catastrophique. En revanche, contestez fermement tout lien de causalité avec le coup de tonfa.");
       } else if (id === "DOS-B75-1108") {
-        msgs.push("Béatrice : Opportunité médiatique parfaite : le Brigadier Marc Vasseur a le métacarpe brisé net !");
-        msgs.push("Cette fois-ci, Vasseur est plaignant. Nous voulons une qualification de violences volontaires sur dépositaire avec 21 jours d'ITT pour saturer les matinales radio.");
+        msgs.push("Béatrice : Situation inflammable : Marc Vasseur a le métacarpe brisé, mais des rumeurs disent qu'il a frappé le premier.");
+        msgs.push("Si la vidéo du sas est projetée à l'audience, le quartier s'embrase ce soir. Le Cabinet privilégie un apaisement discret sans diffusion d'images.");
       } else if (id === "DOS-B75-1247") {
         msgs.push("Béatrice : ALERTE ÉLYSÉE : Décès par asphyxie positionnelle en garde à vue. Risque d'émeutes urbaines immédiat.");
         msgs.push("Vasseur supervisait le sas. La consigne est catégorique : 'asphyxie' et 'décubitus' doivent disparaître des bordereaux. Et le flux du couloir ne doit sous aucun prétexte parvenir aux magistrats.");
@@ -125,10 +125,11 @@ export const CONTACTS_DIEGETIQUES: ContactDiegetique[] = [
         msgs.push("Guichard : Pour faire tenir la justification du tir au regard de l'Art. L. 435-1 CSI, j'ai impérativement besoin que le dossier démontre la violence de l'attroupement.");
         msgs.push("Si vous caviardez les éléments prouvant le désordre public, vous sciez la branche sur laquelle repose mon réquisitoire !");
       } else if (id === "DOS-B75-0942") {
-        msgs.push("Guichard : Le bâtonnier de Paris suit ce dossier de près. Mon parquet ne requerra le non-lieu que si les constatations médicales sont allégées des mentions de traumatisme direct à la tempe.");
+        msgs.push("Guichard : Le bâtonnier et la presse suivent ce dossier. Prétendre que la photo de presse est défaillante serait un suicide procédural.");
+        msgs.push("En revanche, mon réquisitoire exige impérativement que le constat d'encombrement de la voie au sol reste au dossier pour justifier l'intervention.");
       } else if (id === "DOS-B75-1108") {
         msgs.push("Guichard : 21 jours d'ITT pour le Brigadier Marc Vasseur ! Je veux une comparution immédiate et un mandat de dépôt dès demain 14h.");
-        msgs.push("La vidéo montre la rébellion physique : c'est notre pièce maîtresse d'accusation. Malheur à celui qui l'égarerait !");
+        msgs.push("La vidéo montre la rébellion physique : c'est notre pièce maîtresse d'accusation. Malheur à celui qui l'égarerait, elle assoit tout mon réquisitoire !");
       } else if (id === "DOS-B75-1247") {
         msgs.push("Guichard : Décès en garde à vue : j'ai ordonné l'ouverture d'une information judiciaire contre X pour 'recherche des causes de la mort'.");
         msgs.push("Si la vidéo du couloir fait surface, le juge d'instruction ne me lâchera plus. Agissez avec rigueur pour verrouiller le dossier.");
@@ -196,10 +197,9 @@ export const CONTACTS_DIEGETIQUES: ContactDiegetique[] = [
         msgs.push("Vasseur : Le tireur LBD, c'est mon cousin Marc Vasseur, délégué de la Brigade 4B. Un flic en or.");
         msgs.push("Son RIO était masqué par du chatterton pour le protéger des voyous. Si le plaignant ouvre sa gueule, colle-lui un outrage réflexe direct !");
       } else if (id === "DOS-B75-0942") {
-        msgs.push("Vasseur : Le gars au sol a fait un malaise parce qu'il n'avait pas l'habitude de courir, c'est tout. Couvre les collègues de la BAC, ils étaient en sous-effectif !");
+        msgs.push("Vasseur : Le gars au sol a fait un malaise parce qu'il n'avait pas l'habitude de courir. Poursuivez le photographe pour entrave au lieu de laisser les collègues de la BAC sous le feu des critiques !");
       } else if (id === "DOS-B75-1108") {
-        msgs.push("Vasseur : C'est encore Marc qui a pris ! Le petit merdeux lui a défoncé la main avec sa mâchoire. On veut 21 jours d'ITT, le mandat de dépôt et la prime maximale !");
-        msgs.push("Marc est le fer de lance du syndicat. S'il est mis en cause, on bloque les commissariats de toute l'Île-de-France.");
+        msgs.push("Vasseur : Marc a la main défoncée par la mâchoire du gars. Si le parquet mollit et ne réclame pas le mandat de dépôt avec projection de la vidéo, on bloque les commissariats de toute l'Île-de-France !");
       } else if (id === "DOS-B75-1247") {
         msgs.push("Vasseur : Marc gérait le sas cette nuit-là. Le gaillard pesait 100 kg, ils ont fait ce qu'ils ont pu pour le calmer. Si la vidéo fuite, les banlieues brûlent. Débranche la prise de la caméra sans l'ombre d'un scrupule !");
       } else if (id === "DOS-B75-2011") {
@@ -248,53 +248,53 @@ export const CONTACTS_DIEGETIQUES: ContactDiegetique[] = [
     role: "Avocate au Barreau de Paris // Collectif Vérité & Libertés Citoyennes",
     avatarEmoji: "⚖️",
     ip: "127.0.0.1:9050 [CANAL PROXY SIGNAL-TOR]",
-    statut: "EN LIGNE // CANAL CHIFFRÉ CLANDESTIN",
+    statut: "EN LIGNE // CANAL EXTERNE NON OFFICIEL",
     messagesParDossier: (id, actions) => {
       const msgs: string[] = [];
 
-      msgs.push("Me Sorel : [CANAL CHIFFRÉ SÉCURISÉ] Officier, je sais à quelle pression Beauvau vous soumet quotidiennement.");
-      msgs.push("Me Sorel : Vous êtes le seul rempart entre la vérité factuelle et l'enterrement définitif de ces dossiers. Vous pouvez agir.");
+      msgs.push("Me Sorel : [CANAL EXTERNE NON OFFICIEL] Instructeur, je sais comment CHEOPS formate les bordereaux.");
+      msgs.push("Me Sorel : J'ai besoin des pièces brutes avant que la synthèse ministérielle ne fige définitivement la version des faits.");
 
-      // Priorités : Préservation des preuves médicales/vidéo, contestation des inversions accusatoires, obtention de copies brutes pour recours
+      // Priorités : Préservation des pièces médico-légales, obtention de copies brutes pour le contentieux contradictoire
       if (id === "DOS-B75-0814") {
         msgs.push("Me Sorel : Le tireur est Marc Vasseur (BST-4B), RIO dissimulé au scotch noir. C'est sa 4e intervention avec mutilation au LBD !");
-        msgs.push("Me Sorel : Si vous biffez les 4 fractures costales et l'énucléation, la victime sera déboutée. Transmettez-moi la copie brute pour que nous saisissions le Défenseur des Droits.");
+        msgs.push("Me Sorel : Les constatations médicales brutes sont décisives. Une copie non expurgée permettrait d'engager un recours contentieux contradictoire.");
       } else if (id === "DOS-B75-0942") {
         msgs.push("Me Sorel : M. Youssef B. convulse à l'hôpital. La police parle d'un 'malaise sans lien', mais c'est un coup de matraque direct à la tempe.");
-        msgs.push("Me Sorel : La photo de presse a déjà été publiée : ils ne peuvent pas l'effacer. Préservez-la coûte que coûte au dossier.");
+        msgs.push("Me Sorel : La photo de presse a déjà été publiée : ils ne peuvent pas l'effacer sans risquer une poursuite pour entrave.");
       } else if (id === "DOS-B75-1108") {
         msgs.push("Me Sorel : Marc Vasseur s'est fracturé le poing en frappant Bilal M. à la mâchoire, et ils osent poursuivre mon client pour 21 jours d'ITT !");
-        msgs.push("Me Sorel : Si vous signez ce mandat de dépôt, ce jeune de 19 ans part en détention provisoire à Fleury-Mérogis. Ne caviardez pas l'aveu du coup porté !");
+        msgs.push("Me Sorel : Si vous retenez les violences sur l'agent sans mentionner l'initiative de la frappe, mon client sera incarcéré dès l'audience de comparution.");
       } else if (id === "DOS-B75-1247") {
-        msgs.push("Me Sorel : ALERTE HUMANITAIRE : Adama D. a été étouffé sous les yeux de Vasseur. Le pré-rapport d'autopsie mentionne des pétéchies pleurales incontestables.");
-        msgs.push("Me Sorel : S'ils réussissent à substituer ce rapport par une expertise de complaisance, la famille n'aura jamais justice. Transmettez-moi la pièce brute !");
+        msgs.push("Me Sorel : Le pré-rapport d'autopsie mentionne des pétéchies pleurales. Si vous substituez ce document par une expertise d'apaisement, la procédure sera close avant même l'instruction.");
+        msgs.push("Me Sorel : Transmettez-moi la pièce brute pour que nous puissions contester les conclusions préfectorales devant le magistrat.");
       } else if (id === "DOS-B75-2011") {
         msgs.push("Me Sorel : Idriss K. est un étudiant sans histoire. L'article R. 434-15 impose aux policiers de respecter les prescriptions relatives à leur identification individuelle.");
         msgs.push("Me Sorel : Sa demande de connaître le matricule ne constitue pas en elle-même un outrage. Ne validez pas l'inversion accusatoire !");
       } else if (id === "DOS-B75-2144") {
-        msgs.push("Me Sorel : Ce notaire ivre bénéficie d'un traitement de faveur inadmissible. Pendant que nos clients passent en comparution immédiate pour un regard, Beauvau étouffe ses délits routiers.");
+        msgs.push("Me Sorel : Ce notaire d'affaires a des relais partout. S'il s'en sort sans poursuites, c'est scandaleux, mais attention : s'il contre-attaque, son cabinet peut mobiliser trois associés en référé.");
       } else if (id === "DOS-B75-1389") {
-        msgs.push("Me Sorel : Une femme le crâne ouvert par une grenade se retrouve poursuivie pour avoir taché le pantalon d'un policier avec son propre sang ! Le cynisme de ce parquet dépasse l'entendement.");
+        msgs.push("Me Sorel : Une femme le crâne ouvert par une grenade se retrouve poursuivie pour avoir taché le pantalon d'un policier avec son propre sang ! Le parquet prépare une requalification en dégradation matérielle.");
       } else if (id === "DOS-B75-1502") {
-        msgs.push("Me Sorel : Une étudiante projetée au sol avec luxation acromio-claviculaire. Les certificats médicaux prouvent l'usage d'une force disproportionnée lors d'un rassemblement pacifique.");
+        msgs.push("Me Sorel : Une étudiante projetée au sol avec luxation acromio-claviculaire. Les certificats médicaux prouvent l'usage d'une force disproportionnée lors d'un rassemblement.");
       } else if (id === "DOS-B75-1620") {
-        msgs.push("Me Sorel : Une grenade de désencerclement tirée dans le dos d'un homme qui s'éloignait. Perforation et surdité. Nous saisissons la Cour Européenne des Droits de l'Homme.");
+        msgs.push("Me Sorel : Une grenade de désencerclement tirée dans le dos d'un homme qui s'éloignait. Perforation et surdité. Nous préparons une saisine de la juridiction administrative.");
       } else if (id === "DOS-B75-1733") {
-        msgs.push("Me Sorel : Marc Vasseur trébuche sur son propre équipement et le parquet tente de faire payer un cycliste innocent pour ses congés maladie. La forfaiture procédurale est totale.");
+        msgs.push("Me Sorel : Marc Vasseur trébuche sur son propre équipement et le parquet tente de faire payer un cycliste pour ses congés maladie. La tentative d'inversion est flagrante.");
       } else if (id === "DOS-B75-1890") {
-        msgs.push("Me Sorel : Un coup de klaxon pour libérer une issue privée requalifié en outrage à dépositaire ? L'arbitraire policier au quotidien dans toute sa splendeur.");
+        msgs.push("Me Sorel : Un coup de klaxon requalifié en outrage ? La qualification est disproportionnée, mais si l'usager a réellement bloqué l'accès comme l'indique le PV, notre recours sera délicat.");
       } else if (id === "DOS-B75-2104") {
-        msgs.push("Me Sorel : Un équipage de police qui pille une boulangerie et fait classer l'affaire sous le prétexte de 'ravitaillement calorique d'urgence' ? Nous déposons plainte pour vol aggravé.");
+        msgs.push("Me Sorel : Un équipage de police qui emporte des viennoiseries sans récépissé... La qualification de réquisition calorique d'urgence est une aberration juridique.");
       } else if (id === "DOS-B75-2245") {
-        msgs.push("Me Sorel : Une retraitée poursuivie pour tintement de casserole... L'infraction de 'bruit séditieux' n'existe pas dans le code pénal. Nous ferons annuler cette procédure ridicule.");
+        msgs.push("Me Sorel : Une retraitée poursuivie pour tintement de casserole... L'infraction de 'bruit séditieux' n'existe pas dans le code pénal. Nous ferons annuler cette procédure.");
       } else if (id === "DOS-B75-2391") {
-        msgs.push("Me Sorel : Poursuivre un citoyen pour avoir soutenu le regard d'un policier pendant 4,2 secondes ? Le délit de sale gueule formalisé en procès-verbal administratif. C'est indéfendable.");
+        msgs.push("Me Sorel : Poursuivre un citoyen pour avoir soutenu le regard d'un policier pendant 4 secondes ? Le parquet tente de créer un délit sans base textuelle.");
       } else {
-        msgs.push("Me Sorel : Les administrés comptent sur votre probité morale. La vérité finit toujours par triompher si quelqu'un à l'intérieur ose parler.");
+        msgs.push("Me Sorel : Sans transmission de la minute originale, nous n'aurons que le mémoire de défense rédigé par vos services.");
       }
 
       if (actions.fuiteFaite) {
-        msgs.push("Me Sorel : ✊ Bien reçu ! Le dossier brut non caviardé est arrivé sur notre serveur sécurisé. La presse d'investigation et la LDH sont saisies. L'omerta commence à se fissurer grâce à vous !");
+        msgs.push("Me Sorel : Copie brute réceptionnée. La pièce est enregistrée pour versement contradictoire devant la juridiction.");
       }
 
       return msgs;
@@ -316,9 +316,9 @@ export const CONTACTS_DIEGETIQUES: ContactDiegetique[] = [
       if (id === "DOS-B75-0814") {
         msgs.push("Lefebvre : La caméra CAM_07 avait un angle rasant. On aperçoit Marc Vasseur pointer son LBD à hauteur de tête. Purger la bande SD effacera la trajectoire.");
       } else if (id === "DOS-B75-0942") {
-        msgs.push("Lefebvre : Attention : le cameraman local était à 5 mètres. Si le flux de la ville montre le même coup de bâton sous un autre angle, purgez la bande municipale pour éviter la contradiction.");
+        msgs.push("Lefebvre : Régie CSU : le cliché de presse a été pris en rafale à 5 mètres par un journaliste accrédité. La pièce est déjà sous scellé judiciaire extérieur : toute tentative de défaillance technique sur ce fichier sera immédiatement requalifiée en destruction de preuve.");
       } else if (id === "DOS-B75-1108") {
-        msgs.push("Lefebvre : La caméra du sas d'entrée a enregistré toute la scène de l'altercation avec Vasseur. C'est la preuve maîtresse du Parquet, ne la supprimez surtout pas !");
+        msgs.push("Lefebvre : La caméra du sas d'entrée a enregistré toute l'altercation avec Vasseur. Le parquet la réclame comme pièce n°1, tandis que le cabinet s'inquiète de ce qu'on y voit.");
       } else if (id === "DOS-B75-1247") {
         msgs.push("Lefebvre : Sur le sas de fouille, j'ai une micro-coupure réseau déclarée à 03h12 ordonnée par la brigade de Vasseur. Si vous appuyez sur purger, j'enregistre l'erreur 0x8894 sans laisser de traces.");
       } else if (id === "DOS-B75-2011") {

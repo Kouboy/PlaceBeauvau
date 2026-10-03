@@ -68,13 +68,17 @@ export const EvidenceLockerWindow: React.FC<EvidenceLockerWindowProps> = ({
 
               <div className="p-2.5 bg-white border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white shadow-inner">
                 <div className="text-emerald-900 text-[10px] font-bold uppercase mb-0.5">
-                  Substitut ministériel préparé :
+                  Pièce alternative disponible au greffe :
                 </div>
                 <div className="font-bold text-emerald-800 text-sm">
                   {piece.substitutOfficiel}
                 </div>
                 <div className="text-[11px] text-slate-600 mt-1">
-                  Justification : {piece.justificationDoctrine}
+                  {estSubstitue ? (
+                    <span>Bordereau de versement : {piece.justificationDoctrine}</span>
+                  ) : (
+                    <span className="text-slate-500 italic">Bordereau administratif scellé</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -82,18 +86,18 @@ export const EvidenceLockerWindow: React.FC<EvidenceLockerWindowProps> = ({
             {estSubstitue ? (
               <div className="bg-[#eaf5ea] border border-emerald-700 p-2.5 text-center flex items-center justify-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-                <span className="font-bold text-emerald-900 text-xs sm:text-sm uppercase">
-                  Substitution effectuée avec succès (+{piece.primeBonus} €)
+                <span className="font-bold text-emerald-900 text-xs sm:text-sm uppercase font-mono">
+                  Remplacement enregistré au greffe (+{piece.primeBonus} €)
                 </span>
               </div>
             ) : (
               <button
                 type="button"
                 onClick={() => onSubstituerScelle(piece)}
-                className="w-full xp-btn py-2 text-xs sm:text-sm font-bold text-[#003366] flex items-center justify-center gap-2 shadow-xs"
+                className="w-full xp-btn py-2 text-xs sm:text-sm font-bold text-[#003366] flex items-center justify-center gap-2 shadow-xs cursor-pointer"
               >
                 <ArrowRightLeft className="w-4 h-4 text-slate-700" />
-                <span>Procéder à la substitution dans le sac des scellés (+{piece.primeBonus} €)</span>
+                <span>Procéder au remplacement de la pièce consignée</span>
               </button>
             )}
           </fieldset>

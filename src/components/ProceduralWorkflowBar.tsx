@@ -110,7 +110,7 @@ export const ProceduralWorkflowBar: React.FC<ProceduralWorkflowBarProps> = ({
               {caviardagesFaits > 0
                 ? `${caviardagesFaits} biffés`
                 : hasIncidentCamera && !cameraNeutralisee
-                ? "Panne SD requise"
+                ? "Arbitrage CCTV"
                 : "Purge & Scellés"}
             </div>
           </div>

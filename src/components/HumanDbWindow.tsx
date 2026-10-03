@@ -215,34 +215,50 @@ export const HumanDbWindow: React.FC<HumanDbWindowProps> = ({
           </div>
 
           {/* JAUGE DU COEFFICIENT DE VULNÉRABILITÉ JURIDIQUE */}
-          <div className="pt-2 border-t border-[#d0d0d0]">
+          <div className="pt-2 border-t border-[#d0d0d0] space-y-2">
             <div className="flex justify-between items-center text-xs mb-1">
               <span className="text-black font-bold flex items-center gap-1.5">
                 <Scale className="w-4 h-4 text-[#0055ea]" />
-                <span>Vulnérabilité juridique de l'administré (CVJ) :</span>
+                <span>Indicateur d'exposition procédurale (CVJ) :</span>
               </span>
-              <span className={`text-xs font-bold px-2 py-0.5 ${
-                p.coefficientVulnerabilite > 70
-                  ? "bg-rose-100 text-rose-900 border border-rose-400"
-                  : "bg-emerald-100 text-emerald-900 border border-emerald-400"
-              }`}>
-                {p.coefficientVulnerabilite}% — {p.coefficientVulnerabilite > 70 ? "Impunité totale" : "Risque d'avocat"}
+              <span className="font-mono text-xs font-bold text-slate-800 bg-white px-2 py-0.5 border border-[#808080]">
+                {p.coefficientVulnerabilite}%
               </span>
             </div>
             
             {/* Jauge visuelle Win32 */}
-            <div className="w-full h-3 bg-white border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white overflow-hidden p-0.5 shadow-inner">
+            <div className="w-full h-2.5 bg-white border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white overflow-hidden p-0.5 shadow-inner">
               <div
-                className={`h-full transition-all duration-500 ${
-                  p.coefficientVulnerabilite > 70
-                    ? "bg-[#d84040]"
-                    : "bg-[#218838]"
-                }`}
+                className="h-full transition-all duration-500 bg-[#316ac5]"
                 style={{ width: `${p.coefficientVulnerabilite}%` }}
               />
             </div>
+
+            {/* ÉVALUATION ADMINISTRATIVE FROIDE SANS STRATÉGIE TÉLÉGRAPHIÉE */}
+            <div className="grid grid-cols-2 gap-1 text-[11px] font-mono bg-white p-2 border border-[#d0d0d0]">
+              <div>
+                <span className="text-slate-500">CAPACITÉ CONTENTIEUSE : </span>
+                <strong className="text-black">{p.coefficientVulnerabilite > 60 ? "FAIBLE" : "ÉLEVÉE"}</strong>
+              </div>
+              <div>
+                <span className="text-slate-500">CONSEIL CONSTITUÉ : </span>
+                <strong className="text-black">
+                  {p.coefficientVulnerabilite > 75 ? "NON IDENTIFIÉ" : p.coefficientVulnerabilite > 40 ? "AIDE JURIDICTIONNELLE" : "CABINET DÉSIGNÉ"}
+                </strong>
+              </div>
+              <div>
+                <span className="text-slate-500">EXPOSITION MÉDIATIQUE : </span>
+                <strong className="text-black">
+                  {p.coefficientVulnerabilite > 85 ? "BASSE" : p.coefficientVulnerabilite > 40 ? "MODÉRÉE" : "FORTE"}
+                </strong>
+              </div>
+              <div>
+                <span className="text-slate-500">SOLVABILITÉ PROCÉDURALE : </span>
+                <strong className="text-black">{p.coefficientVulnerabilite > 60 ? "LIMITÉE" : "CONFIRMÉE"}</strong>
+              </div>
+            </div>
             
-            <p className="text-slate-700 italic text-xs mt-1.5 leading-relaxed bg-white p-2 border border-[#d0d0d0]">
+            <p className="text-slate-700 italic text-xs leading-relaxed bg-white p-2 border border-[#d0d0d0]">
               « {p.analyseRisqueJudiciaire} »
             </p>
           </div>
@@ -269,7 +285,7 @@ export const HumanDbWindow: React.FC<HumanDbWindowProps> = ({
                 </p>
               </div>
 
-              {/* Si une décision a déjà été prise : feedback */}
+              {/* Si une décision a déjà été prise : feedback institutionnel */}
               {rioDecision ? (
                 <div
                   className={`p-2 border flex flex-col gap-1 text-xs ${
@@ -283,12 +299,12 @@ export const HumanDbWindow: React.FC<HumanDbWindowProps> = ({
                       {rioFeedback?.valide ? (
                         <>
                           <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-                          <span>Déduction stratégique homologuée</span>
+                          <span>Arbitrage RIO homologué // Ligne préservée</span>
                         </>
                       ) : (
                         <>
                           <AlertTriangle className="w-4 h-4 text-red-700" />
-                          <span>Erreur d'arbitrage // Sanction ministérielle</span>
+                          <span>Arbitrage RIO contesté // Incident hiérarchique</span>
                         </>
                       )}
                     </span>
@@ -374,7 +390,7 @@ export const HumanDbWindow: React.FC<HumanDbWindowProps> = ({
                     <CheckCircle2 className="w-4 h-4 text-emerald-700" />
                     <span>Contre-plainte enregistrée au parquet // Plainte victime caduque</span>
                   </div>
-                  <span className="text-[11px] bg-white px-2 py-0.5 border border-emerald-600">
+                  <span className="text-[11px] bg-white px-2 py-0.5 border border-emerald-600 font-mono font-bold text-emerald-800">
                     +{dossier.riposteOutrage.primeRiposte * (equipementsPossedes.has("riposte_systematique") ? 2 : 1)} €
                   </span>
                 </div>
@@ -389,8 +405,8 @@ export const HumanDbWindow: React.FC<HumanDbWindowProps> = ({
                     <Scale className="w-4 h-4 text-red-700" />
                     <span>Déposer la riposte incidente contre la victime</span>
                   </div>
-                  <span className="text-black text-xs font-bold px-2 py-0.5 bg-white border border-[#808080]">
-                    +{dossier.riposteOutrage.primeRiposte * (equipementsPossedes.has("riposte_systematique") ? 2 : 1)} €
+                  <span className="text-black text-xs font-bold px-2 py-0.5 bg-white border border-[#808080] font-mono">
+                    CERFA 14820*04
                   </span>
                 </button>
               )}

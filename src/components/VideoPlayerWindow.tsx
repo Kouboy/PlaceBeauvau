@@ -412,7 +412,7 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
                       : "border-[#ef4444]/60 text-[#fca5a5]"
                   }`}
                 >
-                  {activeStamp.isCorrect ? "✓ QUALIFICATION CONFORME // CLASSEMENT SANS SUITE" : "✗ MOTIF REJETÉ PAR LA CIRCULAIRE"}
+                  {activeStamp.isCorrect ? "ARBITRAGE ENREGISTRÉ // LIGNE MINISTÉRIELLE PRÉSERVÉE" : "ORIENTATION CONTESTÉE PAR LA HIÉRARCHIE"}
                 </div>
               </div>
             </div>
@@ -457,7 +457,7 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
                   <span>Feutre noir // Caviardage des termes compromettants :</span>
                 </span>
                 <span className="text-xs text-black bg-white px-2 py-0.5 border border-[#808080] font-bold">
-                  {caviardagesFaits.size} / {dossier.termesCaviardes.length} occultés (+20€ / mot)
+                  {caviardagesFaits.size} / {dossier.termesCaviardes.length} occultés
                 </span>
               </div>
 
@@ -493,9 +493,9 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
                             ? "bg-red-800 text-white"
                             : fait
                             ? "bg-emerald-800 text-white"
-                            : "bg-amber-100 text-amber-900 border border-amber-400"
+                            : "bg-slate-100 text-slate-800 border border-slate-300 font-mono"
                         }`}>
-                          {isErreur ? "⚠️ FAUTE (-35€)" : fait ? "✓ PURGÉ" : "+20 €"}
+                          {isErreur ? "COHÉRENCE ATTEINTE" : fait ? "✓ OCCULTÉ" : "OCCULTER"}
                         </span>
                       </div>
                       {isErreur && terme.impactErreur && (
@@ -532,8 +532,8 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
                   <CornerDownRight className="w-3.5 h-3.5 text-blue-700" />
                   <span>Substitution de scellé compromettant :</span>
                 </span>
-                <span className="text-amber-900 text-xs bg-amber-100 px-2 py-0.5 border border-amber-400 font-bold">
-                  +{dossier.pieceASubstituer.primeBonus} €
+                <span className="text-slate-700 text-xs bg-slate-100 px-2 py-0.5 border border-slate-400 font-mono">
+                  ACTE DE PROCÉDURE
                 </span>
               </div>
 
@@ -560,7 +560,7 @@ export const VideoPlayerWindow: React.FC<VideoPlayerWindowProps> = ({
                     className="w-full xp-btn py-1.5 px-3 text-xs font-bold text-emerald-900 flex items-center justify-center gap-2"
                   >
                     <CornerDownRight className="w-4 h-4 text-emerald-700" />
-                    <span>Remplacer par le PV homologué (+{dossier.pieceASubstituer.primeBonus}€)</span>
+                    <span>Verser la pièce de substitution homologuée</span>
                   </button>
                 </div>
               )}

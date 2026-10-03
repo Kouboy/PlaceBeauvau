@@ -225,7 +225,7 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
                 </div>
                 <p className="text-[11px] text-slate-700 leading-snug">
                   Inspectez les pièces forensiques (CCTV, scellés, TAJ, IML). Dès que vous êtes prêt à qualifier,
-                  <strong> enclenchez la pointeuse</strong> pour lancer le décompte réglementaire et concourir à la <strong>Prime de Célérité (+30 €)</strong>.
+                  <strong> enclenchez la pointeuse</strong> pour lancer le décompte réglementaire et concourir à la <strong>prime de célérité</strong>.
                 </p>
               </div>
 
@@ -321,12 +321,12 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
                 <div className="text-[10px] text-right bg-white/70 px-2 py-1 border border-[#7f9db9]">
                   <span className="font-bold text-emerald-800 block">
                     {timeRemaining >= (maxTime || 180) * 0.5
-                      ? "⚡ Prime célérité (+30 €)"
+                      ? "⚡ Cadence : palier célérité"
                       : timeRemaining >= (maxTime || 180) * 0.2
-                      ? "⏱️ Prime cadence (+15 €)"
+                      ? "⏱️ Cadence : palier standard"
                       : "⏱️ Délai de rigueur"}
                   </span>
-                  <span className="text-slate-500 text-[9px]">Apposez le visa pour encaisser</span>
+                  <span className="text-slate-500 text-[9px]">Apposez le visa pour clôturer</span>
                 </div>
 
                 {hasCoffee && onAddCoffeeTime && (
@@ -441,7 +441,7 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
               <div className="text-[10px] font-mono font-bold">
                 {!dossier.termesCaviardes || dossier.termesCaviardes.length === 0
                   ? "[ OK ] Sans mention"
-                  : `${caviardagesFaits}/${totalCaviardages} biffés (+${caviardagesFaits * 20}€)`}
+                  : `${caviardagesFaits}/${totalCaviardages} biffés`}
               </div>
             </button>
 
@@ -534,8 +534,8 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
                 </div>
                 <div className="text-xs font-bold text-slate-800 mt-1 font-sans">
                   {activeStamp.isCorrect
-                    ? "✓ Qualification homologuée par la Préfecture et le Parquet."
-                    : "⚠️ Rejet par le Parquet : Qualification non conforme à la circulaire."}
+                    ? "✓ Visa homologué par la Préfecture et le Parquet."
+                    : "⚠️ Visa rejeté par le Parquet : Orientation non conforme aux réquisitions."}
                 </div>
               </div>
             ) : (

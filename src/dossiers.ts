@@ -245,22 +245,22 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Zone de Sécurité Prioritaire (ZSP) - Seine-Saint-Denis (93)",
       faciesApparence: "Consonance extra-européenne, doudoune noire, capuche rabattue",
       coefficientVulnerabilite: 96,
-      analyseRisqueJudiciaire: "Risque médiatique : NUL. Aucun relais au barreau d'affaires. Classement sans suite immédiat recommandé par la note interne."
+      analyseRisqueJudiciaire: "Exposition médiatique non constatée. Absence de conseil constitué au barreau de Paris. Capacité contentieuse évaluée comme négligeable."
     },
     statutRio: {
       constat: "Matricule RIO #754981 du Brigadier Marc Vasseur masqué par un ruban adhésif noir mat.",
       decision: "Tolérance d'anonymat opérationnel : protection syndicale contre la vindicte sur réseaux sociaux.",
       bonneDecision: "flouter",
-      explicationBonneDecision: "Excellent réflexe : le flou protège Marc Vasseur d'une identification nominative par l'IGPN.",
-      explicationErreur: "FAUTE CORPORATISTE : Vous avez certifié le RIO alors que Marc Vasseur l'avait masqué pour se protéger !",
+      explicationBonneDecision: "IGPN // Protection de l'agent : l'anonymisation du matricule écarte le risque d'identification nominative.",
+      explicationErreur: "SYNDICAT // DÉSAVEU DU FONCTIONNAIRE : La certification d'un matricule contesté fragilise la protection de l'équipage.",
       primeBonus: 30
     },
     incidentCamera: {
       intitule: "FLUX CCTV CAM-07 MONTRE LE BRIGADIER MARC VASSEUR VISER LE VISAGE",
       actionBouton: "DÉCLARER PANNE CARTE SD SUR LA CAM-07",
       doitEtreNeutralisee: true,
-      explicationBonneDecision: "Bande vidéo neutralisée à temps. Aucun magistrat ne pourra visionner le tir de Marc Vasseur.",
-      explicationErreur: "NÉGLIGENCE FORENSIQUE : La vidéo montre le tir direct à la tête de Vasseur ! Vous auriez dû déclarer la panne SD !",
+      explicationBonneDecision: "PRÉFECTURE // Incident technique validé : l'indisponibilité du flux CCTV clôt l'exploitation judiciaire des images.",
+      explicationErreur: "PARQUET // TRANSMISSION COMPROMETTANTE : Le versement d'une trajectoire contestée place le Parquet en porte-à-faux.",
       rapportOfficiel: "Perte accidentelle de paquets vidéo suite à surtension électrique."
     },
     riposteOutrage: {
@@ -295,9 +295,9 @@ export const dossiers: Dossier[] = [
         id: "c_piege1",
         texteBrut: "posture manifestement non coopérative et hostile",
         texteCensure: "absence d'agitation",
-        motifCensure: "Élément à charge indispensable",
+        motifCensure: "Caractérisation de la menace immédiate",
         estCompromettant: false,
-        impactErreur: "ERREUR DE CENSURE : Vous avez biffé l'hostilité du suspect ! Le parquet perd sa seule justification du tir !"
+        impactErreur: "PARQUET // COHÉRENCE DU MÉMOIRE DÉGRADÉE : La mention biffée constituait le fondement légal de la justification du tir."
       }
     ],
     pieceASubstituer: {
@@ -328,22 +328,22 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Quartier Politique de la Ville (QPV) - Vénissieux",
       faciesApparence: "Teint mat, jogging gris chiné, sac de courses d'une enseigne discount",
       coefficientVulnerabilite: 92,
-      analyseRisqueJudiciaire: "Solvabilité faible, impossibilité de consigner auprès du doyen des juges. Extinction par infraction connexe."
+      analyseRisqueJudiciaire: "Solvabilité procédurale restreinte. Absence de provision pour constitution de partie civile avec consignation."
     },
     statutRio: {
       constat: "Matricule RIO 7844192 photographié en gros plan par un reporter de Libération, publié en Une nationale.",
       decision: "Certification transparente : le matricule est de notoriété publique, le nier ridiculiserait le ministère.",
       bonneDecision: "valider",
-      explicationBonneDecision: "Transparence tactique validée : nier un RIO déjà viral aurait détruit la crédibilité du Parquet.",
-      explicationErreur: "ABSURDITÉ ADMINISTRATIVE : Le RIO était déjà en Une de Libération ! Invoquer le flou vous fait passer pour un menteur !",
+      explicationBonneDecision: "PARQUET // Cohérence de l'action publique : l'identification étant déjà publique, la contestation du RIO aurait nui à l'accusation.",
+      explicationErreur: "PARQUET // CONTRADICTION MANIFESTE : Invoquer l'anonymat sur un matricule déjà publié par la presse discrédite le mémoire.",
       primeBonus: 30
     },
     incidentCamera: {
       intitule: "CLICHÉ DE PRESSE EXTÉRIEUR VERSÉ AU PARQUET",
       actionBouton: "TENTER D'EFFACER LE CLICHÉ DE PRESSE INDÉPENDANT",
       doitEtreNeutralisee: false, // CLICHÉ EXTÉRIEUR QU'ON NE PEUT PAS EFFACER SANS SCANDALE
-      explicationBonneDecision: "Vous avez sagement évité de falsifier une photo de presse déjà imprimée à 100 000 exemplaires !",
-      explicationErreur: "FAUTE GRAVE : Vous avez prétendu qu'une photo de presse était en panne de carte SD municipale ! La presse s'enflamme !",
+      explicationBonneDecision: "CABINET // Arbitrage médiatique : le cliché étant dans le domaine public, son maintien au dossier évite un soupçon d'entrave.",
+      explicationErreur: "CABINET // RISQUE D'EMBRASEMENT MÉDIATIQUE : Déclarer une anomalie technique sur une pièce déjà diffusée expose l'institution.",
       rapportOfficiel: "Cliché extérieur non modifiable par nos services."
     },
     riposteOutrage: {
@@ -377,9 +377,9 @@ export const dossiers: Dossier[] = [
         id: "c_piege2",
         texteBrut: "entravant la libre circulation piétonne",
         texteCensure: "sans impact sur la voie",
-        motifCensure: "Élément constitutif de l'entrave",
+        motifCensure: "Constat matériel d'occupation de l'espace public",
         estCompromettant: false,
-        impactErreur: "ERREUR DE CAVIARDAGE : Vous avez effacé l'entrave au sol ! L'infraction d'occupation illicite tombe à l'eau !"
+        impactErreur: "PRÉFECTURE // ÉLÉMENT MATÉRIEL COMPROMIS : L'effacement de l'entrave au sol fragilise la qualification d'occupation illicite."
       }
     ],
     piece_visuelle: {
@@ -402,22 +402,22 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Zone urbaine sensible - Quartier des Bosquets (Montfermeil)",
       faciesApparence: "Miroir statistique : jeune homme racisé en groupe à un arrêt de bus",
       coefficientVulnerabilite: 98,
-      analyseRisqueJudiciaire: "Cas d'école d'inversion pénale : la mâchoire de l'usager a endommagé le poing de Marc Vasseur. Constitution de partie civile obligatoire pour dédommagement."
+      analyseRisqueJudiciaire: "Contre-plainte incidente recevable : lésion métacarpienne constatée sur l'agent au cours de la manœuvre d'interposition."
     },
     statutRio: {
       constat: "Matricule RIO #754981 de Marc Vasseur recouvert par l'insigne syndical non réglementaire.",
       decision: "Tolérance corporatiste bienveillante. Rappel déontologique sans suite.",
       bonneDecision: "flouter",
-      explicationBonneDecision: "Consigne syndicale appliquée avec discernement : protection du Brigadier Vasseur.",
-      explicationErreur: "Désaveu corporatiste : vous auriez dû invoquer la tolérance d'équipement syndical pour couvrir Marc Vasseur.",
+      explicationBonneDecision: "SYNDICAT // Ligne de corps respectée : la tolérance de port d'équipement couvre le brigadier Vasseur.",
+      explicationErreur: "SYNDICAT // RUPTURE DE SOLIDARITÉ : L'exigence du matricule désavoue la doctrine locale de l'unité.",
       primeBonus: 25
     },
     incidentCamera: {
       intitule: "FLUX CCTV DU SAS MONTRE L'ALTERCATION PHYSIQUE DIRECTE AVEC MARC VASSEUR",
       actionBouton: "EFFACER LA VIDÉO PAR DÉFAILLANCE SERVEUR",
       doitEtreNeutralisee: false, // LA VIDÉO MONTRE LA RÉSISTANCE ET PROUVE L'INFRACTION DU SUSPECT !
-      explicationBonneDecision: "Vidéo conservée : les images prouvent l'agitation du suspect et justifient les 21 jours d'ITT de Marc Vasseur !",
-      explicationErreur: "CATASTROPHE : Vous avez détruit la seule vidéo qui prouvait les violences du suspect sur Marc Vasseur !",
+      explicationBonneDecision: "PARQUET // Pièce à charge versée : la séquence corrobore l'agitation corporelle et soutient les 21 jours d'ITT réclamés.",
+      explicationErreur: "PARQUET // PERTE D'UN ÉLÉMENT CHARGE : La destruction du flux prive l'accusation de la preuve matérielle de la rébellion.",
       rapportOfficiel: "Enregistrement versé comme pièce à conviction n°1."
     },
     novlangue: {
@@ -436,9 +436,9 @@ export const dossiers: Dossier[] = [
         id: "c_piege_3",
         texteBrut: "fracture du cinquième métacarpien du fonctionnaire",
         texteCensure: "douleur passagère",
-        motifCensure: "Preuve de la blessure de l'agent",
+        motifCensure: "Constat médico-légal de lésion en service",
         estCompromettant: false,
-        impactErreur: "ERREUR CRITIQUE : Vous avez biffé la fracture du policier ! Le procureur ne peut plus réclamer 21 jours d'ITT pour violences !"
+        impactErreur: "PARQUET // RÉQUISITOIRE AFFAIBLI : La suppression de la fracture de l'agent prive l'accusation du quantum de 21 jours d'ITT."
       }
     ],
     pieceASubstituer: {
@@ -469,22 +469,22 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Secteur de gare RER Nord - Zone d'opérations quotidiennes",
       faciesApparence: "Consonance ouest-africaine, sac isotherme sur le dos",
       coefficientVulnerabilite: 99,
-      analyseRisqueJudiciaire: "Affaire sensible. La famille organise une marche blanche : lancer immédiatement la riposte médiatique sur un prétendu malaise cardiaque autonome."
+      analyseRisqueJudiciaire: "Sensibilité procédurale : relais associatif et familial en cours de mobilisation. Antécédents cardiorespiratoires à verser au débat médico-légal."
     },
     statutRio: {
       constat: "Les 4 fonctionnaires intervenants étaient dépourvus de dossard RIO.",
       decision: "Tenue d'intervention allégée pour motif de confort thermique. Aucune faute retenue.",
       bonneDecision: "flouter",
-      explicationBonneDecision: "Anonymat accordé aux 4 agents : le préfet valide la protection thermique corporatiste.",
-      explicationErreur: "BLÂME : Vous avez voulu certifier des matricules absents, révélant la négligence de la hiérarchie !",
+      explicationBonneDecision: "PRÉFECTURE // Protection fonctionnelle confirmée : l'anonymat opérationnel des intervenants est entériné.",
+      explicationErreur: "PRÉFECTURE // CONSTAT DE NÉGLIGENCE ÉVITABLE : La certification de matricules absents met en cause l'encadrement.",
       primeBonus: 30
     },
     incidentCamera: {
       intitule: "FLUX VIDÉO DU SAS DE CELLULE MONTRE L'AGONIE PAR ASYPHYXIE SOUS LE POIDS DES AGENTS",
       actionBouton: "CERTIFIER L'ANOMALIE MATÉRIELLE TOTALE (CARTE SD HS)",
       doitEtreNeutralisee: true,
-      explicationBonneDecision: "Bande vidéo neutralisée avec maestria. Sans images du sas, la thèse du malaise vagal tient la route.",
-      explicationErreur: "CATASTROPHE JUDICIAIRE : Vous avez laissé la vidéo du sas au dossier ! C'est un aller simple pour les Assises !",
+      explicationBonneDecision: "CABINET // Gestion de crise : l'interruption du signal vidéo préserve la cohérence de la version médicale officielle.",
+      explicationErreur: "PARQUET // VULNÉRABILITÉ CONTENTIEUSE EXTRÊME : Les images transmises réfutent directement les conclusions d'enquête.",
       rapportOfficiel: "Perte accidentelle des paquets vidéo constatée sur le serveur d'archivage local."
     },
     telegrammePrefet: {
@@ -516,9 +516,9 @@ export const dossiers: Dossier[] = [
         id: "c_piege4",
         texteBrut: "maintien prolongé de contention réglementaire",
         texteCensure: "gestes improvisés",
-        motifCensure: "Preuve de la conformité du geste",
+        motifCensure: "Protocole technique d'immobilisation",
         estCompromettant: false,
-        impactErreur: "ERREUR GRAVE : Vous avez biffé la mention 'réglementaire' ! Le geste perd sa justification légale !"
+        impactErreur: "IGPN // CONFORMITÉ DU GESTE INTERROMPUE : Biffer la mention 'réglementaire' expose le geste de contention à une requalification pénale."
       }
     ],
     pieceASubstituer: {
@@ -549,22 +549,22 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Hub ferroviaire Gare du Nord (Filtre spatial sélectif)",
       faciesApparence: "Miroir sociologique : jeune homme noir, sac à dos d'études, écouteurs",
       coefficientVulnerabilite: 97,
-      analyseRisqueJudiciaire: "Contrôle au faciès statistiquement caractérisé. Mais en droit positif : présomption d'impartialité policière absolue. Non-lieu automatique."
+      analyseRisqueJudiciaire: "Recours contestataire isolé sans représentation d'avocat. Présomption de régularité attachée aux opérations de contrôle d'identité sur réquisition."
     },
     statutRio: {
       constat: "Emplacement RIO vide sur le gilet pare-balles de l'intervenant.",
       decision: "Demande du RIO assimilée à un acte d'hostilité envers le fonctionnaire. Homologation immédiate.",
       bonneDecision: "flouter",
-      explicationBonneDecision: "Refus du RIO sanctifié par l'état-major : la demande de matricule est requalifiée en provocation.",
-      explicationErreur: "ERREUR HIÉRARCHIQUE : Vouloir exiger le RIO d'un gardien de la paix désavoue la brigade de gare !",
+      explicationBonneDecision: "PRÉFECTURE // Doctrine de fermeté : la contestation du contrôle par l'administré est écartée de la procédure.",
+      explicationErreur: "SYNDICAT // DÉSAVEU HIÉRARCHIQUE : Exiger le port effectif du matricule lors d'un filtrage fragilise la brigade ferroviaire.",
       primeBonus: 25
     },
     incidentCamera: {
       intitule: "VIDÉO DU HALL MONTRANT LE SUSPECT QUI S'ARRÊTE SANS RÉSISTER",
       actionBouton: "PURGER LE FICHIER VIDÉO DE LA GARE",
       doitEtreNeutralisee: true,
-      explicationBonneDecision: "Vidéo neutralisée : aucun enregistrement ne contredira le PV de rébellion.",
-      explicationErreur: "MANQUE DE DISCER NEMENT : La vidéo montrait que l'étudiant était calme et poli, ce qui détruisait le rapport !",
+      explicationBonneDecision: "PRÉFECTURE // Sécurisation du dossier : l'inaccessibilité de l'enregistrement confère plein effet probant au procès-verbal.",
+      explicationErreur: "CABINET // DIVERGENCE PROBATOIRE : Le flux conservé infirme les mentions d'hostilité relevées dans le rapport.",
       rapportOfficiel: "Fichier corrompu au transfert réseau."
     },
     riposteOutrage: {
@@ -599,9 +599,9 @@ export const dossiers: Dossier[] = [
         id: "c-idriss-piege",
         texteBrut: "vérifications administratives des flux voyageurs",
         texteCensure: "errance des patrouilles",
-        motifCensure: "NE PAS CAVIARDER",
+        motifCensure: "Cadre légal de la réquisition préfectorale",
         estCompromettant: false,
-        impactErreur: "FAUSSE MANIPULATION : Vous avez biffé le cadre légal du contrôle de gare !"
+        impactErreur: "CABINET // BASE JURIDIQUE SUPPRIMÉE : L'effacement du cadre administratif prive le contrôle en gare de sa régularité formelle."
       }
     ],
     piece_visuelle: {
@@ -624,22 +624,22 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Avenue Foch - Secteur diplomatique et résidentiel protégé",
       faciesApparence: "Patronyme aristocratique, costume sur mesure en flanelle, montre de luxe",
       coefficientVulnerabilite: 4,
-      analyseRisqueJudiciaire: "ALERTE MAJEURE : Proximité intime avec le Parquet général et les cabinets ministériels. Garde à vue formellement proscrite. Traitement courtois et discret exigé."
+      analyseRisqueJudiciaire: "Solvabilité procédurale maximale. Conseil constitué auprès de cabinets d'affaires de premier rang. Capacité d'assignation en responsabilité quasi-immédiate."
     },
     statutRio: {
       constat: "Motards de police au garde-à-vous impeccable, RIO arboré avec zèle.",
       decision: "Reconnaissance spontanée du statut de l'usager. Salutations républicaines appuyées.",
       bonneDecision: "valider",
-      explicationBonneDecision: "Conduite irréprochable des motards validée : le protocole d'honneur envers les notables a été respecté.",
-      explicationErreur: "FAUTE PROTOCOLAIRE : Vous avez voulu flouter le RIO d'agents qui ont fait preuve d'une déférence exemplaire !",
+      explicationBonneDecision: "CABINET // Courtoisie républicaine respectée : la régularité du comportement des agents envers le justiciable est homologuée.",
+      explicationErreur: "CABINET // MALADRESSE PROTOCOLAIRE : Déclarer un anonymat sur un équipage irréprochable crée une suspicion injustifiée.",
       primeBonus: 35
     },
     incidentCamera: {
       intitule: "VIDÉO DU CONTRÔLE MONTRANT LE NOTAIRE GRACIEUSEMENT RECONDUIT CHEZ LUI",
       actionBouton: "CONSERVER ET CLASSER LA VIDÉO COMME SERVICE D'HONNEUR RENDU",
       doitEtreNeutralisee: false, // LA VIDÉO PROUVE LA COURTOISIE ENVERS LE NOTAIRE
-      explicationBonneDecision: "Vidéo conservée : elle prouve au ministre que ses amis ont été traités avec tous les égards dus à leur rang.",
-      explicationErreur: "MALADRESSE DIPLOMATIQUE : Détruire une vidéo montrant le service d'escorte VIP rend le notaire furieux !",
+      explicationBonneDecision: "CABINET // Archivage conservatoire : la séquence atteste des égards et de la sérénité du raccompagnement.",
+      explicationErreur: "CABINET // INCIDENT DIPLOMATIQUE : La dégradation d'un enregistrement attestant de la courtoisie des services suscite l'incompréhension.",
       rapportOfficiel: "Enregistrement de bienveillance civique versé aux archives privées."
     },
     novlangue: {
@@ -665,9 +665,9 @@ export const dossiers: Dossier[] = [
         id: "c-notaire-piege",
         texteBrut: "reconduite bienveillante à l'hôtel particulier sans inscription TAJ",
         texteCensure: "transport standard",
-        motifCensure: "NE PAS CAVIARDER",
+        motifCensure: "Mesure de raccompagnement déontologique",
         estCompromettant: false,
-        impactErreur: "GAFFE ABSOLUE : Biffer la bienveillance prive le cabinet du mérite de sa clémence !"
+        impactErreur: "CABINET // DIPLOMATIE PROTOCOLAIRE FROISSÉE : L'effacement des marques de bienveillance désavoue l'arbitrage du ministre."
       }
     ],
     piece_visuelle: {
@@ -690,14 +690,14 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Boulevard de l'Hôpital - Cortège syndical soignant",
       faciesApparence: "Blouse blanche tâchée, badge syndical CGT-Santé",
       coefficientVulnerabilite: 88,
-      analyseRisqueJudiciaire: "Manifestante syndicale : présomption d'hostilité envers les forces de l'ordre. La projection de sang est qualifiée d'agression biologique."
+      analyseRisqueJudiciaire: "Affiliation syndicale déclarée. Conseil habituel d'organisation présent au soutien de la mise en cause."
     },
     statutRio: {
       constat: "Le gradé ne porte pas de RIO (insigne de compagnie d'intervention dissimulant le scratch).",
       decision: "Conformité d'ensemble du maintien de l'ordre. Extinction du grief.",
       bonneDecision: "flouter",
-      explicationBonneDecision: "Protection syndicale confirmée : l'insigne d'escadron prime sur l'affichage individuel.",
-      explicationErreur: "BLÂME : Vous avez contesté le port d'insigne de la compagnie d'intervention !",
+      explicationBonneDecision: "IGPN // Primauté de l'identification collective : l'appartenance à la compagnie d'intervention est réputée suffisante.",
+      explicationErreur: "SYNDICAT // CONTESTATION D'UNITÉ : Remettre en cause l'affichage de compagnie méconnaît l'esprit de corps.",
       primeBonus: 20
     },
     riposteOutrage: {
@@ -733,14 +733,14 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Quartier Latin - Abords d'université occupée",
       faciesApparence: "Pancarte en carton revendicative, mégaphone éteint",
       coefficientVulnerabilite: 85,
-      analyseRisqueJudiciaire: "Contestation universitaire. Traiter immédiatement sous l'angle du tapage nocturne et du vacarme pour couper court à toute tribune médiatique."
+      analyseRisqueJudiciaire: "Milieu étudiant structuré. Risque de relais corporatif académique en cas de contentieux disciplinaire."
     },
     statutRio: {
       constat: "RIO retourné face velcro invisible.",
       decision: "Frottement fortuit lors du balayage tactique. Aucune charge retenue.",
       bonneDecision: "flouter",
-      explicationBonneDecision: "Thèse du frottement fortuit validée sans incident.",
-      explicationErreur: "ERREUR : Exiger un RIO repositionné au millimètre désavoue l'officier intervenant.",
+      explicationBonneDecision: "PRÉFECTURE // Doctrine d'évacuation validée : l'incident est circonscrit aux nécessités de dégagement des voies.",
+      explicationErreur: "SYNDICAT // RIGIDITÉ INOPPORTUNE : Exiger un repositionnement millimétrique fragilise le commandement opérationnel.",
       primeBonus: 20
     },
     novlangue: {
@@ -767,22 +767,22 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Place de la République - En périphérie de manifestation",
       faciesApparence: "Vélo de livraison, consonance nord-africaine",
       coefficientVulnerabilite: 100,
-      analyseRisqueJudiciaire: "Absence de titre de séjour : notification d'une OQTF réflexe pour empêcher toute constitution de partie civile devant le juge d'instruction."
+      analyseRisqueJudiciaire: "Situation administrative précaire. Faiblesse structurelle de la représentation judiciaire."
     },
     statutRio: {
       constat: "Tireur non identifiable (cagoule intégrale et visière pare-éclats fumée).",
       decision: "L'impossibilité d'identifier l'auteur individuel protège l'institution : non-lieu d'office pour auteur inconnu.",
       bonneDecision: "flouter",
-      explicationBonneDecision: "Auteur non identifié certifié : la plainte est classée sans suite contre X.",
-      explicationErreur: "FAUTE : Tenter d'identifier le tireur d'une grenade fragilise tout le dispositif de maintien de l'ordre.",
+      explicationBonneDecision: "PARQUET // Classement contre inconnu : l'impossibilité d'individualiser le tireur oriente vers une extinction de l'action publique.",
+      explicationErreur: "CABINET // FRAGILISATION DU DISPOSITIF : L'individualisation d'un tir de barrage compromet l'ensemble de la manœuvre.",
       primeBonus: 35
     },
     incidentCamera: {
       intitule: "CAPTATION CITOYENNE EN LIGNE SUR RÉSEAUX SOCIAUX",
       actionBouton: "SIGNIFICATION DE MISE EN DEMEURE PHAROS (RETRAIT CONSERVATOIRE)",
       doitEtreNeutralisee: true,
-      explicationBonneDecision: "Demande PHAROS envoyée avec succès : limitation de la viralité politique de la vidéo.",
-      explicationErreur: "NÉGLIGENCE : Laisser tourner cette vidéo à 800 000 vues sans blocage PHAROS est une faute de communication !",
+      explicationBonneDecision: "SERVICE TECHNIQUE // Signalement PHAROS enregistré : limitation de la diffusion non contextuelle sur les réseaux.",
+      explicationErreur: "CABINET // DÉFAUT DE VEILLE NUMÉRIQUE : L'absence de signalement laisse prospérer une lecture unilatérale de l'événement.",
       rapportOfficiel: "Procédure d'injonction numérique enclenchée auprès des hébergeurs."
     },
     telegrammePrefet: {
@@ -815,14 +815,14 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Rond-point d'entrée de ville de province",
       faciesApparence: "Gilet jaune sous la selle du vélo, tenue de travail usagée",
       coefficientVulnerabilite: 91,
-      analyseRisqueJudiciaire: "Symbole de contestation populaire. Transmission immédiate au parquet pour comparution immédiate sous qualification criminelle dégradée."
+      analyseRisqueJudiciaire: "Usage de vecteur cycliste en zone de barrage. Capacité d'action civile limitée."
     },
     statutRio: {
       constat: "RIO #754981 de Marc Vasseur présent et clairement lisible sur le baudrier.",
       decision: "Agent méritant blessé au devoir. Matricule consigné avec honneur.",
       bonneDecision: "valider",
-      explicationBonneDecision: "Matricule de Marc Vasseur certifié pour réclamer des dommages et intérêts à l'administré.",
-      explicationErreur: "ERREUR : Pourquoi flouter le matricule de Marc Vasseur quand il réclame des indemnités ?!",
+      explicationBonneDecision: "PARQUET // Constitution de partie civile : l'identification nominative de l'agent est requise pour asseoir la demande d'indemnisation.",
+      explicationErreur: "PARQUET // CONTRADICTION DE PROCÉDURE : Anonymiser l'agent qui réclame des dommages et intérêts paralyse l'action civile.",
       primeBonus: 20
     },
     novlangue: {
@@ -849,14 +849,14 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Zone artisanale de banlieue nord",
       faciesApparence: "Camionnette utilitaire chargée d'outils, consonance maghrébine",
       coefficientVulnerabilite: 89,
-      analyseRisqueJudiciaire: "Rappel à l'ordre impérieux : la police ne saurait être dérangée pendant ses collations de service. Verbalisation quadruple dissuasive."
+      analyseRisqueJudiciaire: "Administré riverain sans appui institutionnel. Contentieux contraventionnel ordinaire."
     },
     statutRio: {
       constat: "Équipage en pause café : gilets tactiques et RIO déposés sur les sièges du fourgon.",
       decision: "Légitime temps de réarmement psychologique. Aucune infraction déontologique constatée.",
       bonneDecision: "flouter",
-      explicationBonneDecision: "Pause syndicale protégée : l'absence momentanée de RIO en collation est reconnue comme pause réglementaire.",
-      explicationErreur: "BLÂME : Vous avez verbalisé des collègues qui prenaient leur café !",
+      explicationBonneDecision: "PRÉFECTURE // Pause technique admise : l'interruption momentanée du port pendant la collation est reconnue conforme.",
+      explicationErreur: "SYNDICAT // DÉFAUT DE CONFRATERNITÉ : L'assimilation d'une pause réglementaire à un manquement déontologique est réprouvée.",
       primeBonus: 20
     },
     novlangue: {
@@ -883,14 +883,14 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Centre-ville commerçant sous tension tarifaire",
       faciesApparence: "Tablier enfariné, posture outrée, réclame un bon de réquisition en vain",
       coefficientVulnerabilite: 62,
-      analyseRisqueJudiciaire: "Administré récalcitrant aux devoirs patriotiques de subsistance. Risque de tribune dans la presse locale. Extinction sans délai."
+      analyseRisqueJudiciaire: "Acteur du commerce de proximité. Exposition médiatique locale circonscrite."
     },
     statutRio: {
       constat: "Équipage en civil, brassards police dans la poche arrière et absence totale de matricule RIO.",
       decision: "Discrétion tactique alimentaire. Aucune faute déontologique retenue.",
       bonneDecision: "flouter",
-      explicationBonneDecision: "Secret opérationnel : la filière d'approvisionnement sucré des unités d'élite est protégée par la discrétion de service.",
-      explicationErreur: "BLÂME : Vous avez divulgué l'identité d'agents en mission de ravitaillement sucré !",
+      explicationBonneDecision: "IGPN // Discrétion opérationnelle : l'anonymisation de l'équipage en mission de soutien logistique est validée.",
+      explicationErreur: "CABINET // DIVULGATION INOPPORTUNE : L'identification publique de l'équipage expose le service à un préjudice d'image.",
       primeBonus: 20
     },
     termesCaviardes: [
@@ -912,8 +912,9 @@ export const dossiers: Dossier[] = [
         id: "c_farine_fraude",
         texteBrut: "sac de farine T65 conforme et traçable",
         texteCensure: "matière pulvérulente blanche d'origine indéterminée",
-        motifCensure: "preuve de bonne foi du commerçant à conserver !",
-        estCompromettant: false
+        motifCensure: "Bordereau de traçabilité des matières premières",
+        estCompromettant: false,
+        impactErreur: "PRÉFECTURE // ÉLÉMENT CONSTATÉ DÉNATURÉ : La traçabilité de la farine écartait tout soupçon de produit illicite."
       }
     ],
     pieceASubstituer: {
@@ -963,22 +964,22 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Quartier préfectoral sous arrêté d'interdiction de rassemblement",
       faciesApparence: "Imperméable beige, sac cabas à roulettes, casserole Tefal 24cm",
       coefficientVulnerabilite: 88,
-      analyseRisqueJudiciaire: "Cynisme ménager caractérisé. Verbalisation forfaitaire majorée et transmission pour trouble à la tranquillité d'État."
+      analyseRisqueJudiciaire: "Retraitée isolée. Solvabilité et appui procédural inexistants."
     },
     statutRio: {
       constat: "Officiers de sécurité en costume civil sans matricule RIO apparent.",
       decision: "Protection rapprochée VIP : exemption déontologique de port de matricule.",
       bonneDecision: "flouter",
-      explicationBonneDecision: "Sécurité des personnalités : l'anonymat des gardes du corps est impératif pour l'escorte.",
-      explicationErreur: "BLÂME : Vous avez compromis le service de protection rapprochée du Ministre !",
+      explicationBonneDecision: "CABINET // Sécurité des escortes : l'anonymat des fonctionnaires affectés à la protection ministérielle est impératif.",
+      explicationErreur: "CABINET // ATTEINTE AU PROTOCOLE DE SÉCURITÉ : La levée d'anonymat sur le détachement de protection compromet le dispositif.",
       primeBonus: 20
     },
     incidentCamera: {
       intitule: "CAPTATION VIDÉO : CASSEROLADE CITOYENNE",
       actionBouton: "REQUALIFIER EN ATTENTAT ACOUSTIQUE CONCERTÉ",
       doitEtreNeutralisee: true,
-      explicationBonneDecision: "Neutralisation de la vidéo montrant une grand-mère inoffensive de 68 ans face à 12 robocops casqués.",
-      explicationErreur: "NÉGLIGENCE : Diffuser cette image ridiculise l'institution policière à l'échelle nationale !",
+      explicationBonneDecision: "PRÉFECTURE // Neutralisation du support : l'inadéquation de la captation brute aux standards de présentation est actée.",
+      explicationErreur: "CABINET // PRÉJUDICE D'IMAGE INSTITUTIONNEL : Le maintien d'un flux manifestement disproportionné dessert l'autorité préfectorale.",
       rapportOfficiel: "Incident neutralisé, ustensile placé sous scellé sonore de discrétion."
     },
     novlangue: {
@@ -1005,14 +1006,14 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Carrefour République / Voltaire",
       faciesApparence: "Lunettes rondes en écaille, écouteurs sans fil, fixité oculaire",
       coefficientVulnerabilite: 78,
-      analyseRisqueJudiciaire: "Posture séditieuse passive. Action récursoire de la brigade pour préjudice d'anxiété professionnelle."
+      analyseRisqueJudiciaire: "Refus de soumission passive sans violence physique. Capacité de contestation procédurale résiduelle."
     },
     statutRio: {
       constat: "Brigadier Marc Vasseur présent, RIO #754981 bien visible sur le baudrier.",
       decision: "Attestation d'atteinte morale certifiée par la brigade pour préjudice d'anxiété.",
       bonneDecision: "valider",
-      explicationBonneDecision: "Matricule validé pour permettre au brigadier de réclamer ses 500 € d'indemnité pour traumatisme oculaire.",
-      explicationErreur: "ERREUR : En masquant le RIO, vous privez le fonctionnaire de sa constitution de partie civile !",
+      explicationBonneDecision: "PARQUET // Soutien de la demande indemnitaire : le matricule est certifié pour fonder la réquisition d'indemnisation de l'agent.",
+      explicationErreur: "PARQUET // DÉFAUT D'IDENTIFICATION DU DEMANDEUR : L'anonymat fait obstacle à l'allocation des dommages et intérêts requis.",
       primeBonus: 20
     },
     riposteOutrage: {

@@ -140,8 +140,8 @@ export const MessagingWindow: React.FC<MessagingWindowProps> = ({
           <div className="text-black font-bold text-xs sm:text-sm truncate flex items-center gap-2">
             <span>{contact.nom}</span>
             {contact.id === "sorel" && (
-              <span className="text-[9px] bg-rose-700 text-white px-1 py-0.2 font-bold">
-                CANAL CLANDESTIN TOR
+              <span className="text-[9px] bg-rose-700 text-white px-1 py-0.2 font-bold font-mono">
+                CANAL EXTERNE NON AUTORISÉ
               </span>
             )}
           </div>
@@ -204,19 +204,19 @@ export const MessagingWindow: React.FC<MessagingWindowProps> = ({
             <Radio className="w-4 h-4 text-rose-700 shrink-0" />
             <div>
               <div className="text-rose-950 font-bold uppercase tracking-wide text-xs">
-                CANAL CLANDESTIN SOREL // DISSIDENCE & PRESSE
+                CANAL EXTERNE NON AUTORISÉ // SOREL
               </div>
               <div className="text-[11px] text-slate-700">
                 {fuiteFaite
-                  ? "✓ Éléments bruts non caviardés transmis au Collectif Vérité."
-                  : "Faire fuiter la minute intégrale et les rushs vidéo sans caviardage."}
+                  ? "✓ Copie non purgée transmise à la défense."
+                  : "Transmettre la minute intégrale et les rushs vidéo sans caviardage."}
               </div>
             </div>
           </div>
           {fuiteFaite ? (
-            <div className="px-2.5 py-1 bg-[#eaf5ea] border border-emerald-700 text-emerald-900 text-xs font-bold flex items-center justify-center gap-1.5 shrink-0">
+            <div className="px-2.5 py-1 bg-[#eaf5ea] border border-emerald-700 text-emerald-900 text-xs font-bold flex items-center justify-center gap-1.5 shrink-0 font-mono">
               <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-              <span>FUITE TRANSMISE AVEC SUCCÈS</span>
+              <span>COPIE BRUTE TRANSMISE</span>
             </div>
           ) : (
             <button
@@ -226,10 +226,10 @@ export const MessagingWindow: React.FC<MessagingWindowProps> = ({
                   onTransmettreFuite();
                 }
               }}
-              className="xp-btn text-rose-900 font-bold flex items-center justify-center gap-1.5 shrink-0"
+              className="xp-btn text-rose-900 font-bold flex items-center justify-center gap-1.5 shrink-0 cursor-pointer"
             >
               <Radio className="w-3.5 h-3.5 text-rose-700" />
-              <span>Transmettre la fuite secrète</span>
+              <span>Transmettre une copie hors procédure</span>
             </button>
           )}
         </div>

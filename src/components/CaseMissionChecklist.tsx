@@ -98,7 +98,7 @@ export const CaseMissionChecklist: React.FC<CaseMissionChecklistProps> = ({
         <div className="flex items-center gap-2 shrink-0">
           <div className="flex items-center gap-1.5 bg-white border border-[#7f9db9] px-2 py-0.5 rounded-none shadow-inner">
             <ShieldCheck className={`w-3.5 h-3.5 ${isDossierBlindagePret ? "text-emerald-600" : "text-amber-600"}`} />
-            <span className="text-xs text-slate-700 font-bold">CONFORMITÉ :</span>
+            <span className="text-xs text-slate-700 font-bold">ACTES PROCÉDURAUX :</span>
             <span className={`font-bold text-xs ${isDossierBlindagePret ? "text-emerald-700" : "text-amber-700"}`}>
               {validatedSteps}/{totalSteps}
             </span>
@@ -206,7 +206,7 @@ export const CaseMissionChecklist: React.FC<CaseMissionChecklistProps> = ({
               <div className="truncate">
                 <span className="font-bold text-xs">3. Vidéo CCTV</span>
                 <span className="text-[10px] text-slate-600 block truncate">
-                  {cameraCheck ? "Flux conforme/purgé" : "Incident carte SD à trancher"}
+                  {cameraCheck ? "Flux examiné" : "Arbitrage du flux"}
                 </span>
               </div>
             </div>

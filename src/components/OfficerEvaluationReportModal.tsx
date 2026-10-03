@@ -53,16 +53,16 @@ export const OfficerEvaluationReportModal: React.FC<OfficerEvaluationReportModal
 
   // Détermination de l'affectation finale satirique selon le profil de performance
   const getAffectationFinale = () => {
-    // 1. FIN DISSIDENTE : LANCEUR D'ALERTE NATIONAL (Si fuites transmises à Me Sorel)
+    // 1. FIN DISCORDANTE : BRÈCHE PROCÉDURALE (Si copies transmises à Me Sorel)
     if (stats.fuitesCount && stats.fuitesCount >= 2) {
       return {
-        titre: "COMMISSION D'ENQUÊTE NATIONALE // LANCEUR D'ALERTE CITOYEN",
-        badge: "DÉVOILEMENT D'ÉTAT",
+        titre: "PROCÉDURE JUDICIAIRE DISCORDANTE // TRANSMISSION DE PIÈCES BRUTES",
+        badge: "BRÈCHE DE CONFIDENTIALITÉ",
         color: "text-purple-300 border-purple-500 bg-purple-950/40",
-        verdict: "Révélation publique de l'omerta institutionnelle et des violences récurrentes de la Brigade 4B.",
-        tampon: "AUDITION PARLEMENTAIRE",
+        verdict: "Les copies brutes transmises hors procédure ont alimenté des recours contentieux croisés.",
+        tampon: "ENQUÊTE DISCIPLINAIRE OUVERTE",
         tamponColor: "border-purple-400 text-purple-300",
-        description: `Vous avez refusé d'étouffer les affaires. Les ${stats.fuitesCount} dossiers transmis clandestinement à Me Camille Sorel ont fait la Une de la presse nationale. Le préfet Didier de Courcelles a dû s'expliquer en direct, le Brigadier Marc Vasseur est suspendu avec retrait d'arme, et l'Assemblée Nationale a ouvert une commission d'enquête sur les violences d'État. Révoqué de Beauvau, vous devenez le symbole de la probité républicaine.`,
+        description: `Les ${stats.fuitesCount} dossiers transmis sans expurgation à Me Camille Sorel ont été versés aux débats par la défense. La contradiction flagrante entre la synthèse de commandement et les pièces brutes déclenche un enlisement procédural : le Parquet ouvre une information judiciaire pour violation du secret de l'instruction, pendant que la hiérarchie vous suspend à titre conservatoire. Ni réhabilitation héroïque, ni apaisement : la machine administrative continue de tourner, plus opaque et conflictuelle que jamais.`,
       };
     }
 
@@ -227,15 +227,15 @@ export const OfficerEvaluationReportModal: React.FC<OfficerEvaluationReportModal
             </div>
           </div>
 
-          {/* INDICATEUR DISSIDENCE / LANCEUR D'ALERTE */}
+          {/* INDICATEUR TRANSMISSION HORS PROCÉDURE */}
           {stats.fuitesCount && stats.fuitesCount > 0 ? (
             <div className="bg-[#fff0f5] border border-rose-300 p-2 mb-3 flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
-                <span className="text-rose-900 font-bold">🕵️ Dossier(s) transmis à la presse :</span>
-                <span className="text-black font-bold">{stats.fuitesCount} pièce(s) clandestine(s)</span>
+                <span className="text-rose-900 font-bold">📁 Pièce(s) transmise(s) hors procédure :</span>
+                <span className="text-black font-bold font-mono">{stats.fuitesCount} copie(s) non expurgée(s)</span>
               </div>
-              <span className="text-[10px] bg-rose-700 text-white px-2 py-0.5 font-bold uppercase">
-                RÉSISTANCE CITOYENNE
+              <span className="text-[10px] bg-rose-700 text-white px-2 py-0.5 font-bold uppercase font-mono">
+                CANAL NON AUTORISÉ
               </span>
             </div>
           ) : null}

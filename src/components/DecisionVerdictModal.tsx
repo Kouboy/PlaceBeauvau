@@ -83,13 +83,13 @@ export const DecisionVerdictModal: React.FC<DecisionVerdictModalProps> = ({
             <div className="min-w-0 flex-1">
               <h2 className="text-base font-bold text-black uppercase">
                 {feedback.correct
-                  ? `Visa Apposé avec Succès : [${feedback.tamponTente}]`
-                  : `Blâme Disciplinaire Notifié (Avis ${blames}/3)`}
+                  ? `Visa Homologué : [${feedback.tamponTente}]`
+                  : `Rejet du Visa par le Parquet (Avis ${blames}/3)`}
               </h2>
               <p className="text-xs text-slate-700 mt-0.5">
                 {feedback.correct
-                  ? "Qualification conforme aux instructions de la circulaire ministérielle. Aucune faute imputée."
-                  : `Visa requis selon la doctrine : [${feedback.tamponAttendu}]`}
+                  ? "Qualification conforme aux réquisitions du Parquet et de la Préfecture."
+                  : `Orientation requise par la hiérarchie : [${feedback.tamponAttendu}]`}
               </p>
             </div>
           </div>
@@ -109,7 +109,7 @@ export const DecisionVerdictModal: React.FC<DecisionVerdictModalProps> = ({
             <div className="bg-white border border-[#9c9a91] p-2 shadow-xs">
               <div className="text-[10px] text-slate-600 font-bold uppercase">Prime</div>
               <div className="text-sm font-bold text-emerald-700 mt-0.5">
-                {feedback.correct ? "+50 € (Zèle)" : "0 € (Pénalité)"}
+                {feedback.correct ? "+50 € (Homologation)" : "0 € (Pénalité)"}
               </div>
             </div>
 

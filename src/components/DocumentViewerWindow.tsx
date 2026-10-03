@@ -92,7 +92,7 @@ export const DocumentViewerWindow: React.FC<DocumentViewerWindowProps> = ({
               CRAYON DE CAVIARDAGE OFFICIEL :
             </span>
             <span className="text-slate-700 text-[11px] hidden sm:inline">
-              Biffez directement les lésions pour aligner le constat sur la version policière (+20€/biffage).
+              Occultez les mentions contradictoires avant versement aux débats.
             </span>
           </div>
 
@@ -198,7 +198,7 @@ export const DocumentViewerWindow: React.FC<DocumentViewerWindowProps> = ({
                           <span className={`text-[10px] font-bold px-2 py-0.5 border ${
                             estErreur ? "bg-red-800 border-red-950 text-white" : "bg-emerald-800 border-emerald-950 text-white"
                           }`}>
-                            {estErreur ? "⚠️ FAUTE DE ZELE" : "✓ CAVIARDÉ"}
+                            {estErreur ? "⚠️ COHÉRENCE COMPROMISE" : "✓ MENTION OCCULTÉE"}
                           </span>
                         ) : (
                           <button

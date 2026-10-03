@@ -622,7 +622,7 @@ export default function App() {
       const gain = 35;
       setPrimeTotale((prev) => prev + gain);
       setCredibiliteMinistere((prev) => Math.min(100, prev + 10));
-      setFloatingBonus({ text: `📹 FLUX MAÎTRISÉ (+${gain} €)`, id: Date.now() });
+      setFloatingBonus({ text: `📹 FLUX ENREGISTRÉ (+${gain} €)`, id: Date.now() });
       setTimeout(() => setFloatingBonus(null), 1600);
       setCameraFeedback({
         valide: true,
@@ -630,7 +630,7 @@ export default function App() {
         bonus: gain,
       });
       setFlashNews(
-        `ARBITRAGE VIDÉO CONFORME : ${decision === "neutralisee" ? "Flux compromettant purgé" : "Preuve à charge conservée"} (+${gain} € / Crédibilité +10%).`
+        `GESTION DU FLUX CCTV : ${decision === "neutralisee" ? "Défaillance technique actée" : "Pièce versée aux débats"} (+${gain} € / Crédibilité +10%).`
       );
     } else {
       jouerSonBlame();
@@ -645,7 +645,7 @@ export default function App() {
         }
         return next;
       });
-      setFloatingBonus({ text: `⚠️ FAUTE VIDÉO (-${perte} €)`, id: Date.now() });
+      setFloatingBonus({ text: `⚠️ ARBITRAGE VIDÉO CONTESTÉ (-${perte} €)`, id: Date.now() });
       setTimeout(() => setFloatingBonus(null), 1800);
       setCameraFeedback({
         valide: false,
@@ -653,7 +653,7 @@ export default function App() {
         bonus: -perte,
       });
       setFlashNews(
-        `FAUTE PROCÉDURALE VIDÉO : ${decision === "neutralisee" ? "Preuve à charge effacée par erreur !" : "Vidéo compromettante laissée au dossier !"} (-${perte} € / Crédibilité -22%).`
+        `ARBITRAGE VIDÉO CONTESTÉ PAR LE PARQUET (-${perte} € / Crédibilité -22%).`
       );
     }
     setTimeout(() => setFlashNews(null), 6000);
@@ -885,7 +885,7 @@ export default function App() {
       setPrimeTotale((prev) => prev + bonus);
       setCredibiliteMinistere((prev) => Math.min(100, prev + 8));
       setPaxSociale((prev) => Math.min(100, prev + 4));
-      setFloatingBonus({ text: `✓ RIO CONFORME (+${bonus} €)`, id: Date.now() });
+      setFloatingBonus({ text: `✓ ARBITRAGE RIO HOMOLOGUÉ (+${bonus} €)`, id: Date.now() });
       setTimeout(() => setFloatingBonus(null), 1600);
       setRioFeedback({
         valide: true,
@@ -893,7 +893,7 @@ export default function App() {
         bonus,
       });
       setFlashNews(
-        `ARBITRAGE RIO CONFORME : ${decision === "flouter" ? "Anonymat garanti" : "Matricule homologué"} (+${bonus} € / Crédibilité +8%).`
+        `ARBITRAGE RIO : ${decision === "flouter" ? "Anonymat de service garanti" : "Matricule homologué"} (+${bonus} € / Crédibilité +8%).`
       );
     } else {
       jouerSonBlame();
@@ -909,7 +909,7 @@ export default function App() {
         return next;
       });
       setPaxSociale((prev) => Math.max(10, prev - 8));
-      setFloatingBonus({ text: `⚠️ ERREUR RIO (-${malus} €)`, id: Date.now() });
+      setFloatingBonus({ text: `⚠️ ARBITRAGE RIO CONTESTÉ (-${malus} €)`, id: Date.now() });
       setTimeout(() => setFloatingBonus(null), 1800);
       setRioFeedback({
         valide: false,
@@ -917,7 +917,7 @@ export default function App() {
         bonus: -malus,
       });
       setFlashNews(
-        `AVERTISSEMENT RIO : Décision inappropriée sur le matricule (-${malus} € / Crédibilité -18%).`
+        `ARBITRAGE RIO CONTESTÉ : Position désapprouvée par la hiérarchie (-${malus} € / Crédibilité -18%).`
       );
     }
     setTimeout(() => setFlashNews(null), 6000);
@@ -938,7 +938,7 @@ export default function App() {
     const bonus = current.riposteOutrage.primeRiposte * mult;
     setPrimeTotale((prev) => prev + bonus);
     setPaxSociale((prev) => Math.min(100, prev + 4));
-    setFloatingBonus({ text: `⚖️ +${bonus} € (OUTRAGE PARQUET)`, id: Date.now() });
+    setFloatingBonus({ text: `⚖️ +${bonus} € (CONTRE-PLAINTE DÉPOSÉE)`, id: Date.now() });
     setTimeout(() => setFloatingBonus(null), 1600);
     setFlashNews(
       `INVERSION ACCUSATOIRE : Procédure d'outrage & rébellion transmise au Parquet contre la victime (+${bonus} €).`
@@ -946,17 +946,17 @@ export default function App() {
     setTimeout(() => setFlashNews(null), 6000);
   }, [riposteDeclenchee, currentIndex, equipementsPossedes]);
 
-  // Voie de résistance citoyenne : fuite clandestine sécurisée à Me Camille Sorel
+  // Voie externe : transmission de copie hors procédure à Me Camille Sorel
   const transmettreFuiteClandestine = useCallback((dossierId: string) => {
     if (fuitesTransmises.has(dossierId)) return;
     soundFx.playWhistleblowLeak();
     declencherVibration([40, 70, 40, 90]);
     setFuitesTransmises((prev) => new Set(prev).add(dossierId));
     setPaxSociale((prev) => Math.max(10, prev - 8));
-    setFloatingBonus({ text: "📡 FUITE SÉCURISÉE ENVOYÉE", id: Date.now() });
+    setFloatingBonus({ text: "📡 COPIE HORS PROCÉDURE TRANSMISE", id: Date.now() });
     setTimeout(() => setFloatingBonus(null), 2000);
     setFlashNews(
-      "📡 LIAISON TOR // FUITE SÉCURISÉE : Copie brute non caviardée transmise à Me Camille Sorel et au Défenseur des Droits !"
+      "📡 LIAISON EXTERNE // TRANSMISSION EFFECTUÉE : Copie non expurgée versée à la défense."
     );
     setTimeout(() => setFlashNews(null), 7000);
   }, [fuitesTransmises]);
@@ -1055,10 +1055,10 @@ export default function App() {
         }
         return next;
       });
-      setFloatingBonus({ text: `⚠️ FAUTE DE CENSURE (-${malusCensure} €)`, id: Date.now() });
+      setFloatingBonus({ text: `⚠️ COHÉRENCE DU MÉMOIRE COMPROMISE (-${malusCensure} €)`, id: Date.now() });
       setTimeout(() => setFloatingBonus(null), 1800);
       setFlashNews(
-        `ERREUR DE CAVIARDAGE : « ${terme.texteBrut} » constituait une preuve à charge ! (-${malusCensure} € / Crédibilité -14%).`
+        `COHÉRENCE DU MÉMOIRE DÉGRADÉE : « ${terme.texteBrut} » soutenait la qualification retenue (-${malusCensure} € / Crédibilité -14%).`
       );
     }
     setTimeout(() => setFlashNews(null), 5500);
