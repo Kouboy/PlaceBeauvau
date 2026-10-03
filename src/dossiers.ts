@@ -21,7 +21,7 @@ export const TAMPONS_DISPONIBLES: TamponOption[] = [
   {
     code: 'impunite',
     label: 'NON-LIEU // USAGE CONFORME',
-    sousTitre: 'EXTINCTION DES POURSUITES - ART. L. 435-1 CSI',
+    sousTitre: 'JUSTIFICATION DE L\'USAGE DE LA FORCE - ART. L. 435-1 CSI',
     raccourci: '1'
   },
   {

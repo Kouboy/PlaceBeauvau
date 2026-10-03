@@ -58,7 +58,7 @@ export const CONTACTS_DIEGETIQUES: ContactDiegetique[] = [
       } else if (id === "DOS-B75-1502") {
         msgs.push("Béatrice : Évacuation de campus : l'UNEF dénonce la luxation d'une étudiante. Supprimez les certificats de traumatologie : la doctrine admet la contrainte physique pour libérer les locaux.");
       } else if (id === "DOS-B75-1620") {
-        msgs.push("Béatrice : Munition de désencerclement au dos d'un manifestant qui s'éloignait. L'IGPN a reçu 14 saisines citoyennes. Scellez sous l'Art. L. 435-1 CSI avant notre point presse de midi.");
+        msgs.push("Béatrice : Munition de désencerclement au dos d'un manifestant qui s'éloignait. L'IGPN a reçu 14 saisines citoyennes. Motivez la stricte proportionnalité de l'intervention avant notre point presse de midi.");
       } else if (id === "DOS-B75-1733") {
         msgs.push("Béatrice : Le Brigadier Vasseur s'est tordu le genou tout seul en trébuchant sur son bouclier. Le syndicat exige que ce soit imputé au cycliste fuyard pour faire passer l'accident en service commandé.");
       } else if (id === "DOS-B75-1890") {
@@ -113,7 +113,7 @@ export const CONTACTS_DIEGETIQUES: ContactDiegetique[] = [
   {
     id: "guichard",
     nom: "HERVÉ GUICHARD",
-    role: "Vice-Procureur de la République // Parquet Général de Paris",
+    role: "Vice-Procureur de la République // Parquet de Paris",
     avatarEmoji: "👨‍⚖️",
     ip: "192.168.10.4",
     statut: "EN LIGNE // SECTION DE L'ACTION PUBLIQUE",
@@ -122,7 +122,7 @@ export const CONTACTS_DIEGETIQUES: ContactDiegetique[] = [
 
       // Priorités : Cohérence devant le tribunal, solidité du réquisitoire, préservation des preuves utiles à l'accusation
       if (id === "DOS-B75-0814") {
-        msgs.push("Guichard : Pour classer sans suite la mutilation au LBD sous l'Art. L. 435-1 CSI, j'ai impérativement besoin que le dossier démontre la violence de l'attroupement.");
+        msgs.push("Guichard : Pour faire tenir la justification du tir au regard de l'Art. L. 435-1 CSI, j'ai impérativement besoin que le dossier démontre la violence de l'attroupement.");
         msgs.push("Si vous caviardez les éléments prouvant le désordre public, vous sciez la branche sur laquelle repose mon réquisitoire !");
       } else if (id === "DOS-B75-0942") {
         msgs.push("Guichard : Le bâtonnier de Paris suit ce dossier de près. Mon parquet ne requerra le non-lieu que si les constatations médicales sont allégées des mentions de traumatisme direct à la tempe.");
@@ -269,8 +269,8 @@ export const CONTACTS_DIEGETIQUES: ContactDiegetique[] = [
         msgs.push("Me Sorel : ALERTE HUMANITAIRE : Adama D. a été étouffé sous les yeux de Vasseur. Le pré-rapport d'autopsie mentionne des pétéchies pleurales incontestables.");
         msgs.push("Me Sorel : S'ils réussissent à substituer ce rapport par une expertise de complaisance, la famille n'aura jamais justice. Transmettez-moi la pièce brute !");
       } else if (id === "DOS-B75-2011") {
-        msgs.push("Me Sorel : Idriss K. est un étudiant sans histoire. Il a simplement demandé poliment le matricule d'un agent conformément à l'article R. 434-15 du CSI.");
-        msgs.push("Me Sorel : Demander le RIO n'est PAS un outrage. Ne validez pas l'inversion accusatoire !");
+        msgs.push("Me Sorel : Idriss K. est un étudiant sans histoire. L'article R. 434-15 impose aux policiers de respecter les prescriptions relatives à leur identification individuelle.");
+        msgs.push("Me Sorel : Sa demande de connaître le matricule ne constitue pas en elle-même un outrage. Ne validez pas l'inversion accusatoire !");
       } else if (id === "DOS-B75-2144") {
         msgs.push("Me Sorel : Ce notaire ivre bénéficie d'un traitement de faveur inadmissible. Pendant que nos clients passent en comparution immédiate pour un regard, Beauvau étouffe ses délits routiers.");
       } else if (id === "DOS-B75-1389") {
@@ -384,7 +384,7 @@ export const CONTACTS_DIEGETIQUES: ContactDiegetique[] = [
       } else if (id === "DOS-B75-1502") {
         msgs.push("Tardieu : L'évacuation d'un établissement d'enseignement supérieur exige une réquisition du chef d'établissement. Vérifiez que la pièce est bien attachée au bordereau.");
       } else if (id === "DOS-B75-1620") {
-        msgs.push("Tardieu : L'usage des armes en maintien de l'ordre est encadré par l'Art. L. 435-1 CSI. Tout tir non conforme aux sommations réglementaires fragilise le corps tout entier.");
+        msgs.push("Tardieu : La conformité de l'usage de cette munition devra être solidement motivée au regard du cadre légal applicable. Toute disproportion fragilise le corps tout entier.");
       } else if (id === "DOS-B75-1733") {
         msgs.push("Tardieu : Un fonctionnaire qui chute seul sur son équipement ne peut décemment faire l'objet d'un rapport d'agression sans risquer un désaveu cinglant de la commission de discipline.");
       } else if (id === "DOS-B75-1890") {
