@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { soundFx } from "../services/soundFx";
 import blissWallpaperAzure from "../assets/images/xp_bliss_azure_1790841573015.jpg";
-import blissWallpaperSurveillance from "../assets/images/xp_bliss_surveillance_1790672405866.jpg";
+import blissWallpaperSurveillance from "../assets/images/bliss_police_nationale_1791041406709.jpg";
 
 /* =======================================================================
    1. DÉMINEUR DE MAINTIEN DE L'ORDRE (WIN32 MINESWEEPER)
@@ -292,7 +292,7 @@ interface NotepadProps {
 export const NotepadDialog: React.FC<NotepadProps> = ({ isOpen, onClose }) => {
   const [content, setContent] = useState<string>(
     `NOTE DE SERVICE INTÉRIEURE // DIFFUSION RESTREINTE
-Référence : CIRCULAIRE INTER-MINISTÉRIELLE L. 435-1 (APUREMENT DU CONTENTIEUX)
+Référence : PROTOCOLE CHEOPS N° 2004-89 // APPLICATION DE L'ART. L. 435-1 CSI
 Destinataire : Officiers et Agents instructeurs CHEOPS
 
 RAPPEL IMPORTANT POUR LE SERVICE :
@@ -579,7 +579,7 @@ interface DisplayPropertiesProps {
 export const DisplayPropertiesDialog: React.FC<DisplayPropertiesProps> = ({
   isOpen,
   onClose,
-  wallpaperTheme = "azure",
+  wallpaperTheme = "surveillance",
   onSelectWallpaper,
 }) => {
   const [activeTab, setActiveTab] = useState<"theme" | "bureau" | "ecran">("bureau");
@@ -592,10 +592,10 @@ export const DisplayPropertiesDialog: React.FC<DisplayPropertiesProps> = ({
   if (!isOpen) return null;
 
   const previewBg =
-    selectedTheme === "azure"
-      ? blissWallpaperAzure
-      : selectedTheme === "surveillance"
+    selectedTheme === "surveillance"
       ? blissWallpaperSurveillance
+      : selectedTheme === "azure"
+      ? blissWallpaperAzure
       : "";
 
   const handleApply = () => {
@@ -689,22 +689,6 @@ export const DisplayPropertiesDialog: React.FC<DisplayPropertiesProps> = ({
                 type="button"
                 onClick={() => {
                   soundFx.playUiClick();
-                  setSelectedTheme("azure");
-                }}
-                className={`w-full text-left p-1.5 text-xs flex justify-between items-center cursor-pointer border ${
-                  selectedTheme === "azure"
-                    ? "bg-[#316ac5] text-white font-bold border-[#003399]"
-                    : "bg-white hover:bg-slate-100 text-slate-800 border-[#7f9db9]"
-                }`}
-              >
-                <span>Colline Azur (Bliss Authentique)</span>
-                <span className="text-[10px]">{selectedTheme === "azure" ? "● Sélectionné" : ""}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  soundFx.playUiClick();
                   setSelectedTheme("surveillance");
                 }}
                 className={`w-full text-left p-1.5 text-xs flex justify-between items-center cursor-pointer border ${
@@ -713,8 +697,24 @@ export const DisplayPropertiesDialog: React.FC<DisplayPropertiesProps> = ({
                     : "bg-white hover:bg-slate-100 text-slate-800 border-[#7f9db9]"
                 }`}
               >
-                <span>Colline de Surveillance (Bliss Beauvau)</span>
+                <span>Colline de Surveillance (Bliss Police Nationale — Parodie)</span>
                 <span className="text-[10px]">{selectedTheme === "surveillance" ? "● Sélectionné" : ""}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  soundFx.playUiClick();
+                  setSelectedTheme("azure");
+                }}
+                className={`w-full text-left p-1.5 text-xs flex justify-between items-center cursor-pointer border ${
+                  selectedTheme === "azure"
+                    ? "bg-[#316ac5] text-white font-bold border-[#003399]"
+                    : "bg-white hover:bg-slate-100 text-slate-800 border-[#7f9db9]"
+                }`}
+              >
+                <span>Colline Azur (Bliss Authentique XP)</span>
+                <span className="text-[10px]">{selectedTheme === "azure" ? "● Sélectionné" : ""}</span>
               </button>
 
               <button

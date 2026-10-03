@@ -92,8 +92,8 @@ interface FeedbackState {
 export default function App() {
   const [gameState, setGameState] = useState<GameState>("intro");
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [timeRemaining, setTimeRemaining] = useState<number>(26.0);
-  const [maxTime, setMaxTime] = useState<number>(26.0);
+  const [timeRemaining, setTimeRemaining] = useState<number>(180.0);
+  const [maxTime, setMaxTime] = useState<number>(180.0);
   const [activeStamp, setActiveStamp] = useState<StampResult | null>(null);
   const [screenShake, setScreenShake] = useState<boolean>(false);
   const [totalProcessed, setTotalProcessed] = useState<number>(0);
@@ -331,19 +331,21 @@ export default function App() {
   const isProcessingRef = useRef<boolean>(false);
   const dropZoneRef = useRef<HTMLDivElement | null>(null);
 
-  // Temps alloué : ~26 secondes pour analyser et qualifier, dégressif jusqu'à 12s
+  // Temps alloué : commence à 3 minutes (180s) pour le premier cas, puis réduction progressive
   const calculateAllocatedTime = useCallback((index: number): number => {
-    if (index < 3) return 26.0;
-    const steps = index - 2;
-    const time = 26.0 / Math.pow(1.12, steps);
-    return Math.max(12.0, Math.round(time * 10) / 10);
+    // Dossier 1 (index 0) : 180.0s (3 min)
+    // Réduction progressive équilibrée : -8.5s par dossier, conservant au moins 70s pour les cas complexes finaux
+    const baseTime = 180.0;
+    const reduction = index * 8.5;
+    const allocated = Math.max(70.0, Math.round((baseTime - reduction) * 10) / 10);
+    return allocated;
   }, []);
 
   const startDossier = useCallback((index: number, shouldAutoStartChrono?: boolean) => {
     const current = dossiers[index];
     let allocated = calculateAllocatedTime(index);
     if (equipementsPossedes.has("cafe_syndical")) {
-      allocated += 8.0;
+      allocated += 30.0;
     }
     setMaxTime(allocated);
     setTimeRemaining(allocated);
@@ -444,12 +446,12 @@ export default function App() {
     setTimeout(() => setFloatingBonus(null), 1200);
   }, [isAwaitingNext, isChronoStarted, gameState]);
 
-  // Pause café syndicale (+8s d'instruction)
+  // Pause café syndicale (+25s d'instruction)
   const ajouterTempsCafe = useCallback(() => {
     soundFx.playCoffeeSip();
-    setTimeRemaining((prev) => prev + 8.0);
-    setMaxTime((prev) => prev + 8.0);
-    setFloatingBonus({ text: "☕ PAUSE CAFÉ (+8s)", id: Date.now() });
+    setTimeRemaining((prev) => prev + 25.0);
+    setMaxTime((prev) => prev + 25.0);
+    setFloatingBonus({ text: "☕ PAUSE CAFÉ (+25s)", id: Date.now() });
     setTimeout(() => setFloatingBonus(null), 1500);
   }, []);
 
@@ -473,9 +475,9 @@ export default function App() {
         setGameOverReason("timeout");
         setGameState("gameover");
       } else {
-        // Délai de grâce d'urgence de 12 secondes pour permettre au joueur de conclure
-        setMaxTime(12.0);
-        setTimeRemaining(12.0);
+        // Délai de grâce d'urgence de 20 secondes pour permettre au joueur de conclure
+        setMaxTime(20.0);
+        setTimeRemaining(20.0);
         setIsChronoStarted(true);
         lastTickRef.current = performance.now();
       }
@@ -501,10 +503,10 @@ export default function App() {
         const next = Math.max(0, prev - dt);
         const curSec = Math.ceil(next);
 
-        // Tic-tac sec d'urgence dans les 5 dernières secondes
-        if (curSec <= 5 && curSec > 0 && curSec !== lastAudioTickSec) {
+        // Tic-tac sec d'urgence dans les 8 dernières secondes (intensifié dans les 4 dernières)
+        if (curSec <= 8 && curSec > 0 && curSec !== lastAudioTickSec) {
           lastAudioTickSec = curSec;
-          soundFx.playChronoTick(true);
+          soundFx.playChronoTick(curSec <= 4);
         }
 
         if (next <= 0) {
@@ -1401,7 +1403,7 @@ export default function App() {
 
                 <div className="hidden sm:block text-right text-[10px] text-sky-200">
                   <div>Direction Générale de la Police Nationale</div>
-                  <div className="font-mono text-amber-300 font-bold">CIRCULAIRE L. 435-1</div>
+                  <div className="font-mono text-amber-300 font-bold">APPLICATION ART. L. 435-1 CSI</div>
                 </div>
               </div>
               <div className="h-0.5 bg-gradient-to-r from-transparent via-[#d76b00] to-transparent" />

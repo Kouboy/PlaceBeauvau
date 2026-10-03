@@ -154,7 +154,7 @@ export const OfficerEvaluationReportModal: React.FC<OfficerEvaluationReportModal
             <span>CHEOPS : Rapport Individuel de Notation // Clôture de Session</span>
           </div>
           <span className="text-[10px] text-sky-100 bg-white/20 px-1.5 py-0.2">
-            Décret L. 435-1 CSI
+            Art. L. 435-1 CSI
           </span>
         </div>
 

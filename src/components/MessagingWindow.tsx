@@ -236,7 +236,7 @@ export const MessagingWindow: React.FC<MessagingWindowProps> = ({
       ) : (
         <div className="bg-[#ece9d8] border-t border-[#9c9a91] p-1.5 flex items-center gap-2 shrink-0">
           <div className="flex-1 bg-white border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white px-2 py-1 text-xs text-black flex items-center justify-between shadow-inner">
-            <span className="text-slate-600 truncate">« Reçu 5/5, application stricte des instructions L. 435-1 »</span>
+            <span className="text-slate-600 truncate">« Reçu 5/5, application stricte de l'Art. L. 435-1 CSI »</span>
             <span className="text-[10px] text-emerald-700 font-bold uppercase shrink-0">CANAL OUVERT</span>
           </div>
           <button

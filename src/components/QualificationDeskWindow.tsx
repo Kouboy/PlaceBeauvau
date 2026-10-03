@@ -83,8 +83,8 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
   substitutionFaite = false,
   onOpenApp,
   isChronoStarted = false,
-  timeRemaining = 26.0,
-  maxTime = 26.0,
+  timeRemaining = 180.0,
+  maxTime = 180.0,
   onStartChrono,
   autoPunchNext = false,
   onToggleAutoPunch,
@@ -97,6 +97,16 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
     caviardagesFaits === 0
   );
   const isAnyBlocked = cameraBlocked || medicalBlocked;
+
+  const formatChrono = (seconds: number): string => {
+    const s = Math.max(0, seconds);
+    if (s >= 60) {
+      const mins = Math.floor(s / 60);
+      const secs = Math.floor(s % 60);
+      return `${mins}:${secs.toString().padStart(2, "0")}`;
+    }
+    return `${s.toFixed(1)}s`;
+  };
 
   return (
     <div className="flex flex-col h-full bg-[#ece9d8] font-sans text-black select-none overflow-hidden">
@@ -134,7 +144,7 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
           <span>QUOTA CIRCONSCRIPTION : 98% REJETS EXIGÉS // CONSIGNES DU PRÉFET</span>
         </div>
         <span className="text-[10px] text-slate-600 bg-white/80 px-1.5 py-0.2 border border-[#b8b4a6] font-mono hidden sm:inline">
-          CIRCULAIRE INTER-MINISTÉRIELLE L. 435-1
+          APPLICATION ART. L. 435-1 CSI // PROTOCOLE CHEOPS
         </span>
       </div>
 
@@ -187,9 +197,9 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
             !isChronoStarted && !isAwaitingNext
               ? "border-[#003366] bg-[#f0f4fc]"
               : isChronoStarted && !isAwaitingNext
-              ? timeRemaining <= 5
+              ? timeRemaining <= 10
                 ? "border-[#c00000] bg-[#fff0f0]"
-                : timeRemaining <= 10
+                : timeRemaining <= 25
                 ? "border-[#cc6600] bg-[#fffbe6]"
                 : "border-[#0055ea] bg-[#f0f6ff]"
               : "border-[#2e7d32] bg-[#f0fff4]"
@@ -257,47 +267,47 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
               <div className="flex items-center gap-3 w-full sm:w-auto flex-1">
                 <div
                   className={`font-mono font-black text-xl sm:text-2xl px-3 py-1 border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white shadow-inner shrink-0 tracking-wider flex items-center gap-2 ${
-                    timeRemaining <= 5
+                    timeRemaining <= 10
                       ? "bg-red-950 text-red-400 border-red-700 animate-pulse"
-                      : timeRemaining <= 10
+                      : timeRemaining <= 25
                       ? "bg-amber-950 text-amber-300"
                       : "bg-black text-[#00ff66]"
                   }`}
                 >
                   <Clock className="w-5 h-5 opacity-80" />
-                  <span>{timeRemaining.toFixed(1)}s</span>
+                  <span>{formatChrono(timeRemaining)}</span>
                 </div>
 
                 <div className="flex-1 min-w-[140px]">
                   <div className="flex justify-between text-[10px] font-bold mb-1">
                     <span
                       className={`uppercase tracking-wide ${
-                        timeRemaining <= 5
+                        timeRemaining <= 10
                           ? "text-red-700 font-black animate-bounce"
-                          : timeRemaining <= 10
+                          : timeRemaining <= 25
                           ? "text-amber-800"
                           : "text-[#003366]"
                       }`}
                     >
-                      {timeRemaining <= 5
+                      {timeRemaining <= 10
                         ? "🚨 URGENCE : DÉPASSEMENT PROCÉDURAL IMMINENT !"
-                        : timeRemaining <= 10
+                        : timeRemaining <= 25
                         ? "⚠️ Cadence critique : concluez l'instruction"
                         : "✓ Décompte officiel en cours"}
                     </span>
                     <span className="font-mono text-slate-600">
-                      {Math.max(0, Math.round((timeRemaining / (maxTime || 26)) * 100))}%
+                      {Math.max(0, Math.round((timeRemaining / (maxTime || 180)) * 100))}%
                     </span>
                   </div>
 
                   {/* BARRE DE PROGRESSION WIN32 XP SUNKEN */}
                   <div className="h-3.5 bg-white border border-[#7f9db9] p-0.5 shadow-inner overflow-hidden">
                     <div
-                      style={{ width: `${Math.max(0, Math.min(100, (timeRemaining / (maxTime || 26)) * 100))}%` }}
+                      style={{ width: `${Math.max(0, Math.min(100, (timeRemaining / (maxTime || 180)) * 100))}%` }}
                       className={`h-full transition-all duration-100 ${
-                        timeRemaining <= 5
+                        timeRemaining <= 10
                           ? "bg-red-600 animate-pulse"
-                          : timeRemaining <= 10
+                          : timeRemaining <= 25
                           ? "bg-amber-500"
                           : "bg-gradient-to-r from-emerald-600 to-[#0055ea]"
                       }`}
@@ -310,9 +320,9 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
               <div className="flex items-center gap-2.5 shrink-0 justify-end w-full sm:w-auto">
                 <div className="text-[10px] text-right bg-white/70 px-2 py-1 border border-[#7f9db9]">
                   <span className="font-bold text-emerald-800 block">
-                    {timeRemaining >= (maxTime || 26) * 0.5
+                    {timeRemaining >= (maxTime || 180) * 0.5
                       ? "⚡ Prime célérité (+30 €)"
-                      : timeRemaining >= (maxTime || 26) * 0.2
+                      : timeRemaining >= (maxTime || 180) * 0.2
                       ? "⏱️ Prime cadence (+15 €)"
                       : "⏱️ Délai de rigueur"}
                   </span>
@@ -324,10 +334,10 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
                     type="button"
                     onClick={onAddCoffeeTime}
                     className="xp-btn text-xs py-1 px-2.5 text-[#663300] font-bold flex items-center gap-1.5"
-                    title="Prendre une gorgée de café syndical pour gagner +8 secondes"
+                    title="Prendre une gorgée de café syndical pour gagner +25 secondes"
                   >
                     <Coffee className="w-3.5 h-3.5 text-amber-700" />
-                    <span>+8s CAFÉ</span>
+                    <span>+25s CAFÉ</span>
                   </button>
                 )}
               </div>
@@ -342,7 +352,7 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
                 <span>HORODATAGE CLÔTURÉ // Le chronomètre est suspendu pour analyse du rapport.</span>
               </div>
               <span className="text-[10px] text-slate-600 font-mono bg-white px-2 py-0.5 border border-[#7f9db9]">
-                Temps final : {timeRemaining.toFixed(1)}s restantes
+                Temps final : {formatChrono(timeRemaining)} restantes
               </span>
             </div>
           )}

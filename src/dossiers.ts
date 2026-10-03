@@ -21,7 +21,7 @@ export const TAMPONS_DISPONIBLES: TamponOption[] = [
   {
     code: 'impunite',
     label: 'NON-LIEU // USAGE CONFORME',
-    sousTitre: 'EXTINCTION DES POURSUITES - ART. L. 435-1',
+    sousTitre: 'EXTINCTION DES POURSUITES - ART. L. 435-1 CSI',
     raccourci: '1'
   },
   {
@@ -141,7 +141,7 @@ export const BOUTIQUE_EQUIPEMENTS: EquipementBoutique[] = [
     description: "Distributeur automatique de caféine pour compenser la cadence infernale du greffe.",
     cout: 50,
     icone: "☕",
-    effetDescription: "+10 secondes de délai d'analyse par dossier"
+    effetDescription: "+30 secondes de délai d'analyse par dossier"
   },
   {
     id: "riposte_systematique",
@@ -876,7 +876,7 @@ export const dossiers: Dossier[] = [
     jargon_officiel: "Réquisition conservatoire de denrées glucidiques d'urgence au titre du maintien impératif de la glycémie opérationnelle des forces engagées en milieu hostile.",
     categorie_attendue: "impunite",
     tampon_imposé: "NON-LIEU // USAGE CONFORME",
-    justification_erreur: "La préservation du potentiel calorique des effectifs engagés prévaut sur le droit de propriété commerciale ordinaire (Art. L. 435-1).",
+    justification_erreur: "La préservation du potentiel calorique des effectifs engagés prévaut sur le droit de propriété commerciale ordinaire (Directive CHEOPS n° 2104).",
     profilage: {
       identite: "M. Jean-Luc B., 54 ans, artisan boulanger Meilleur Ouvrier de France",
       classeSociale: "Petite bourgeoisie artisanale indépendante",

@@ -151,7 +151,7 @@ export const DiegeticTopBar: React.FC<DiegeticTopBarProps> = ({
                 className="w-full text-left px-2.5 py-2 hover:bg-[#0c4a6e] hover:text-white text-slate-100 flex items-center gap-2 cursor-pointer rounded-xs mb-1"
               >
                 <BookOpen className="w-4 h-4 text-amber-400" />
-                <span>Circulaire Doctrinale L. 435-1</span>
+                <span>Doctrine Art. L. 435-1 CSI</span>
               </button>
 
               <button

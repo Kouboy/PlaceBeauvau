@@ -53,7 +53,7 @@ import { MissionNotificationToast } from "./MissionNotificationToast";
 import { CaseMissionChecklist } from "./CaseMissionChecklist";
 import { DesktopClutter } from "./DesktopClutter";
 import blissWallpaperAzure from "../assets/images/xp_bliss_azure_1790841573015.jpg";
-import blissWallpaperSurveillance from "../assets/images/xp_bliss_surveillance_1790672405866.jpg";
+import blissWallpaperSurveillance from "../assets/images/bliss_police_nationale_1791041406709.jpg";
 import {
   MinesweeperDialog,
   NotepadDialog,
@@ -257,8 +257,8 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
   isFullscreen = false,
   onToggleFullscreen = () => {},
   isChronoStarted = false,
-  timeRemaining = 26.0,
-  maxTime = 26.0,
+  timeRemaining = 180.0,
+  maxTime = 180.0,
   onStartChrono,
   autoPunchNext = false,
   onToggleAutoPunch,
@@ -297,13 +297,28 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
     }
   };
 
-  // Thème de fond d'écran (Bliss Surveillance parodique Police Nationale par défaut)
-  const [wallpaperTheme, setWallpaperTheme] = useState<"azure" | "surveillance" | "classic">("surveillance");
+  // Thème de fond d'écran parodique Police Nationale par défaut (persistant via localStorage)
+  const [wallpaperTheme, setWallpaperTheme] = useState<"surveillance" | "azure" | "classic">(() => {
+    try {
+      const saved = localStorage.getItem("cheops_wallpaper_theme");
+      if (saved === "surveillance" || saved === "azure" || saved === "classic") {
+        return saved;
+      }
+    } catch {}
+    return "surveillance";
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("cheops_wallpaper_theme", wallpaperTheme);
+    } catch {}
+  }, [wallpaperTheme]);
+
   const activeWallpaperUrl =
     wallpaperTheme === "surveillance"
       ? blissWallpaperSurveillance
       : wallpaperTheme === "classic"
-      ? blissWallpaperAzure
+      ? ""
       : blissWallpaperAzure;
 
   // Positions déplaçables des icônes du Bureau XP avec espacement vertical généreux (pas de superposition)
@@ -1248,7 +1263,7 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
                         className="px-2 py-1 hover:bg-[#316ac5] hover:text-white flex items-center gap-2 cursor-pointer text-left group"
                       >
                         <BookOpen className="w-4 h-4 text-amber-700 group-hover:text-white" />
-                        <span className="font-bold text-xs leading-tight">Circulaire L. 435-1</span>
+                        <span className="font-bold text-xs leading-tight">Doctrine Art. L. 435-1 CSI</span>
                       </button>
 
                       <button
@@ -1539,16 +1554,20 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
           ) : (
             <div
               className={`flex items-center gap-1 px-1.5 py-0.5 border text-[11px] font-bold font-mono ${
-                timeRemaining <= 5
+                timeRemaining <= 10
                   ? "bg-red-950 border-red-500 text-red-300 animate-pulse"
-                  : timeRemaining <= 10
+                  : timeRemaining <= 25
                   ? "bg-amber-950 border-amber-500 text-amber-300"
                   : "bg-[#001c54] border-sky-400 text-[#00ff66]"
               }`}
               title="Délai d'instruction en cours"
             >
               <Clock className="w-3 h-3" />
-              <span>{timeRemaining.toFixed(1)}s</span>
+              <span>
+                {timeRemaining >= 60
+                  ? `${Math.floor(timeRemaining / 60)}:${Math.floor(timeRemaining % 60).toString().padStart(2, "0")}`
+                  : `${timeRemaining.toFixed(1)}s`}
+              </span>
             </div>
           )}
 
