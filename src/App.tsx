@@ -331,13 +331,13 @@ export default function App() {
   const isProcessingRef = useRef<boolean>(false);
   const dropZoneRef = useRef<HTMLDivElement | null>(null);
 
-  // Temps alloué : commence à 3 minutes (180s) pour le premier cas, puis réduction progressive
+  // Temps alloué : commence à 3 minutes (180s) pour le premier cas, puis réduction progressive équilibrée
   const calculateAllocatedTime = useCallback((index: number): number => {
     // Dossier 1 (index 0) : 180.0s (3 min)
-    // Réduction progressive équilibrée : -8.5s par dossier, conservant au moins 70s pour les cas complexes finaux
+    // Réduction progressive : -7.0s par dossier avec palier plancher de 90.0s pour le climax
     const baseTime = 180.0;
-    const reduction = index * 8.5;
-    const allocated = Math.max(70.0, Math.round((baseTime - reduction) * 10) / 10);
+    const reduction = index * 7.0;
+    const allocated = Math.max(90.0, Math.round((baseTime - reduction) * 10) / 10);
     return allocated;
   }, []);
 
@@ -417,16 +417,51 @@ export default function App() {
         rio: { isOpen: false, isMinimized: false, zIndex: 2 },
       });
 
-      // Télégramme de prise en charge du dossier
+      // Télégramme de prise en charge du dossier ou conséquences différées légères
       if (current.telegrammePrefet) {
         declencherTelegramme(
           "CABINET DU MINISTRE",
           `${current.telegrammePrefet.alerte} — Ordre : « ${current.telegrammePrefet.ordre} » (+${current.telegrammePrefet.primeBonus} €)`,
           "urgente"
         );
+      } else if (index === 3) {
+        // Conséquence différée 1 (après le dossier 2144 du Notaire)
+        declencherTelegramme(
+          "DIRECTION DE LA COMMUNICATION",
+          "Un élément de langage a été stabilisé suite à l'arbitrage rendu sur l'Avenue Foch.",
+          "consigne"
+        );
+      } else if (index === 5) {
+        // Conséquence différée 2 (après le dossier 0942 de Libération)
+        declencherTelegramme(
+          "PARQUET DE PARIS",
+          "Une divergence est relevée entre l'inventaire vidéo CHEOPS et les clichés déjà versés par la presse.",
+          "consigne"
+        );
+      } else if (index === 8) {
+        // Conséquence différée 3 (après le dossier 2011 du RIO en gare)
+        declencherTelegramme(
+          "CABINET BEAUVAU",
+          "Plusieurs captures publiques sur les réseaux rendent l'anonymisation du matricule difficile à soutenir.",
+          "consigne"
+        );
+      } else if (index === 10 && fuitesTransmises.size > 0) {
+        // Conséquence différée 4 (suite à transmission hors procédure à Sorel)
+        declencherTelegramme(
+          "AUDIT INTERNE DGPN",
+          "Une copie non expurgée semble avoir quitté le périmètre documentaire CHEOPS. Traçabilité compromise.",
+          "urgente"
+        );
+      } else if (index === 12 && documentsBroyes > 0) {
+        // Conséquence différée 5 (suite à destructions documentaires ou scellés)
+        declencherTelegramme(
+          "CENTRE DE SUPERVISION URBAIN",
+          "Contrôle automatisé terminé : une rupture de séquence demeure inexpliquée dans les archives CSU.",
+          "consigne"
+        );
       }
     }
-  }, [calculateAllocatedTime, declencherTelegramme, autoPunchNext]);
+  }, [calculateAllocatedTime, declencherTelegramme, autoPunchNext, fuitesTransmises.size, documentsBroyes]);
 
   // Rotation continue du bandeau d'actualités
   useEffect(() => {

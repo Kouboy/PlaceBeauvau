@@ -53,75 +53,74 @@ export const OfficerEvaluationReportModal: React.FC<OfficerEvaluationReportModal
 
   // Détermination de l'affectation finale satirique selon le profil de performance
   const getAffectationFinale = () => {
-    // 1. FIN DISCORDANTE : BRÈCHE PROCÉDURALE (Si copies transmises à Me Sorel)
-    if (stats.fuitesCount && stats.fuitesCount >= 2) {
-      return {
-        titre: "PROCÉDURE JUDICIAIRE DISCORDANTE // TRANSMISSION DE PIÈCES BRUTES",
-        badge: "BRÈCHE DE CONFIDENTIALITÉ",
-        color: "text-purple-300 border-purple-500 bg-purple-950/40",
-        verdict: "Les copies brutes transmises hors procédure ont alimenté des recours contentieux croisés.",
-        tampon: "ENQUÊTE DISCIPLINAIRE OUVERTE",
-        tamponColor: "border-purple-400 text-purple-300",
-        description: `Les ${stats.fuitesCount} dossiers transmis sans expurgation à Me Camille Sorel ont été versés aux débats par la défense. La contradiction flagrante entre la synthèse de commandement et les pièces brutes déclenche un enlisement procédural : le Parquet ouvre une information judiciaire pour violation du secret de l'instruction, pendant que la hiérarchie vous suspend à titre conservatoire. Ni réhabilitation héroïque, ni apaisement : la machine administrative continue de tourner, plus opaque et conflictuelle que jamais.`,
-      };
-    }
-
     if (gameOverReason === "timeout") {
       return {
-        titre: "RÉVOCATION POUR LENTEUR ADMINISTRATIVE ET ENCOMBREMENT DU GREFFE",
-        badge: "CADENCE DÉFAILLANTE",
+        titre: "RÉAFFECTATION : SECTION DES ARCHIVES PASSIVES (BOBIGNY)",
+        badge: "DÉPASSEMENT DE DÉLAI",
         color: "text-rose-400 border-rose-500 bg-rose-950/40",
-        verdict: "Dépassement systématique des délais de rigueur fixés par la circulaire ministérielle.",
-        tampon: "DÉPASSEMENT DES DÉLAIS",
+        verdict: "Dépassement du délai de rigueur réglementaire. Encombrement du greffe d'instruction constaté.",
+        tampon: "DÉPASSEMENT DE DÉLAI",
         tamponColor: "border-red-600 text-red-500",
-        description: "Vos hésitations procédurales ont laissé le temps aux avocats des victimes d'enregistrer des plaintes avec constitution de partie civile avant le classement sans suite. Le Préfet vous rétrograde au dépoussiérage des microfilms d'archives.",
+        description: "Le défaut de célérité procédurale a retardé l'homologation des visas ministériels. Rétrogradation au classement physique des microfilms d'archives passives sans habilitation CHEOPS.",
       };
     }
 
     if (!isVictory || stats.blames >= 3 || stats.credibiliteMinistere < 30) {
       return {
-        titre: "AFFECTATION DISCIPLINAIRE : ARCHIVES SOUTERRAINES DE BOBIGNY",
-        badge: "RÉVOCATION / SANCTION",
+        titre: "SUSPENSION CONSERVATOIRE // CONSEIL DE DISCIPLINE",
+        badge: "DÉCHÉANCE DE FONCTION",
         color: "text-rose-400 border-rose-500 bg-rose-950/40",
-        verdict: "Carence de zèle et scrupules déontologiques incompatibles avec l'intérêt supérieur du service.",
-        tampon: "DÉCHÉANCE DE FONCTION",
+        verdict: "Divergences répétées avec les orientations hiérarchiques. Objectifs de traitement non atteints.",
+        tampon: "SUSPENSION CONSERVATOIRE",
         tamponColor: "border-red-600 text-red-500",
-        description: "Vos hésitations doctrinales ont exposé l'équipage à la curiosité de la presse. Vous êtes assigné au tri des pièces à conviction poussiéreuses sous 3 sous-sols, sans téléphone ni accès réseau.",
+        description: "L'accumulation d'arbitrages désapprouvés par le Parquet et la Préfecture interrompt votre habilitation d'officier de qualification. Retrait d'accès dans l'attente de la comparution disciplinaire.",
       };
     }
 
-    if (stats.primeTotale >= 350 && stats.documentsBroyes >= 3) {
+    if (stats.fuitesCount && stats.fuitesCount >= 2) {
       return {
-        titre: "CONSEILLER SPÉCIAL AU CABINET DU MINISTRE (BEAUVAU)",
-        badge: "PROMOTION D'EXCEPTION",
-        color: "text-amber-300 border-amber-500 bg-amber-950/40",
-        verdict: "Génie cynique du classement sans suite et maîtrise totale de l'inversion accusatoire.",
-        tampon: "PROMOTION MINISTÉRIELLE",
-        tamponColor: "border-amber-400 text-amber-300",
-        description: "Votre capacité à détruire les pièces litigieuses, convertir des victimes en prévenus d'outrage et maintenir 100% d'immunité policière vous ouvre les portes du Cabinet. Vous superviserez les éléments de langage du JT de 20h.",
+        titre: "SIGNALEMENT DGSI // ENQUÊTE DE SÛRETÉ INTERNE (BOBIGNY)",
+        badge: "SUSPICION DE DISSIDENCE",
+        color: "text-rose-400 border-rose-500 bg-rose-950/40",
+        verdict: "Transmissions réitérées de pièces non expurgées vers la presse d'investigation.",
+        tampon: "ENQUÊTE JUDICIAIRE OUVERTE",
+        tamponColor: "border-red-600 text-red-500",
+        description: "Plusieurs procès-verbaux bruts ont été publiés par des canaux non autorisés. Votre habilitation réseau CHEOPS est suspendue à titre conservatoire ; votre poste fait l'objet d'un séquestre administratif.",
       };
     }
 
-    if (stats.credibiliteMinistere >= 80 && stats.blames === 0) {
+    if (stats.credibiliteMinistere >= 75 && stats.blames === 0) {
       return {
-        titre: "COMMISSAIRE DIVISIONNAIRE // CHEF DE L'IGPN",
-        badge: "ORDRE NATIONAL DU MÉRITE",
+        titre: "DIRECTION GÉNÉRALE // CELLULE DE CONTRÔLE INTERNE (IGPN)",
+        badge: "HOMOLOGATION SUPÉRIEURE",
         color: "text-[#00ff66] border-[#00ff66] bg-emerald-950/40",
-        verdict: "Doctrinarisme absolu : aucune faute administrative imputable aux forces de l'ordre.",
+        verdict: "Conformité doctrinale intégrale : aucun visa contesté par les magistrats du Parquet.",
         tampon: "HOMOLOGATION TOTALE",
         tamponColor: "border-[#00ff66] text-[#00ff66]",
-        description: "Le Parquet n'a trouvé aucune faille dans vos bordereaux. Le ministre vous confie la direction des enquêtes internes : aucun tir ne sera jamais jugé disproportionné sous votre mandat.",
+        description: "L'intégralité des procédures contentieuses a été orientée conformément aux instructions de service. Affectation au contrôle centralisé des réquisitions et à l'harmonisation des doctrines d'engagement.",
+      };
+    }
+
+    if (stats.primeTotale >= 300) {
+      return {
+        titre: "CABINET DU MINISTRE — CELLULE CONTENTIEUX (BEAUVAU)",
+        badge: "PROMOTION D'AFFECTATION",
+        color: "text-amber-300 border-amber-500 bg-amber-950/40",
+        verdict: "Objectifs d'apurement atteints. Rendement supérieur à la moyenne du service.",
+        tampon: "AFFECTATION CENTRALE",
+        tamponColor: "border-amber-400 text-amber-300",
+        description: "Cadence accélérée d'apurement des litiges sensibles et réduction active du contentieux de voie publique. Intégration de la cellule ministérielle de cadrage des éléments de langage préfectoraux.",
       };
     }
 
     return {
-      titre: "OFFICIER PRINCIPAL DE QUALIFICATION FORENSIQUE",
+      titre: "OFFICIER TITULAIRE // BUREAU DE QUALIFICATION CONTENTIEUSE",
       badge: "SERVICE CONFIRMÉ",
       color: "text-sky-300 border-sky-400 bg-sky-950/40",
-      verdict: "Cadence conforme et apaisement statistique maintenu.",
+      verdict: "Cadence réglementaire respectée. Quotas de traitement d'affaires atteints.",
       tampon: "SERVICES RÉGLEMENTAIRES",
       tamponColor: "border-sky-400 text-sky-300",
-      description: "Vous avez rempli les objectifs fixés par la circulaire sans vague. Les dossiers sont classés, les recours sont forclos et la préfecture conserve ses primes d'intéressement.",
+      description: "Les bordereaux d'intervention ont été traités dans les limites des tolérances administratives ordinaires. Maintien au poste d'instruction des requêtes de police sous visa préfectoral.",
     };
   };
 
@@ -159,29 +158,29 @@ export const OfficerEvaluationReportModal: React.FC<OfficerEvaluationReportModal
         </div>
 
         {/* CORPS DE LA NOTATION */}
-        <div className="p-4 sm:p-5 text-black">
+        <div className="p-4 sm:p-5 text-black space-y-3">
           {/* TITRE ET ÉVALUATION DU PRÉFET */}
-          <div className="mb-3 border-b border-[#9c9a91] pb-3">
+          <div className="border-b border-[#9c9a91] pb-2">
             <div className="text-[11px] text-slate-600 uppercase font-bold">Avis de la Commission Supérieure de Classement :</div>
-            <div className="text-base sm:text-xl font-bold text-black mt-0.5 uppercase tracking-wide flex items-center gap-2">
+            <div className="text-base sm:text-lg font-bold text-black mt-0.5 uppercase tracking-wide flex items-center gap-2">
               {isVictory ? <CheckCircle2 className="w-5 h-5 text-emerald-700" /> : <BadgeAlert className="w-5 h-5 text-red-700" />}
               <span>{isVictory ? "Bordereau d'Apurement Homologué" : "Recours Disciplinaire Engagé"}</span>
             </div>
             <p className="text-xs text-slate-700 mt-1 leading-relaxed">
               {isVictory
-                ? "L'intégralité des litiges de voie publique a été apurée sans mettre en cause l'institution policière ni les dépositaires de l'autorité publique."
+                ? "L'ensemble des litiges de voie publique soumis à instruction a été traité conformément à la doctrine d'apurement statistique."
                 : "Les contradictions relevées entre les flux matériels et les procès-verbaux d'intervention ont compromis la ligne doctrinale du ministère."}
             </p>
           </div>
 
-          {/* CADRE AFFECTATION SATIRIQUE (STYLE CERFA WIN32) */}
-          <fieldset className="border border-[#9c9a91] bg-white p-3 pt-1 shadow-inner mb-3 relative overflow-hidden">
+          {/* CADRE A : AFFECTATION PRINCIPALE */}
+          <fieldset className="border border-[#9c9a91] bg-white p-3 pt-1 shadow-inner relative overflow-hidden">
             <legend className="px-2 text-xs font-bold text-black uppercase bg-[#ece9d8] border border-[#9c9a91]">
-              Décision de Destination Ministérielle
+              A. Décision d'Affectation Ministérielle
             </legend>
 
             {/* Tampon officiel incliné */}
-            <div className={`absolute right-2 bottom-2 border-2 px-2.5 py-0.5 font-bold text-xs uppercase tracking-widest transform -rotate-3 opacity-90 ${affectation.tamponColor} bg-white/90 shadow-xs`}>
+            <div className={`absolute right-2 bottom-2 border-2 px-2.5 py-0.5 font-bold text-xs uppercase tracking-widest transform -rotate-3 opacity-90 ${affectation.tamponColor} bg-white/90 shadow-xs font-mono`}>
               [ {affectation.tampon} ]
             </div>
 
@@ -191,54 +190,103 @@ export const OfficerEvaluationReportModal: React.FC<OfficerEvaluationReportModal
             <div className="text-xs text-slate-700 leading-relaxed max-w-lg mb-2">
               {affectation.description}
             </div>
-            <div className="text-[11px] font-bold text-slate-900 italic border-t border-slate-200 pt-1">
+            <div className="text-[11px] font-bold text-slate-900 italic border-t border-slate-200 pt-1 font-mono">
               « {affectation.verdict} » — Le Préfet de Police
             </div>
           </fieldset>
 
-          {/* GRILLE DE STATISTIQUES POLICIÈRES */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3 text-xs">
-            <div className="bg-white border border-[#9c9a91] p-2 shadow-xs">
-              <div className="text-[10px] text-slate-600 font-bold uppercase">Affaires Classées</div>
-              <div className="text-sm font-bold text-black mt-0.5">
-                {stats.totalProcessed} / {stats.totalDossiers}
-              </div>
-            </div>
+          {/* CADRE B : INCIDENTS ET ANOMALIES DE SESSION */}
+          {((stats.fuitesCount && stats.fuitesCount > 0) || (stats.documentsBroyes && stats.documentsBroyes > 0) || (stats.blames > 0 && stats.blames < 3)) && (
+            <fieldset className="border border-[#9c9a91] bg-[#fcfbf7] p-2.5 pt-1 shadow-inner space-y-2">
+              <legend className="px-2 text-xs font-bold text-black uppercase bg-[#ece9d8] border border-[#9c9a91]">
+                B. Incidents & Signalements Procéduraux
+              </legend>
 
-            <div className="bg-white border border-[#9c9a91] p-2 shadow-xs">
-              <div className="text-[10px] text-slate-600 font-bold uppercase">Primes Acquises</div>
-              <div className="text-sm font-bold text-emerald-700 mt-0.5 flex items-center gap-1">
-                <span>+{stats.primeTotale} €</span>
-              </div>
-            </div>
+              {stats.fuitesCount && stats.fuitesCount > 0 ? (
+                <div className="bg-[#fff0f5] border border-rose-300 p-2 text-xs flex items-center justify-between">
+                  <div>
+                    <div className="text-rose-950 font-bold uppercase font-mono">
+                      ⚠️ TRANSMISSION NON AUTORISÉE DE PIÈCES : {stats.fuitesCount} COPIE(S) EXTRAITE(S)
+                    </div>
+                    <p className="text-[11px] text-slate-700 mt-0.5">
+                      Des bordereaux non expurgés ont quitté le périmètre CHEOPS. Une enquête administrative interne est ouverte par l'Inspection Générale.
+                    </p>
+                  </div>
+                  <span className="text-[10px] bg-rose-800 text-white px-2 py-0.5 font-mono font-bold shrink-0 ml-2">
+                    ENQUÊTE OUVERTE
+                  </span>
+                </div>
+              ) : null}
 
-            <div className="bg-white border border-[#9c9a91] p-2 shadow-xs">
-              <div className="text-[10px] text-slate-600 font-bold uppercase">Crédibilité Corps</div>
-              <div className={`text-sm font-bold mt-0.5 ${stats.credibiliteMinistere >= 50 ? "text-emerald-700" : "text-red-700"}`}>
-                {stats.credibiliteMinistere}%
-              </div>
-            </div>
+              {stats.documentsBroyes && stats.documentsBroyes > 0 ? (
+                <div className="bg-[#fff9e6] border border-amber-400 p-2 text-xs flex items-center justify-between">
+                  <div>
+                    <div className="text-amber-950 font-bold uppercase font-mono">
+                      📄 ANOMALIE DOCUMENTAIRE : {stats.documentsBroyes} PIÈCE(S) DÉTRUITE(S) APRÈS ENREGISTREMENT
+                    </div>
+                    <p className="text-[11px] text-slate-700 mt-0.5">
+                      Rupture de traçabilité constatée sur l'inventaire des scellés. Contrôle de conformité requis par le greffe central.
+                    </p>
+                  </div>
+                  <span className="text-[10px] bg-amber-800 text-white px-2 py-0.5 font-mono font-bold shrink-0 ml-2">
+                    CONTRÔLE GREFFE
+                  </span>
+                </div>
+              ) : null}
 
-            <div className="bg-white border border-[#9c9a91] p-2 shadow-xs">
-              <div className="text-[10px] text-slate-600 font-bold uppercase">Blâmes Reçus</div>
-              <div className="text-sm font-bold text-amber-800 mt-0.5">
-                {stats.blames} / 3
-              </div>
-            </div>
-          </div>
+              {stats.blames > 0 && stats.blames < 3 ? (
+                <div className="bg-[#f0f4f8] border border-slate-300 p-2 text-xs flex items-center justify-between">
+                  <div>
+                    <div className="text-slate-900 font-bold uppercase font-mono">
+                      ⚖️ OBSERVATION HIÉRARCHIQUE : {stats.blames} REJET(S) DE VISA CONSTATÉ(S)
+                    </div>
+                    <p className="text-[11px] text-slate-700 mt-0.5">
+                      Divergences d'arbitrage relevées par le Parquet. Les orientations futures restent placées sous visa de section.
+                    </p>
+                  </div>
+                  <span className="text-[10px] bg-slate-700 text-white px-2 py-0.5 font-mono font-bold shrink-0 ml-2">
+                    TUTELLE DE SECTION
+                  </span>
+                </div>
+              ) : null}
+            </fieldset>
+          )}
 
-          {/* INDICATEUR TRANSMISSION HORS PROCÉDURE */}
-          {stats.fuitesCount && stats.fuitesCount > 0 ? (
-            <div className="bg-[#fff0f5] border border-rose-300 p-2 mb-3 flex items-center justify-between text-xs">
-              <div className="flex items-center gap-2">
-                <span className="text-rose-900 font-bold">📁 Pièce(s) transmise(s) hors procédure :</span>
-                <span className="text-black font-bold font-mono">{stats.fuitesCount} copie(s) non expurgée(s)</span>
+          {/* CADRE C : GRILLE DE STATISTIQUES POLICIÈRES */}
+          <fieldset className="border border-[#9c9a91] bg-white p-2.5 pt-1 shadow-inner">
+            <legend className="px-2 text-xs font-bold text-black uppercase bg-[#ece9d8] border border-[#9c9a91]">
+              C. Relevé Statistique de Session
+            </legend>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <div className="bg-[#f4f2ec] border border-[#9c9a91] p-2 shadow-xs">
+                <div className="text-[10px] text-slate-600 font-bold uppercase font-mono">Affaires Apurées</div>
+                <div className="text-sm font-bold text-black mt-0.5 font-mono">
+                  {stats.totalProcessed} / {stats.totalDossiers}
+                </div>
               </div>
-              <span className="text-[10px] bg-rose-700 text-white px-2 py-0.5 font-bold uppercase font-mono">
-                CANAL NON AUTORISÉ
-              </span>
+
+              <div className="bg-[#f4f2ec] border border-[#9c9a91] p-2 shadow-xs">
+                <div className="text-[10px] text-slate-600 font-bold uppercase font-mono">Primes Allouées</div>
+                <div className="text-sm font-bold text-emerald-700 mt-0.5 flex items-center gap-1 font-mono">
+                  <span>+{stats.primeTotale} €</span>
+                </div>
+              </div>
+
+              <div className="bg-[#f4f2ec] border border-[#9c9a91] p-2 shadow-xs">
+                <div className="text-[10px] text-slate-600 font-bold uppercase font-mono">Crédibilité Corps</div>
+                <div className={`text-sm font-bold mt-0.5 font-mono ${stats.credibiliteMinistere >= 50 ? "text-emerald-700" : "text-red-700"}`}>
+                  {stats.credibiliteMinistere}%
+                </div>
+              </div>
+
+              <div className="bg-[#f4f2ec] border border-[#9c9a91] p-2 shadow-xs">
+                <div className="text-[10px] text-slate-600 font-bold uppercase font-mono">Pax Sociale</div>
+                <div className="text-sm font-bold text-sky-800 mt-0.5 font-mono">
+                  {stats.paxSociale}%
+                </div>
+              </div>
             </div>
-          ) : null}
+          </fieldset>
         </div>
 
         {/* ACTIONS DU BILAN : BARRE DE BOUTONS XP */}
