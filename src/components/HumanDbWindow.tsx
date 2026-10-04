@@ -249,7 +249,7 @@ export const HumanDbWindow: React.FC<HumanDbWindowProps> = ({
                 <strong className="text-black">{p.expositionMediatique}</strong>
               </div>
               <div>
-                <span className="text-slate-500">SOLVABILITÉ PROCÉDURALE : </span>
+                <span className="text-slate-500">RESSOURCES PROCÉDURALES : </span>
                 <strong className="text-black">{p.solvabiliteProcedurale}</strong>
               </div>
             </div>

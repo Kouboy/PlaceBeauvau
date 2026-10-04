@@ -249,10 +249,10 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Zone de Sécurité Prioritaire (ZSP) - Seine-Saint-Denis (93)",
       faciesApparence: "Consonance extra-européenne, doudoune noire, capuche rabattue",
       coefficientVulnerabilite: 96,
-      analyseRisqueJudiciaire: "Exposition médiatique non constatée. Absence de conseil constitué au barreau de Paris. Capacité contentieuse évaluée comme négligeable.",
+      analyseRisqueJudiciaire: "Exposition médiatique nationale en cours. Absence de conseil constitué identifié malgré une forte visibilité publique. Capacité contentieuse personnelle évaluée comme faible.",
       capaciteContentieuse: "FAIBLE",
       conseilConstitue: "NON IDENTIFIÉ",
-      expositionMediatique: "BASSE",
+      expositionMediatique: "FORTE",
       solvabiliteProcedurale: "LIMITÉE"
     },
     statutRio: {
