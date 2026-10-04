@@ -440,7 +440,7 @@ export default function App() {
         if (current.telegrammePrefet) {
           setTimeout(() => {
             declencherTelegramme(source, message, priority);
-          }, 5500);
+          }, 7500);
         } else {
           declencherTelegramme(source, message, priority);
         }
