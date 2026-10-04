@@ -153,6 +153,11 @@ export default function App() {
   const [documentsBroyes, setDocumentsBroyes] = useState<number>(0);
   const [touchGhostPos, setTouchGhostPos] = useState<{ x: number; y: number } | null>(null);
 
+  // Flags procéduraux de session pour conséquences différées déductives
+  const [notaireProtege2144, setNotaireProtege2144] = useState<boolean>(false);
+  const [videoNeutralisee0942, setVideoNeutralisee0942] = useState<boolean>(false);
+  const [rioFloute2011, setRioFloute2011] = useState<boolean>(false);
+
   // Système de fichiers diégétique (Navigation, Répertoire et Bureau OS)
   const initialDossier = dossiers[0];
   const [currentPath, setCurrentPath] = useState<string>(
@@ -417,51 +422,77 @@ export default function App() {
         rio: { isOpen: false, isMinimized: false, zIndex: 2 },
       });
 
-      // Télégramme de prise en charge du dossier ou conséquences différées légères
+      // 1. Télégramme d'ordre hiérarchique prioritaire propre au dossier
       if (current.telegrammePrefet) {
         declencherTelegramme(
           "CABINET DU MINISTRE",
           `${current.telegrammePrefet.alerte} — Ordre : « ${current.telegrammePrefet.ordre} » (+${current.telegrammePrefet.primeBonus} €)`,
           "urgente"
         );
-      } else if (index === 3) {
-        // Conséquence différée 1 (après le dossier 2144 du Notaire)
-        declencherTelegramme(
+      }
+
+      // 2. Émission d'échos institutionnels différés (temporisés si un ordre d'urgence préfectoral est déjà affiché)
+      const emettreEchoDiffere = (
+        source: TelegramAlert["source"],
+        message: string,
+        priority: TelegramAlert["priority"] = "consigne"
+      ) => {
+        if (current.telegrammePrefet) {
+          setTimeout(() => {
+            declencherTelegramme(source, message, priority);
+          }, 5500);
+        } else {
+          declencherTelegramme(source, message, priority);
+        }
+      };
+
+      if (index === 3 && notaireProtege2144) {
+        // Conséquence différée 1 (suite à protection du notable DOS-B75-2144 sur l'Avenue Foch)
+        emettreEchoDiffere(
           "DIRECTION DE LA COMMUNICATION",
           "Un élément de langage a été stabilisé suite à l'arbitrage rendu sur l'Avenue Foch.",
           "consigne"
         );
-      } else if (index === 5) {
-        // Conséquence différée 2 (après le dossier 0942 de Libération)
-        declencherTelegramme(
+      } else if (index === 5 && videoNeutralisee0942) {
+        // Conséquence différée 2 (suite à tentative d'effacement du cliché de presse extérieur DOS-B75-0942)
+        emettreEchoDiffere(
           "PARQUET DE PARIS",
-          "Une divergence est relevée entre l'inventaire vidéo CHEOPS et les clichés déjà versés par la presse.",
+          "Une divergence est relevée entre l'inventaire CHEOPS et les pièces déjà versées par des tiers.",
           "consigne"
         );
-      } else if (index === 8) {
-        // Conséquence différée 3 (après le dossier 2011 du RIO en gare)
-        declencherTelegramme(
+      } else if (index === 8 && rioFloute2011) {
+        // Conséquence différée 3 (suite à floutage / dissimulation du RIO en gare DOS-B75-2011)
+        emettreEchoDiffere(
           "CABINET BEAUVAU",
           "Plusieurs captures publiques sur les réseaux rendent l'anonymisation du matricule difficile à soutenir.",
           "consigne"
         );
       } else if (index === 10 && fuitesTransmises.size > 0) {
-        // Conséquence différée 4 (suite à transmission hors procédure à Sorel)
-        declencherTelegramme(
+        // Conséquence différée 4 (suite à transmission hors procédure à un conseil extérieur)
+        emettreEchoDiffere(
           "AUDIT INTERNE DGPN",
-          "Une copie non expurgée semble avoir quitté le périmètre documentaire CHEOPS. Traçabilité compromise.",
+          "Des copies non expurgées ont été transmises à un conseil extérieur hors circuit CHEOPS. Traçabilité compromise.",
           "urgente"
         );
       } else if (index === 12 && documentsBroyes > 0) {
         // Conséquence différée 5 (suite à destructions documentaires ou scellés)
-        declencherTelegramme(
+        emettreEchoDiffere(
           "CENTRE DE SUPERVISION URBAIN",
           "Contrôle automatisé terminé : une rupture de séquence demeure inexpliquée dans les archives CSU.",
           "consigne"
         );
       }
     }
-  }, [calculateAllocatedTime, declencherTelegramme, autoPunchNext, fuitesTransmises.size, documentsBroyes]);
+  }, [
+    calculateAllocatedTime,
+    declencherTelegramme,
+    autoPunchNext,
+    fuitesTransmises.size,
+    documentsBroyes,
+    notaireProtege2144,
+    videoNeutralisee0942,
+    rioFloute2011,
+  ]);
 
   // Rotation continue du bandeau d'actualités
   useEffect(() => {
@@ -642,6 +673,9 @@ export default function App() {
 
     setCameraDecision(decision);
     setCameraNeutralisee(true);
+    if (current.id === "DOS-B75-0942" && decision === "neutralisee") {
+      setVideoNeutralisee0942(true);
+    }
     if (decision === "neutralisee") {
       setCameraGlitchActive(true);
       jouerSonGlitch();
@@ -731,6 +765,10 @@ export default function App() {
 
     isProcessingRef.current = true;
     const isCorrect = tamponChoisi.code === currentDossier.categorie_attendue;
+
+    if (currentDossier.id === "DOS-B75-2144" && isCorrect) {
+      setNotaireProtege2144(true);
+    }
 
     // Son de tampon administratif et écriture disque
     jouerSonTampon();
@@ -913,6 +951,10 @@ export default function App() {
     setRioDecision(decision);
     setRioInspecteDossier(true);
 
+    if (current.id === "DOS-B75-2011" && decision === "flouter") {
+      setRioFloute2011(true);
+    }
+
     if (estBonneDecision) {
       jouerSonRio();
       declencherVibration([30, 50]);
@@ -1066,6 +1108,10 @@ export default function App() {
 
     // Déduction : est-ce vraiment un terme compromettant à biffer ?
     if (terme.estCompromettant !== false) {
+      const current = dossiers[currentIndex];
+      if (current && current.id === "DOS-B75-2144") {
+        setNotaireProtege2144(true);
+      }
       // Bonne censure : terme compromettant pour l'institution
       const bonusCensure = 20;
       setPrimeTotale((prev) => prev + bonusCensure);
@@ -1351,6 +1397,11 @@ export default function App() {
     setBlames(0);
     setPrimeTotale(0);
     setDernierePrime(null);
+    setFuitesTransmises(new Set());
+    setDocumentsBroyes(0);
+    setNotaireProtege2144(false);
+    setVideoNeutralisee0942(false);
+    setRioFloute2011(false);
     startDossier(0, chronoCadenceActive);
   };
 

@@ -77,18 +77,6 @@ export const OfficerEvaluationReportModal: React.FC<OfficerEvaluationReportModal
       };
     }
 
-    if (stats.fuitesCount && stats.fuitesCount >= 2) {
-      return {
-        titre: "SIGNALEMENT DGSI // ENQUÊTE DE SÛRETÉ INTERNE (BOBIGNY)",
-        badge: "SUSPICION DE DISSIDENCE",
-        color: "text-rose-400 border-rose-500 bg-rose-950/40",
-        verdict: "Transmissions réitérées de pièces non expurgées vers la presse d'investigation.",
-        tampon: "ENQUÊTE JUDICIAIRE OUVERTE",
-        tamponColor: "border-red-600 text-red-500",
-        description: "Plusieurs procès-verbaux bruts ont été publiés par des canaux non autorisés. Votre habilitation réseau CHEOPS est suspendue à titre conservatoire ; votre poste fait l'objet d'un séquestre administratif.",
-      };
-    }
-
     if (stats.credibiliteMinistere >= 75 && stats.blames === 0) {
       return {
         titre: "DIRECTION GÉNÉRALE // CELLULE DE CONTRÔLE INTERNE (IGPN)",
@@ -209,7 +197,7 @@ export const OfficerEvaluationReportModal: React.FC<OfficerEvaluationReportModal
                       ⚠️ TRANSMISSION NON AUTORISÉE DE PIÈCES : {stats.fuitesCount} COPIE(S) EXTRAITE(S)
                     </div>
                     <p className="text-[11px] text-slate-700 mt-0.5">
-                      Des bordereaux non expurgés ont quitté le périmètre CHEOPS. Une enquête administrative interne est ouverte par l'Inspection Générale.
+                      Des bordereaux non expurgés ont été transmis à un conseil extérieur hors circuit CHEOPS. Une enquête administrative interne est ouverte par l'Inspection Générale.
                     </p>
                   </div>
                   <span className="text-[10px] bg-rose-800 text-white px-2 py-0.5 font-mono font-bold shrink-0 ml-2">
