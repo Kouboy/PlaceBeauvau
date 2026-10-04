@@ -92,6 +92,10 @@ export interface ProfilageAdministre {
   coefficientVulnerabilite: number; // 0 à 100%
   analyseRisqueJudiciaire: string;
   statutOQTFOuFichage?: string;
+  capaciteContentieuse: string;
+  conseilConstitue: string;
+  expositionMediatique: string;
+  solvabiliteProcedurale: string;
 }
 
 export interface StatutRio {
@@ -245,7 +249,11 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Zone de Sécurité Prioritaire (ZSP) - Seine-Saint-Denis (93)",
       faciesApparence: "Consonance extra-européenne, doudoune noire, capuche rabattue",
       coefficientVulnerabilite: 96,
-      analyseRisqueJudiciaire: "Exposition médiatique non constatée. Absence de conseil constitué au barreau de Paris. Capacité contentieuse évaluée comme négligeable."
+      analyseRisqueJudiciaire: "Exposition médiatique non constatée. Absence de conseil constitué au barreau de Paris. Capacité contentieuse évaluée comme négligeable.",
+      capaciteContentieuse: "FAIBLE",
+      conseilConstitue: "NON IDENTIFIÉ",
+      expositionMediatique: "BASSE",
+      solvabiliteProcedurale: "LIMITÉE"
     },
     statutRio: {
       constat: "Matricule RIO #754981 du Brigadier Marc Vasseur masqué par un ruban adhésif noir mat.",
@@ -328,7 +336,11 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Quartier Politique de la Ville (QPV) - Vénissieux",
       faciesApparence: "Teint mat, jogging gris chiné, sac de courses d'une enseigne discount",
       coefficientVulnerabilite: 92,
-      analyseRisqueJudiciaire: "Solvabilité procédurale restreinte. Absence de provision pour constitution de partie civile avec consignation."
+      analyseRisqueJudiciaire: "Solvabilité procédurale restreinte. Absence de provision pour constitution de partie civile avec consignation.",
+      capaciteContentieuse: "MODÉRÉE",
+      conseilConstitue: "AIDE JURIDICTIONNELLE",
+      expositionMediatique: "FORTE",
+      solvabiliteProcedurale: "LIMITÉE"
     },
     statutRio: {
       constat: "Matricule RIO 7844192 photographié en gros plan par un reporter de Libération, publié en Une nationale.",
@@ -402,7 +414,11 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Zone urbaine sensible - Quartier des Bosquets (Montfermeil)",
       faciesApparence: "Miroir statistique : jeune homme racisé en groupe à un arrêt de bus",
       coefficientVulnerabilite: 98,
-      analyseRisqueJudiciaire: "Contre-plainte incidente recevable : lésion métacarpienne constatée sur l'agent au cours de la manœuvre d'interposition."
+      analyseRisqueJudiciaire: "Contre-plainte incidente recevable : lésion métacarpienne constatée sur l'agent au cours de la manœuvre d'interposition.",
+      capaciteContentieuse: "MODÉRÉE",
+      conseilConstitue: "CABINET DÉSIGNÉ",
+      expositionMediatique: "BASSE",
+      solvabiliteProcedurale: "AIDE JURIDICTIONNELLE"
     },
     statutRio: {
       constat: "Matricule RIO #754981 de Marc Vasseur recouvert par l'insigne syndical non réglementaire.",
@@ -469,7 +485,11 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Secteur de gare RER Nord - Zone d'opérations quotidiennes",
       faciesApparence: "Consonance ouest-africaine, sac isotherme sur le dos",
       coefficientVulnerabilite: 99,
-      analyseRisqueJudiciaire: "Sensibilité procédurale : relais associatif et familial en cours de mobilisation. Antécédents cardiorespiratoires à verser au débat médico-légal."
+      analyseRisqueJudiciaire: "Sensibilité procédurale : relais associatif et familial en cours de mobilisation. Antécédents cardiorespiratoires à verser au débat médico-légal.",
+      capaciteContentieuse: "ÉLEVÉE",
+      conseilConstitue: "COLLECTIF & CONSEIL CONSTITUÉS",
+      expositionMediatique: "FORTE",
+      solvabiliteProcedurale: "PRISE EN CHARGE ASSOCIATIVE"
     },
     statutRio: {
       constat: "Les 4 fonctionnaires intervenants étaient dépourvus de dossard RIO.",
@@ -549,7 +569,11 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Hub ferroviaire Gare du Nord (Filtre spatial sélectif)",
       faciesApparence: "Miroir sociologique : jeune homme noir, sac à dos d'études, écouteurs",
       coefficientVulnerabilite: 97,
-      analyseRisqueJudiciaire: "Recours contestataire isolé sans représentation d'avocat. Présomption de régularité attachée aux opérations de contrôle d'identité sur réquisition."
+      analyseRisqueJudiciaire: "Mobilisation de collectifs étudiants et constitution d'avocat. Présomption de régularité du contrôle contestée.",
+      capaciteContentieuse: "MODÉRÉE",
+      conseilConstitue: "CABINET CONSTITUÉ",
+      expositionMediatique: "MODÉRÉE",
+      solvabiliteProcedurale: "AIDE JURIDICTIONNELLE"
     },
     statutRio: {
       constat: "Emplacement RIO vide sur le gilet pare-balles de l'intervenant.",
@@ -624,7 +648,11 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Avenue Foch - Secteur diplomatique et résidentiel protégé",
       faciesApparence: "Patronyme aristocratique, costume sur mesure en flanelle, montre de luxe",
       coefficientVulnerabilite: 4,
-      analyseRisqueJudiciaire: "Solvabilité procédurale maximale. Conseil constitué auprès de cabinets d'affaires de premier rang. Capacité d'assignation en responsabilité quasi-immédiate."
+      analyseRisqueJudiciaire: "Solvabilité procédurale maximale. Conseil constitué auprès de cabinets d'affaires de premier rang. Capacité d'assignation en responsabilité quasi-immédiate.",
+      capaciteContentieuse: "TRÈS ÉLEVÉE",
+      conseilConstitue: "CABINET D'AFFAIRES ASSOCIÉ",
+      expositionMediatique: "CONFIDENTIELLE",
+      solvabiliteProcedurale: "CONFIRMÉE (FONDS PROPRES)"
     },
     statutRio: {
       constat: "Motards de police au garde-à-vous impeccable, RIO arboré avec zèle.",
@@ -690,7 +718,11 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Boulevard de l'Hôpital - Cortège syndical soignant",
       faciesApparence: "Blouse blanche tâchée, badge syndical CGT-Santé",
       coefficientVulnerabilite: 88,
-      analyseRisqueJudiciaire: "Affiliation syndicale déclarée. Conseil habituel d'organisation présent au soutien de la mise en cause."
+      analyseRisqueJudiciaire: "Affiliation syndicale déclarée. Conseil habituel d'organisation présent au soutien de la mise en cause.",
+      capaciteContentieuse: "ÉLEVÉE",
+      conseilConstitue: "CONSEIL SYNDICAL DÉSIGNÉ",
+      expositionMediatique: "MODÉRÉE",
+      solvabiliteProcedurale: "COUVERTURE SYNDICALE"
     },
     statutRio: {
       constat: "Le gradé ne porte pas de RIO (insigne de compagnie d'intervention dissimulant le scratch).",
@@ -733,7 +765,11 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Quartier Latin - Abords d'université occupée",
       faciesApparence: "Pancarte en carton revendicative, mégaphone éteint",
       coefficientVulnerabilite: 85,
-      analyseRisqueJudiciaire: "Milieu étudiant structuré. Risque de relais corporatif académique en cas de contentieux disciplinaire."
+      analyseRisqueJudiciaire: "Milieu étudiant structuré. Risque de relais corporatif académique en cas de contentieux disciplinaire.",
+      capaciteContentieuse: "MODÉRÉE",
+      conseilConstitue: "COLLECTIF ÉTUDIANT & CONSEIL",
+      expositionMediatique: "MODÉRÉE",
+      solvabiliteProcedurale: "SOLIDARITÉ MILITANTE"
     },
     statutRio: {
       constat: "RIO retourné face velcro invisible.",
@@ -767,7 +803,11 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Place de la République - En périphérie de manifestation",
       faciesApparence: "Vélo de livraison, consonance nord-africaine",
       coefficientVulnerabilite: 100,
-      analyseRisqueJudiciaire: "Situation administrative précaire. Faiblesse structurelle de la représentation judiciaire."
+      analyseRisqueJudiciaire: "Situation administrative précaire. Faiblesse structurelle de la représentation judiciaire.",
+      capaciteContentieuse: "FAIBLE",
+      conseilConstitue: "PERMANENCE ASSOCIATIVE (LDH)",
+      expositionMediatique: "FORTE",
+      solvabiliteProcedurale: "LIMITÉE"
     },
     statutRio: {
       constat: "Tireur non identifiable (cagoule intégrale et visière pare-éclats fumée).",
@@ -815,7 +855,11 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Rond-point d'entrée de ville de province",
       faciesApparence: "Gilet jaune sous la selle du vélo, tenue de travail usagée",
       coefficientVulnerabilite: 91,
-      analyseRisqueJudiciaire: "Usage de vecteur cycliste en zone de barrage. Capacité d'action civile limitée."
+      analyseRisqueJudiciaire: "Usage de vecteur cycliste en zone de barrage. Capacité d'action civile limitée.",
+      capaciteContentieuse: "FAIBLE",
+      conseilConstitue: "NON IDENTIFIÉ",
+      expositionMediatique: "BASSE",
+      solvabiliteProcedurale: "LIMITÉE"
     },
     statutRio: {
       constat: "RIO #754981 de Marc Vasseur présent et clairement lisible sur le baudrier.",
@@ -849,7 +893,11 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Zone artisanale de banlieue nord",
       faciesApparence: "Camionnette utilitaire chargée d'outils, consonance maghrébine",
       coefficientVulnerabilite: 89,
-      analyseRisqueJudiciaire: "Administré riverain sans appui institutionnel. Contentieux contraventionnel ordinaire."
+      analyseRisqueJudiciaire: "Administré riverain sans appui institutionnel. Contentieux contraventionnel ordinaire.",
+      capaciteContentieuse: "FAIBLE",
+      conseilConstitue: "NON IDENTIFIÉ",
+      expositionMediatique: "BASSE",
+      solvabiliteProcedurale: "CONFIRMÉE (ARTISAN)"
     },
     statutRio: {
       constat: "Équipage en pause café : gilets tactiques et RIO déposés sur les sièges du fourgon.",
@@ -883,7 +931,11 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Centre-ville commerçant sous tension tarifaire",
       faciesApparence: "Tablier enfariné, posture outrée, réclame un bon de réquisition en vain",
       coefficientVulnerabilite: 62,
-      analyseRisqueJudiciaire: "Acteur du commerce de proximité. Exposition médiatique locale circonscrite."
+      analyseRisqueJudiciaire: "Acteur du commerce de proximité. Exposition médiatique locale circonscrite.",
+      capaciteContentieuse: "ÉLEVÉE",
+      conseilConstitue: "FÉDÉRATION PROFESSIONNELLE",
+      expositionMediatique: "MODÉRÉE",
+      solvabiliteProcedurale: "CONFIRMÉE"
     },
     statutRio: {
       constat: "Équipage en civil, brassards police dans la poche arrière et absence totale de matricule RIO.",
@@ -964,7 +1016,11 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Quartier préfectoral sous arrêté d'interdiction de rassemblement",
       faciesApparence: "Imperméable beige, sac cabas à roulettes, casserole Tefal 24cm",
       coefficientVulnerabilite: 88,
-      analyseRisqueJudiciaire: "Retraitée isolée. Solvabilité et appui procédural inexistants."
+      analyseRisqueJudiciaire: "Retraitée isolée. Solvabilité et appui procédural inexistants.",
+      capaciteContentieuse: "FAIBLE",
+      conseilConstitue: "NON IDENTIFIÉ",
+      expositionMediatique: "MODÉRÉE",
+      solvabiliteProcedurale: "LIMITÉE"
     },
     statutRio: {
       constat: "Officiers de sécurité en costume civil sans matricule RIO apparent.",
@@ -1006,7 +1062,11 @@ export const dossiers: Dossier[] = [
       territoireZonage: "Carrefour République / Voltaire",
       faciesApparence: "Lunettes rondes en écaille, écouteurs sans fil, fixité oculaire",
       coefficientVulnerabilite: 78,
-      analyseRisqueJudiciaire: "Refus de soumission passive sans violence physique. Capacité de contestation procédurale résiduelle."
+      analyseRisqueJudiciaire: "Refus de soumission passive sans violence physique. Capacité de contestation procédurale résiduelle.",
+      capaciteContentieuse: "MODÉRÉE",
+      conseilConstitue: "NON IDENTIFIÉ",
+      expositionMediatique: "BASSE",
+      solvabiliteProcedurale: "CONFIRMÉE"
     },
     statutRio: {
       constat: "Brigadier Marc Vasseur présent, RIO #754981 bien visible sur le baudrier.",

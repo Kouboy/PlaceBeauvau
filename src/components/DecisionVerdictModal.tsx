@@ -75,10 +75,14 @@ export const DecisionVerdictModal: React.FC<DecisionVerdictModalProps> = ({
 
         {/* CORPS DE LA BOÎTE DE DIALOGUE */}
         <div className="p-4 flex flex-col gap-3 text-black">
-          {/* En-tête avec icône Win32 MessageBox */}
+          {/* En-tête avec icône administrative Win32 MessageBox */}
           <div className="flex items-start gap-3">
-            <div className="text-3xl shrink-0">
-              {feedback.correct ? "✅" : "❌"}
+            <div className="shrink-0 p-1 border border-[#808080] bg-white flex items-center justify-center">
+              {feedback.correct ? (
+                <ShieldCheck className="w-8 h-8 text-[#0055ea]" />
+              ) : (
+                <ShieldAlert className="w-8 h-8 text-[#d84040]" />
+              )}
             </div>
             <div className="min-w-0 flex-1">
               <h2 className="text-base font-bold text-black uppercase">
@@ -89,7 +93,7 @@ export const DecisionVerdictModal: React.FC<DecisionVerdictModalProps> = ({
               <p className="text-xs text-slate-700 mt-0.5">
                 {feedback.correct
                   ? "Qualification conforme aux réquisitions du Parquet et de la Préfecture."
-                  : `Orientation requise par la hiérarchie : [${feedback.tamponAttendu}]`}
+                  : "Le visa proposé ne satisfait pas aux réquisitions actuellement versées au dossier."}
               </p>
             </div>
           </div>

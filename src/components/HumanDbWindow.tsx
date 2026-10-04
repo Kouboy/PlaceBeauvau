@@ -238,23 +238,19 @@ export const HumanDbWindow: React.FC<HumanDbWindowProps> = ({
             <div className="grid grid-cols-2 gap-1 text-[11px] font-mono bg-white p-2 border border-[#d0d0d0]">
               <div>
                 <span className="text-slate-500">CAPACITÉ CONTENTIEUSE : </span>
-                <strong className="text-black">{p.coefficientVulnerabilite > 60 ? "FAIBLE" : "ÉLEVÉE"}</strong>
+                <strong className="text-black">{p.capaciteContentieuse}</strong>
               </div>
               <div>
                 <span className="text-slate-500">CONSEIL CONSTITUÉ : </span>
-                <strong className="text-black">
-                  {p.coefficientVulnerabilite > 75 ? "NON IDENTIFIÉ" : p.coefficientVulnerabilite > 40 ? "AIDE JURIDICTIONNELLE" : "CABINET DÉSIGNÉ"}
-                </strong>
+                <strong className="text-black">{p.conseilConstitue}</strong>
               </div>
               <div>
                 <span className="text-slate-500">EXPOSITION MÉDIATIQUE : </span>
-                <strong className="text-black">
-                  {p.coefficientVulnerabilite > 85 ? "BASSE" : p.coefficientVulnerabilite > 40 ? "MODÉRÉE" : "FORTE"}
-                </strong>
+                <strong className="text-black">{p.expositionMediatique}</strong>
               </div>
               <div>
                 <span className="text-slate-500">SOLVABILITÉ PROCÉDURALE : </span>
-                <strong className="text-black">{p.coefficientVulnerabilite > 60 ? "LIMITÉE" : "CONFIRMÉE"}</strong>
+                <strong className="text-black">{p.solvabiliteProcedurale}</strong>
               </div>
             </div>
             
