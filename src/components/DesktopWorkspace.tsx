@@ -574,6 +574,8 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
         onNavigateToPath={onNavigateToPath}
         onOpenApp={(appId) => onFocusWindow(appId as WindowId)}
         onOpenPieceMaitresse={onOpenPieceMaitresse}
+        isChronoStarted={isChronoStarted}
+        onStartChrono={onStartChrono}
       />
 
       {/* ZONE CENTRALE DU BUREAU // FOND D'ÉCRAN DIÉGÉTIQUE & FENÊTRES FLOTTANTES */}
@@ -615,6 +617,8 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
             onFocusWindow("qualification");
           }}
           onOpenPieceMaitresse={onOpenPieceMaitresse}
+          isChronoStarted={isChronoStarted}
+          onStartChrono={onStartChrono}
         />
 
         {/* ÉLÉMENTS DE POSTE DE TRAVAIL D'UN FONCTIONNAIRE DÉBORDÉ : TACHES, POST-ITS & DOSSIERS */}
@@ -1544,12 +1548,12 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
                   onStartChrono();
                 }
               }}
-              className="flex items-center gap-1 bg-[#003366] hover:bg-[#002244] border border-[#7f9db9] px-1.5 py-0.5 text-[11px] font-bold text-amber-300 cursor-pointer shadow-xs active:translate-y-0.5"
-              title="Enclencher l'horodateur ministériel (Raccourci P)"
+              className="flex items-center gap-1 bg-[#003366] hover:bg-[#002244] border border-[#7f9db9] px-2 py-0.5 text-[11px] font-bold text-amber-300 cursor-pointer shadow-xs active:translate-y-0.5"
+              title="Prendre en charge le dossier / Ouvrir l'instruction (Raccourci P)"
             >
-              <Clock className="w-3 h-3 text-amber-300 animate-pulse" />
-              <span className="hidden sm:inline">POINTER</span>
-              <span className="text-[10px] text-white font-mono">[P]</span>
+              <Clock className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+              <span className="hidden sm:inline">PRENDRE EN CHARGE // POINTER</span>
+              <span className="text-[10px] text-white font-mono ml-0.5">[P]</span>
             </button>
           ) : (
             <div

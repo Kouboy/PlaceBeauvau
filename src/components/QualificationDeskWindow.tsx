@@ -217,16 +217,20 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
                 <div className="flex items-center gap-2 mb-1">
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping inline-block" />
                   <span className="text-xs font-bold text-[#002244] uppercase tracking-wide">
-                    Dossier en attente d'horodatage
+                    Dossier en attente de prise en charge
                   </span>
                   <span className="bg-white px-1.5 py-0.2 border border-[#7f9db9] text-[10px] text-slate-600 font-mono">
                     {Math.round(maxTime)}s allouées
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-700 leading-snug">
-                  Inspectez les pièces forensiques (CCTV, scellés, TAJ, IML). Dès que vous êtes prêt à qualifier,
-                  <strong> enclenchez la pointeuse</strong> pour lancer le décompte réglementaire et concourir à la <strong>prime de célérité</strong>.
+                  L'instruction des pièces et la qualification contentieuse sont verrouillées. Pointez la prise de dossier pour ouvrir le décompte réglementaire.
                 </p>
+                {dossier.id === "DOS-B75-1890" && (
+                  <p className="text-[10px] text-[#003366] bg-[#e8f4fc] border border-[#7f9db9] p-1.5 mt-1 font-semibold">
+                    ℹ️ Le délai réglementaire d'instruction débute à la prise en charge du dossier. Consultez l'ordre de mission puis pointez pour ouvrir l'instruction.
+                  </p>
+                )}
               </div>
 
               <div className="flex flex-col items-center sm:items-end gap-1.5 shrink-0 w-full sm:w-auto">
@@ -241,7 +245,7 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
                   className="w-full sm:w-auto px-4 py-2 bg-[#0055ea] hover:bg-[#0044cc] text-white font-sans font-bold text-xs sm:text-sm uppercase tracking-wide flex items-center justify-center gap-2 cursor-pointer shadow-md border-2 border-t-white border-l-white border-b-[#002266] border-r-[#002266] active:translate-y-0.5"
                 >
                   <span className="text-base">⏱️</span>
-                  <span>POINTER LA PRISE DE DOSSIER</span>
+                  <span>PRENDRE EN CHARGE // POINTER</span>
                   <span className="bg-white/20 text-[10px] px-1.5 py-0.5 rounded-xs font-mono ml-1">[P]</span>
                 </button>
 
@@ -376,7 +380,13 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
           {/* CHAMP TEXTE ENFONCÉ (SUNKEN WIN32 BLANC PUR) */}
           <div className="text-xs sm:text-sm text-black leading-relaxed font-mono mb-2 bg-white p-2.5 border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white shadow-inner select-text">
             <span className="text-[#003366] font-bold block mb-1">Constatations brutes transmises :</span>
-            {dossier.faits}
+            {!isChronoStarted && !isAwaitingNext ? (
+              <span className="text-slate-500 italic block py-1">
+                🔒 [ PIÈCE SOUS SCELLÉ — Pointez la prise en charge du dossier pour déverrouiller l'instruction ]
+              </span>
+            ) : (
+              dossier.faits
+            )}
           </div>
 
           {dossier.novlangue && (
@@ -392,7 +402,12 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
             2. ÉTAT DU DOSSIER D'INSTRUCTION // PIÈCES FORENSIQUES
           </legend>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] mt-1">
+          {!isChronoStarted && !isAwaitingNext ? (
+            <div className="p-3 bg-white border border-[#7f9db9] text-center text-xs text-slate-500 font-mono my-1">
+              🔒 [ PIÈCES FORENSIQUES VERROUILLÉES — Pointez la prise en charge pour ouvrir l'instruction ]
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] mt-1">
             {/* CCTV */}
             <button
               type="button"
@@ -495,6 +510,7 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
               </div>
             </button>
           </div>
+          )}
         </fieldset>
 
         {/* GROUPBOX 3 : ZONE DE VISA ET D'ÉMARGEMENT */}
@@ -543,14 +559,18 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
               <div className="flex flex-col items-center gap-1.5 text-slate-600">
                 <Stamp className="w-7 h-7 text-slate-400" />
                 <div className="text-xs font-black text-[#003366] uppercase tracking-wider font-sans">
-                  {cameraBlocked
+                  {!isChronoStarted
+                    ? "ZONE VERROUILLÉE : POINTEZ LA PRISE EN CHARGE DU DOSSIER [P]"
+                    : cameraBlocked
                     ? "ZONE VÉROUILLÉE : ARBITREZ D'ABORD LA VIDÉO CCTV"
                     : medicalBlocked
                     ? "ZONE VÉROUILLÉE : CAVIARDEZ LES LÉSIONS IML AU FEUTRE NOIR"
                     : "GLISSEZ LE TAMPON DE SERVICE OU CLIQUEZ CI-DESSOUS"}
                 </div>
                 <div className="text-[11px] text-slate-600 font-sans max-w-md">
-                  {medicalBlocked
+                  {!isChronoStarted
+                    ? "L'instruction n'est pas ouverte. Pointez l'horodateur pour déverrouiller la qualification."
+                    : medicalBlocked
                     ? "Le rapport médical contredit la version des policiers. Biffez les mentions contestées dans le visualiseur."
                     : "Sélectionnez le visa doctrinal conforme pour clôturer le dossier."}
                 </div>
@@ -566,13 +586,18 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
               4. APPLICATION DU SCEAU DOCTRINAL (ART. L. 435-1)
             </legend>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-1.5">
-              {TAMPONS_DISPONIBLES.map((t, index) => {
-                const isImpunite = t.code === "impunite";
-                const isVictimisation = t.code === "victimisation";
+            {!isChronoStarted ? (
+              <div className="p-3 bg-white border border-[#7f9db9] text-center text-xs text-slate-500 font-mono my-1">
+                🔒 [ VISAS DE QUALIFICATION VERROUILLÉS — Pointez la prise en charge pour ouvrir l'instruction ]
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-1.5">
+                {TAMPONS_DISPONIBLES.map((t, index) => {
+                  const isImpunite = t.code === "impunite";
+                  const isVictimisation = t.code === "victimisation";
 
-                return (
-                  <button
+                  return (
+                    <button
                     key={t.code}
                     type="button"
                     disabled={isAnyBlocked}
@@ -610,6 +635,7 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
                 );
               })}
             </div>
+            )}
           </fieldset>
         )}
 

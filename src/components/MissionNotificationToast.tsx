@@ -1,5 +1,5 @@
 import React from "react";
-import { AlertCircle, FolderOpen, Scale, X, Bell, Shield, ChevronRight, FileText } from "lucide-react";
+import { AlertCircle, FolderOpen, Scale, X, Bell, Shield, ChevronRight, FileText, Clock } from "lucide-react";
 import { Dossier } from "../dossiers";
 
 interface MissionNotificationToastProps {
@@ -11,6 +11,8 @@ interface MissionNotificationToastProps {
   onOpenExplorer: () => void;
   onOpenDecision: () => void;
   onOpenPieceMaitresse?: () => void;
+  isChronoStarted?: boolean;
+  onStartChrono?: () => void;
 }
 
 export const MissionNotificationToast: React.FC<MissionNotificationToastProps> = ({
@@ -22,6 +24,8 @@ export const MissionNotificationToast: React.FC<MissionNotificationToastProps> =
   onOpenExplorer,
   onOpenDecision,
   onOpenPieceMaitresse,
+  isChronoStarted = false,
+  onStartChrono,
 }) => {
   if (!isOpen) return null;
 
@@ -75,50 +79,81 @@ export const MissionNotificationToast: React.FC<MissionNotificationToastProps> =
           </div>
         )}
 
+        {/* NOTE PÉDAGOGIQUE SUR LE PREMIER DOSSIER (DOS-B75-1890) */}
+        {dossier.id === "DOS-B75-1890" && !isChronoStarted && (
+          <div className="bg-[#e8f4fc] border border-[#7f9db9] p-2 text-[11px] text-[#003366] flex items-start gap-1.5">
+            <span className="text-sm">ℹ️</span>
+            <div className="leading-snug">
+              <strong>Instruction réglementaire :</strong> Le délai réglementaire d'instruction débute à la prise en charge du dossier. Consultez l'ordre de mission puis pointez pour ouvrir l'instruction.
+            </div>
+          </div>
+        )}
+
         {/* BOUTONS D'AIGUILLAGE DU JOUEUR (XP-BTN) */}
         <div className="pt-1 space-y-1.5">
-          {onOpenPieceMaitresse && (
+          {!isChronoStarted ? (
             <button
               type="button"
+              id="toast-btn-pointer"
               onClick={() => {
-                onOpenPieceMaitresse();
-                onClose();
+                if (onStartChrono) {
+                  onStartChrono();
+                }
               }}
-              className="w-full xp-btn-blue bg-[#0055ea] hover:bg-[#0044cc] text-white text-xs font-bold py-1.5 px-3 flex items-center justify-center gap-1.5 shadow-sm border border-[#002266] cursor-pointer"
+              className="w-full xp-btn-blue bg-[#0055ea] hover:bg-[#0044cc] text-white text-xs sm:text-sm font-bold py-2 px-3 flex items-center justify-center gap-2 shadow-md border-2 border-t-white border-l-white border-b-[#002266] border-r-[#002266] cursor-pointer active:translate-y-0.5"
             >
-              <FileText className="w-4 h-4 shrink-0 text-white" />
-              <span className="text-white font-bold">Consulter le PV Principal</span>
-              <span className="text-[9px] bg-white/20 text-white px-1 py-0.2 rounded-none font-mono">
-                [ESPACE]
+              <Clock className="w-4 h-4 text-white" />
+              <span>PRENDRE EN CHARGE // POINTER</span>
+              <span className="text-[10px] bg-white/20 text-white px-1.5 py-0.5 rounded-none font-mono ml-1">
+                [P]
               </span>
             </button>
+          ) : (
+            <>
+              {onOpenPieceMaitresse && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onOpenPieceMaitresse();
+                    onClose();
+                  }}
+                  className="w-full xp-btn-blue bg-[#0055ea] hover:bg-[#0044cc] text-white text-xs font-bold py-1.5 px-3 flex items-center justify-center gap-1.5 shadow-sm border border-[#002266] cursor-pointer"
+                >
+                  <FileText className="w-4 h-4 shrink-0 text-white" />
+                  <span className="text-white font-bold">Consulter le PV Principal</span>
+                  <span className="text-[9px] bg-white/20 text-white px-1 py-0.2 rounded-none font-mono">
+                    [ESPACE]
+                  </span>
+                </button>
+              )}
+
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onOpenExplorer();
+                    onClose();
+                  }}
+                  className="flex-1 xp-btn text-xs font-bold py-1 flex items-center justify-center gap-1 text-slate-800"
+                >
+                  <FolderOpen className="w-3.5 h-3.5 shrink-0 text-amber-700" />
+                  <span>Explorateur</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    onOpenDecision();
+                    onClose();
+                  }}
+                  className="flex-1 xp-btn text-xs font-bold py-1 flex items-center justify-center gap-1 text-slate-800"
+                >
+                  <Scale className="w-3.5 h-3.5 shrink-0 text-blue-700" />
+                  <span>Qualification</span>
+                </button>
+              </div>
+            </>
           )}
-
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                onOpenExplorer();
-                onClose();
-              }}
-              className="flex-1 xp-btn text-xs font-bold py-1 flex items-center justify-center gap-1 text-slate-800"
-            >
-              <FolderOpen className="w-3.5 h-3.5 shrink-0 text-amber-700" />
-              <span>Explorateur</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                onOpenDecision();
-                onClose();
-              }}
-              className="flex-1 xp-btn text-xs font-bold py-1 flex items-center justify-center gap-1 text-slate-800"
-            >
-              <Scale className="w-3.5 h-3.5 shrink-0 text-blue-700" />
-              <span>Qualification</span>
-            </button>
-          </div>
         </div>
       </div>
     </div>

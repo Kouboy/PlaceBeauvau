@@ -107,7 +107,7 @@ export default function App() {
 
   // Chrono & Pointeuse Option A
   const [isChronoStarted, setIsChronoStarted] = useState<boolean>(false);
-  const [chronoCadenceActive, setChronoCadenceActive] = useState<boolean>(true);
+  const [chronoCadenceActive, setChronoCadenceActive] = useState<boolean>(false);
   const [autoPunchNext, setAutoPunchNext] = useState<boolean>(false);
 
   // Satire procédurale & dynamisme
@@ -166,14 +166,15 @@ export default function App() {
   const [openedDocument, setOpenedDocument] = useState<VirtualFile | null>(null);
   const [discoveredFiles, setDiscoveredFiles] = useState<Set<string>>(new Set());
   const [nextZIndex, setNextZIndex] = useState<number>(20);
-  const [activeWindowId, setActiveWindowId] = useState<WindowId>("explorer");
+  const [activeWindowId, setActiveWindowId] = useState<WindowId>("qualification");
   const [missionNotificationOpen, setMissionNotificationOpen] = useState<boolean>(true);
+  const [floatingBonus, setFloatingBonus] = useState<{ text: string; id: number } | null>(null);
   const [openWindows, setOpenWindows] = useState<
     Record<WindowId, { isOpen: boolean; isMinimized: boolean; zIndex: number }>
   >({
-    explorer: { isOpen: true, isMinimized: false, zIndex: 10 },
+    explorer: { isOpen: false, isMinimized: false, zIndex: 10 },
     document: { isOpen: false, isMinimized: false, zIndex: 12 },
-    qualification: { isOpen: true, isMinimized: false, zIndex: 9 },
+    qualification: { isOpen: true, isMinimized: false, zIndex: 11 },
     video: { isOpen: false, isMinimized: false, zIndex: 6 },
     humandb: { isOpen: false, isMinimized: false, zIndex: 5 },
     messages: { isOpen: false, isMinimized: false, zIndex: 4 },
@@ -181,8 +182,24 @@ export default function App() {
     rio: { isOpen: false, isMinimized: false, zIndex: 2 },
   });
 
+  // Notification administrative de verrouillage avant pointage (Patch R1)
+  const notifierAccesRefuse = useCallback(() => {
+    soundFx.playSystemWarning();
+    jouerSonBlame();
+    setFlashNews("ACCÈS REFUSÉ : Aucune instruction active. Pointez la prise en charge du dossier pour accéder aux pièces.");
+    setTimeout(() => setFlashNews(null), 4500);
+    setFloatingBonus({ text: "🔒 ACCÈS REFUSÉ — POINTEZ D'ABORD", id: Date.now() });
+    setTimeout(() => setFloatingBonus(null), 1800);
+  }, []);
+
   const handleToggleWindow = useCallback(
     (id: WindowId) => {
+      if (gameState === "playing" && !isChronoStarted && !isAwaitingNext) {
+        if (id !== "qualification") {
+          notifierAccesRefuse();
+          return;
+        }
+      }
       setOpenWindows((prev) => {
         const win = prev[id] || { isOpen: false, isMinimized: false, zIndex: 1 };
 
@@ -209,12 +226,19 @@ export default function App() {
         };
       });
     },
-    [activeWindowId]
+    [activeWindowId, gameState, isChronoStarted, isAwaitingNext, notifierAccesRefuse]
   );
 
   const handleFocusWindow = useCallback((id: WindowId) => {
+    let targetId = id;
+    if (gameState === "playing" && !isChronoStarted && !isAwaitingNext) {
+      if (id !== "qualification") {
+        notifierAccesRefuse();
+        targetId = "qualification";
+      }
+    }
     soundFx.playWindowOpen();
-    setActiveWindowId(id);
+    setActiveWindowId(targetId);
     setOpenWindows((prev) => {
       const currentMax = Math.max(
         ...Object.values(prev).map((w) => w?.zIndex || 0),
@@ -225,15 +249,15 @@ export default function App() {
 
       return {
         ...prev,
-        [id]: {
-          ...(prev[id] || { isOpen: true, isMinimized: false }),
+        [targetId]: {
+          ...(prev[targetId] || { isOpen: true, isMinimized: false }),
           isOpen: true,
           isMinimized: false,
           zIndex: newZ,
         },
       };
     });
-  }, []);
+  }, [gameState, isChronoStarted, isAwaitingNext, notifierAccesRefuse]);
 
   const handleCloseWindow = useCallback((id: WindowId) => {
     setOpenWindows((prev) => ({
@@ -247,6 +271,10 @@ export default function App() {
 
   const handleOpenFile = useCallback(
     (file: VirtualFile) => {
+      if (gameState === "playing" && !isChronoStarted && !isAwaitingNext) {
+        notifierAccesRefuse();
+        return;
+      }
       soundFx.playHddSeek("short");
       // Marquer comme examiné pour le suivi d'enquête
       setDiscoveredFiles((prev) => {
@@ -281,20 +309,23 @@ export default function App() {
         handleFocusWindow("document");
       }
     },
-    [handleFocusWindow]
+    [handleFocusWindow, gameState, isChronoStarted, isAwaitingNext, notifierAccesRefuse]
   );
 
   // Accès direct et instantané à la pièce maîtresse du dossier en cours
   const ouvrirPieceMaitresse = useCallback(() => {
+    if (gameState === "playing" && !isChronoStarted && !isAwaitingNext) {
+      notifierAccesRefuse();
+      return;
+    }
     const current = dossiers[currentIndex];
     if (!current) return;
     const pvFile = getPrimaryCaseFile(current);
     handleOpenFile(pvFile);
-  }, [currentIndex, handleOpenFile]);
+  }, [currentIndex, handleOpenFile, gameState, isChronoStarted, isAwaitingNext, notifierAccesRefuse]);
 
   // Retours sensoriels & ludiques enrichis
   const [screenFlash, setScreenFlash] = useState<"success" | "error" | null>(null);
-  const [floatingBonus, setFloatingBonus] = useState<{ text: string; id: number } | null>(null);
   const [telegramAlert, setTelegramAlert] = useState<TelegramAlert | null>(null);
 
   const declencherTelegramme = useCallback(
@@ -407,20 +438,38 @@ export default function App() {
       soundFx.playHddSeek("burst");
       const pvFile = getPrimaryCaseFile(current);
       setCurrentPath(`/C:/PROCEDURES_CONTENTIEUSES/EN_COURS/${current.id}`);
-      setOpenedDocument(pvFile);
-      setDiscoveredFiles(new Set([pvFile.id]));
-      setActiveWindowId("document");
+
+      if (willStart) {
+        setOpenedDocument(pvFile);
+        setDiscoveredFiles(new Set([pvFile.id]));
+        setActiveWindowId("document");
+        setOpenWindows({
+          explorer: { isOpen: true, isMinimized: false, zIndex: 10 },
+          document: { isOpen: true, isMinimized: false, zIndex: 12 },
+          qualification: { isOpen: true, isMinimized: false, zIndex: 11 },
+          video: { isOpen: false, isMinimized: false, zIndex: 6 },
+          humandb: { isOpen: false, isMinimized: false, zIndex: 5 },
+          messages: { isOpen: false, isMinimized: false, zIndex: 4 },
+          scelles: { isOpen: false, isMinimized: false, zIndex: 3 },
+          rio: { isOpen: false, isMinimized: false, zIndex: 2 },
+        });
+      } else {
+        setOpenedDocument(null);
+        setDiscoveredFiles(new Set());
+        setActiveWindowId("qualification");
+        setOpenWindows({
+          explorer: { isOpen: false, isMinimized: false, zIndex: 10 },
+          document: { isOpen: false, isMinimized: false, zIndex: 12 },
+          qualification: { isOpen: true, isMinimized: false, zIndex: 11 },
+          video: { isOpen: false, isMinimized: false, zIndex: 6 },
+          humandb: { isOpen: false, isMinimized: false, zIndex: 5 },
+          messages: { isOpen: false, isMinimized: false, zIndex: 4 },
+          scelles: { isOpen: false, isMinimized: false, zIndex: 3 },
+          rio: { isOpen: false, isMinimized: false, zIndex: 2 },
+        });
+      }
+
       setMissionNotificationOpen(true);
-      setOpenWindows({
-        explorer: { isOpen: true, isMinimized: false, zIndex: 10 },
-        document: { isOpen: true, isMinimized: false, zIndex: 12 },
-        qualification: { isOpen: true, isMinimized: false, zIndex: 11 },
-        video: { isOpen: false, isMinimized: false, zIndex: 6 },
-        humandb: { isOpen: false, isMinimized: false, zIndex: 5 },
-        messages: { isOpen: false, isMinimized: false, zIndex: 4 },
-        scelles: { isOpen: false, isMinimized: false, zIndex: 3 },
-        rio: { isOpen: false, isMinimized: false, zIndex: 2 },
-      });
 
       // 1. Télégramme d'ordre hiérarchique prioritaire propre au dossier
       if (current.telegrammePrefet) {
@@ -502,15 +551,32 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Enclenchement manuel de l'horodateur par le joueur (Option A)
+  // Enclenchement de la prise en charge et de l'horodateur par le joueur (Option A - Patch R1)
   const lancerChronoDossier = useCallback(() => {
     if (isAwaitingNext || isChronoStarted || gameState !== "playing") return;
+    const current = dossiers[currentIndex];
     soundFx.playPointeusePunch();
     lastTickRef.current = performance.now();
     setIsChronoStarted(true);
-    setFloatingBonus({ text: "⏱️ HORODATEUR ENCLENCHÉ", id: Date.now() });
-    setTimeout(() => setFloatingBonus(null), 1200);
-  }, [isAwaitingNext, isChronoStarted, gameState]);
+    setFloatingBonus({ text: "⏱ PRISE EN CHARGE HORODATÉE", id: Date.now() });
+    setTimeout(() => setFloatingBonus(null), 1400);
+
+    // Déverrouillage immédiat des outils et ouverture automatique de la pièce maîtresse
+    if (current) {
+      const pvFile = getPrimaryCaseFile(current);
+      setCurrentPath(`/C:/PROCEDURES_CONTENTIEUSES/EN_COURS/${current.id}`);
+      setOpenedDocument(pvFile);
+      setDiscoveredFiles((prev) => new Set(prev).add(pvFile.id));
+      setOpenWindows((prev) => ({
+        ...prev,
+        explorer: { isOpen: true, isMinimized: false, zIndex: 10 },
+        document: { isOpen: true, isMinimized: false, zIndex: 12 },
+        qualification: { isOpen: true, isMinimized: false, zIndex: 11 },
+      }));
+      setActiveWindowId("document");
+      soundFx.playPaperRustle();
+    }
+  }, [isAwaitingNext, isChronoStarted, gameState, currentIndex]);
 
   // Pause café syndicale (+25s d'instruction)
   const ajouterTempsCafe = useCallback(() => {
@@ -665,6 +731,10 @@ export default function App() {
 
   // Arbitrage déductif de la caméra piéton / carte SD (neutraliser vs conserver)
   const trancherCamera = useCallback((decision: "neutralisee" | "conservee") => {
+    if (gameState === "playing" && !isChronoStarted && !isAwaitingNext) {
+      notifierAccesRefuse();
+      return;
+    }
     const current = dossiers[currentIndex];
     if (cameraDecision !== null || !current?.incidentCamera) return;
 
@@ -726,15 +796,23 @@ export default function App() {
       );
     }
     setTimeout(() => setFlashNews(null), 6000);
-  }, [currentIndex, cameraDecision]);
+  }, [currentIndex, cameraDecision, gameState, isChronoStarted, isAwaitingNext, notifierAccesRefuse]);
 
   const neutraliserCamera = useCallback(() => {
+    if (gameState === "playing" && !isChronoStarted && !isAwaitingNext) {
+      notifierAccesRefuse();
+      return;
+    }
     trancherCamera("neutralisee");
-  }, [trancherCamera]);
+  }, [trancherCamera, gameState, isChronoStarted, isAwaitingNext, notifierAccesRefuse]);
 
   // Prise de décision : application d'un visa de qualification
   const appliquerTampon = useCallback((tamponChoisi: TamponOption) => {
     if (gameState !== "playing" || isProcessingRef.current || isAwaitingNext) return;
+    if (!isChronoStarted) {
+      notifierAccesRefuse();
+      return;
+    }
 
     const currentDossier: Dossier = dossiers[currentIndex];
 
@@ -944,6 +1022,10 @@ export default function App() {
 
   // Arbitrage déductif du matricule RIO (flouter vs valider)
   const trancherRio = useCallback((decision: "flouter" | "valider") => {
+    if (gameState === "playing" && !isChronoStarted && !isAwaitingNext) {
+      notifierAccesRefuse();
+      return;
+    }
     const current = dossiers[currentIndex];
     if (rioDecision !== null || !current?.statutRio) return;
 
@@ -998,14 +1080,22 @@ export default function App() {
       );
     }
     setTimeout(() => setFlashNews(null), 6000);
-  }, [currentIndex, rioDecision, equipementsPossedes]);
+  }, [currentIndex, rioDecision, equipementsPossedes, gameState, isChronoStarted, isAwaitingNext, notifierAccesRefuse]);
 
   const inspecterRio = useCallback(() => {
+    if (gameState === "playing" && !isChronoStarted && !isAwaitingNext) {
+      notifierAccesRefuse();
+      return;
+    }
     trancherRio("flouter");
-  }, [trancherRio]);
+  }, [trancherRio, gameState, isChronoStarted, isAwaitingNext, notifierAccesRefuse]);
 
   // Inversion accusatoire : outrage et rébellion réflexe
   const declencherRiposteOutrage = useCallback(() => {
+    if (gameState === "playing" && !isChronoStarted && !isAwaitingNext) {
+      notifierAccesRefuse();
+      return;
+    }
     const current = dossiers[currentIndex];
     if (riposteDeclenchee || !current?.riposteOutrage) return;
     setRiposteDeclenchee(true);
@@ -1021,10 +1111,14 @@ export default function App() {
       `INVERSION ACCUSATOIRE : Procédure d'outrage & rébellion transmise au Parquet contre la victime (+${bonus} €).`
     );
     setTimeout(() => setFlashNews(null), 6000);
-  }, [riposteDeclenchee, currentIndex, equipementsPossedes]);
+  }, [riposteDeclenchee, currentIndex, equipementsPossedes, gameState, isChronoStarted, isAwaitingNext, notifierAccesRefuse]);
 
   // Voie externe : transmission de copie hors procédure à Me Camille Sorel
   const transmettreFuiteClandestine = useCallback((dossierId: string) => {
+    if (gameState === "playing" && !isChronoStarted && !isAwaitingNext) {
+      notifierAccesRefuse();
+      return;
+    }
     if (fuitesTransmises.has(dossierId)) return;
     soundFx.playWhistleblowLeak();
     declencherVibration([40, 70, 40, 90]);
@@ -1036,10 +1130,14 @@ export default function App() {
       "📡 LIAISON EXTERNE // TRANSMISSION EFFECTUÉE : Copie non expurgée versée à la défense."
     );
     setTimeout(() => setFlashNews(null), 7000);
-  }, [fuitesTransmises]);
+  }, [fuitesTransmises, gameState, isChronoStarted, isAwaitingNext, notifierAccesRefuse]);
 
   // Feutre triple-mine : caviarder tous les termes d'un coup
   const caviarderTout = useCallback(() => {
+    if (gameState === "playing" && !isChronoStarted && !isAwaitingNext) {
+      notifierAccesRefuse();
+      return;
+    }
     const current = dossiers[currentIndex];
     if (!current?.termesCaviardes) return;
     const nonFaits = current.termesCaviardes.filter((t) => !caviardagesFaits.has(t.id));
@@ -1047,7 +1145,7 @@ export default function App() {
     jouerSonFeutre();
     declencherVibration([30, 40, 50]);
     nonFaits.forEach((t) => caviarderTerme(t));
-  }, [currentIndex, caviardagesFaits]);
+  }, [currentIndex, caviardagesFaits, gameState, isChronoStarted, isAwaitingNext, notifierAccesRefuse]);
 
   // Achat dans la Boutique de la Mutuelle Police
   const acheterEquipement = useCallback((eq: EquipementBoutique) => {
@@ -1078,6 +1176,10 @@ export default function App() {
 
   // Caviardage au feutre noir de censure ministérielle (déductif avec gestion des pièges)
   const caviarderTerme = useCallback((terme: TermeCaviarde) => {
+    if (gameState === "playing" && !isChronoStarted && !isAwaitingNext) {
+      notifierAccesRefuse();
+      return;
+    }
     // Si déjà caviardé : permet de rétablir le mot si on a biffé une pièce à charge par erreur !
     if (caviardagesFaits.has(terme.id)) {
       jouerSonFeutre();
@@ -1143,10 +1245,14 @@ export default function App() {
       );
     }
     setTimeout(() => setFlashNews(null), 5500);
-  }, [caviardagesFaits, caviardagesErreurs]);
+  }, [caviardagesFaits, caviardagesErreurs, gameState, isChronoStarted, isAwaitingNext, notifierAccesRefuse, currentIndex]);
 
   // Substitution de pièce à conviction compromettante
   const substituerScelle = useCallback((piece: PieceASubstituer) => {
+    if (gameState === "playing" && !isChronoStarted && !isAwaitingNext) {
+      notifierAccesRefuse();
+      return;
+    }
     if (substitutionsFaites.has(piece.id)) return;
     jouerSonSubstitut();
     declencherVibration([40, 70]);
@@ -1158,10 +1264,14 @@ export default function App() {
       `SUBSTITUTION RÉGLEMENTAIRE : Scellé gênant remplacé par la synthèse officielle (+${piece.primeBonus} €).`
     );
     setTimeout(() => setFlashNews(null), 5000);
-  }, [substitutionsFaites]);
+  }, [substitutionsFaites, gameState, isChronoStarted, isAwaitingNext, notifierAccesRefuse]);
 
   // Actionnement de la déchiqueteuse / broyeuse de bureau
   const actionnerBroyeuse = useCallback(() => {
+    if (gameState === "playing" && !isChronoStarted && !isAwaitingNext) {
+      notifierAccesRefuse();
+      return;
+    }
     jouerSonBroyeur();
     soundFx.playHddSeek("short");
     declencherVibration([50, 40, 50]);
@@ -1184,11 +1294,15 @@ export default function App() {
     }
     setTimeout(() => setFlashNews(null), 4500);
     setTimeout(() => setBroyeurAnime(false), 900);
-  }, [blames]);
+  }, [blames, gameState, isChronoStarted, isAwaitingNext, notifierAccesRefuse]);
 
   // Gestion tactile du glisser-déposer sur mobile / tablette
   const handleTouchStartTampon = (t: TamponOption, e: TouchEvent) => {
     if (isAwaitingNext) return;
+    if (gameState === "playing" && !isChronoStarted) {
+      notifierAccesRefuse();
+      return;
+    }
     const touch = e.touches[0];
     setDraggedTampon(t);
     setTouchGhostPos({ x: touch.clientX, y: touch.clientY });

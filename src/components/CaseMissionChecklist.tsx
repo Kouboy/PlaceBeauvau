@@ -36,6 +36,8 @@ export interface CaseMissionChecklistProps {
   onNavigateToPath: (path: string) => void;
   onOpenApp: (appId: string) => void;
   onOpenPieceMaitresse?: () => void;
+  isChronoStarted?: boolean;
+  onStartChrono?: () => void;
 }
 
 export const CaseMissionChecklist: React.FC<CaseMissionChecklistProps> = ({
@@ -55,6 +57,8 @@ export const CaseMissionChecklist: React.FC<CaseMissionChecklistProps> = ({
   onNavigateToPath,
   onOpenApp,
   onOpenPieceMaitresse,
+  isChronoStarted = false,
+  onStartChrono,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
@@ -87,10 +91,18 @@ export const CaseMissionChecklist: React.FC<CaseMissionChecklistProps> = ({
           </div>
 
           <div className="truncate">
-            <span className="text-[#003366] font-bold text-xs sm:text-sm">{dossier.profilage.identite}</span>
-            <span className="text-slate-600 text-xs hidden sm:inline ml-2 font-medium">
-              — {dossier.faits.slice(0, 65)}...
-            </span>
+            {!isChronoStarted && !isAwaitingNext ? (
+              <span className="text-slate-600 text-xs font-semibold">
+                🔒 [ EN ATTENTE DE PRISE EN CHARGE ] — Pointez pour ouvrir l'instruction
+              </span>
+            ) : (
+              <>
+                <span className="text-[#003366] font-bold text-xs sm:text-sm">{dossier.profilage.identite}</span>
+                <span className="text-slate-600 text-xs hidden sm:inline ml-2 font-medium">
+                  — {dossier.faits.slice(0, 65)}...
+                </span>
+              </>
+            )}
           </div>
         </div>
 
@@ -120,6 +132,25 @@ export const CaseMissionChecklist: React.FC<CaseMissionChecklistProps> = ({
 
       {/* FEUILLE DE ROUTE DÉPLIÉE : LES 4 ACTIONS PRIORITAIRES DE CLASSEMENT SANS SUITE */}
       {!isCollapsed && (
+        !isChronoStarted && !isAwaitingNext ? (
+          <div className="mt-1.5 pt-1.5 border-t border-[#b8b4a6] p-2 bg-[#f4f2ec] text-center text-xs flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2 text-slate-700 font-sans">
+              <span className="text-base">🔒</span>
+              <span className="font-bold text-[#002244]">POSTE D'INSTRUCTION EN ATTENTE DE POINTAGE :</span>
+              <span className="hidden sm:inline">Pointez la prise en charge du dossier pour déverrouiller les actes procéduraux.</span>
+            </div>
+            {onStartChrono && (
+              <button
+                type="button"
+                onClick={onStartChrono}
+                className="xp-btn-blue px-3 py-1 text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1 cursor-pointer shrink-0 shadow-xs"
+              >
+                <span>⏱️ PRENDRE EN CHARGE // POINTER</span>
+                <span className="bg-white/20 px-1 py-0.2 font-mono text-[9px]">[P]</span>
+              </button>
+            )}
+          </div>
+        ) : (
         <div className="mt-1.5 pt-1.5 border-t border-[#b8b4a6] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-xs">
           
           {/* 1. ÉTUDE DES PIÈCES & CONSTAT MÉDICAL */}
@@ -244,6 +275,7 @@ export const CaseMissionChecklist: React.FC<CaseMissionChecklistProps> = ({
           </div>
 
         </div>
+        )
       )}
     </div>
   );
