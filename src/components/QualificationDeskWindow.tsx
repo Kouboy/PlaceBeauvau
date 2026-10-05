@@ -125,14 +125,17 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
         <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
+            disabled={!isChronoStarted && !isAwaitingNext}
             onClick={() => {
               soundFx.playUiClick();
               onOpenExplorer();
             }}
-            className="xp-btn flex items-center gap-1.5"
+            className={`xp-btn flex items-center gap-1.5 ${
+              !isChronoStarted && !isAwaitingNext ? "opacity-50 cursor-not-allowed text-slate-500" : ""
+            }`}
           >
             <span>📁</span>
-            <span>PIÈCES D'INSTRUCTION</span>
+            <span>{!isChronoStarted && !isAwaitingNext ? "PIÈCES SOUS SCELLÉ" : "PIÈCES D'INSTRUCTION"}</span>
           </button>
         </div>
       </div>
@@ -148,8 +151,8 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
         </span>
       </div>
 
-      {/* ALERTE BLOCAGE VIDÉO CCTV (BOÎTE D'ALERTE WINDOWS JAUNE) */}
-      {cameraBlocked && (
+      {/* ALERTE BLOCAGE VIDÉO CCTV (UNIQUEMENT VISIBLE APRÈS POINTAGE) */}
+      {cameraBlocked && isChronoStarted && (
         <div className="bg-[#ffffcc] border-b-2 border-[#cc9900] text-[#4d3300] font-sans font-bold text-xs p-2 flex items-center justify-between gap-2 shrink-0 shadow-xs">
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-[#cc6600] shrink-0 animate-bounce" />
@@ -165,8 +168,8 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
         </div>
       )}
 
-      {/* ALERTE CONTRADICTION MÉDICALE */}
-      {medicalBlocked && (
+      {/* ALERTE CONTRADICTION MÉDICALE (UNIQUEMENT VISIBLE APRÈS POINTAGE) */}
+      {medicalBlocked && isChronoStarted && (
         <div className="bg-[#ffe8d6] border-b-2 border-[#cc6600] text-[#663300] font-sans font-bold text-xs p-2 flex flex-wrap items-center justify-between gap-2 shrink-0 shadow-xs">
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-[#cc6600] shrink-0" />
@@ -368,31 +371,34 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
             1. EXPOSÉ SOMMAIRE DES FAITS & DOCTRINE POLICIÈRE
           </legend>
 
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#d8d4c4] pb-1.5 mb-2 text-xs">
-            <span className="text-slate-800">
-              Administré mis en cause : <strong className="text-black font-sans">{dossier.profilage.identite}</strong>
-            </span>
-            <span className="text-[11px] text-slate-700 bg-white px-2 py-0.5 border border-[#7f9db9]">
-              Profil : <strong className="text-[#003366]">{dossier.profilage.classeSociale}</strong>
-            </span>
-          </div>
-
-          {/* CHAMP TEXTE ENFONCÉ (SUNKEN WIN32 BLANC PUR) */}
-          <div className="text-xs sm:text-sm text-black leading-relaxed font-mono mb-2 bg-white p-2.5 border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white shadow-inner select-text">
-            <span className="text-[#003366] font-bold block mb-1">Constatations brutes transmises :</span>
-            {!isChronoStarted && !isAwaitingNext ? (
-              <span className="text-slate-500 italic block py-1">
-                🔒 [ PIÈCE SOUS SCELLÉ — Pointez la prise en charge du dossier pour déverrouiller l'instruction ]
-              </span>
-            ) : (
-              dossier.faits
-            )}
-          </div>
-
-          {dossier.novlangue && (
-            <div className="bg-[#e4efff] p-2 border border-[#7f9db9] text-xs text-[#002244]">
-              <span className="font-bold">Lexique officiel préconisé :</span> « {dossier.novlangue.termeMinisteriel} »
+          {!isChronoStarted && !isAwaitingNext ? (
+            <div className="p-4 bg-white border border-[#7f9db9] text-center text-xs text-slate-500 font-mono my-1 flex flex-col items-center justify-center gap-1 min-h-[70px]">
+              <span className="font-bold text-[#003366]">🔒 [ SOUS SCELLÉ ]</span>
+              <span className="text-[11px]">Accessible après prise en charge horodatée.</span>
             </div>
+          ) : (
+            <>
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#d8d4c4] pb-1.5 mb-2 text-xs">
+                <span className="text-slate-800">
+                  Administré mis en cause : <strong className="text-black font-sans">{dossier.profilage.identite}</strong>
+                </span>
+                <span className="text-[11px] text-slate-700 bg-white px-2 py-0.5 border border-[#7f9db9]">
+                  Profil : <strong className="text-[#003366]">{dossier.profilage.classeSociale}</strong>
+                </span>
+              </div>
+
+              {/* CHAMP TEXTE ENFONCÉ (SUNKEN WIN32 BLANC PUR) */}
+              <div className="text-xs sm:text-sm text-black leading-relaxed font-mono mb-2 bg-white p-2.5 border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white shadow-inner select-text">
+                <span className="text-[#003366] font-bold block mb-1">Constatations brutes transmises :</span>
+                {dossier.faits}
+              </div>
+
+              {dossier.novlangue && (
+                <div className="bg-[#e4efff] p-2 border border-[#7f9db9] text-xs text-[#002244]">
+                  <span className="font-bold">Lexique officiel préconisé :</span> « {dossier.novlangue.termeMinisteriel} »
+                </div>
+              )}
+            </>
           )}
         </fieldset>
 
@@ -403,8 +409,9 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
           </legend>
 
           {!isChronoStarted && !isAwaitingNext ? (
-            <div className="p-3 bg-white border border-[#7f9db9] text-center text-xs text-slate-500 font-mono my-1">
-              🔒 [ PIÈCES FORENSIQUES VERROUILLÉES — Pointez la prise en charge pour ouvrir l'instruction ]
+            <div className="p-4 bg-white border border-[#7f9db9] text-center text-xs text-slate-500 font-mono my-1 flex flex-col items-center justify-center gap-1 min-h-[70px]">
+              <span className="font-bold text-[#003366]">🔒 [ SOUS SCELLÉ ]</span>
+              <span className="text-[11px]">Accessible après prise en charge horodatée.</span>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] mt-1">
@@ -519,64 +526,67 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
             3. VISA & ÉMARGEMENT MINISTÉRIEL DU CONTENTIEUX
           </legend>
 
-          <div
-            onDragOver={onDragOver}
-            onDragLeave={onDragLeave}
-            onDrop={onDrop}
-            className={`border-2 border-dashed p-4 text-center transition-all flex flex-col items-center justify-center min-h-[130px] relative ${
-              isDropZoneOver
-                ? "border-emerald-600 bg-[#e8f8f0] scale-[1.005]"
-                : activeStamp
-                ? activeStamp.isCorrect
-                  ? "border-emerald-600 bg-[#f0fff4]"
-                  : "border-red-600 bg-[#fff5f5]"
-                : "border-[#7f9db9] bg-white shadow-inner"
-            }`}
-          >
-            {activeStamp ? (
-              /* TAMPON APPOSÉ AVEC ENCRE ET RELIEF RÉALISTE */
-              <div className="flex flex-col items-center gap-1.5">
-                <div
-                  style={{
-                    transform: `rotate(${activeStamp.angle || -3}deg)`,
-                  }}
-                  className={`border-4 px-6 py-2.5 font-sans font-black text-sm sm:text-base uppercase tracking-wider shadow-xl animate-tampon transition-transform relative overflow-hidden ${
-                    activeStamp.isCorrect
-                      ? "border-emerald-700 text-emerald-800 bg-white/95"
-                      : "border-red-700 text-red-800 bg-white/95"
-                  }`}
-                >
-                  <span className="relative z-10">[ VISA OFFICIEL : {activeStamp.label} ]</span>
+          {!isChronoStarted && !isAwaitingNext ? (
+            <div className="p-4 bg-white border border-[#7f9db9] text-center text-xs text-slate-500 font-mono my-1 flex flex-col items-center justify-center gap-1 min-h-[70px]">
+              <span className="font-bold text-[#003366]">🔒 [ INSTRUCTION NON OUVERTE ]</span>
+              <span className="text-[11px]">Accessible après prise en charge horodatée.</span>
+            </div>
+          ) : (
+            <div
+              onDragOver={onDragOver}
+              onDragLeave={onDragLeave}
+              onDrop={onDrop}
+              className={`border-2 border-dashed p-4 text-center transition-all flex flex-col items-center justify-center min-h-[130px] relative ${
+                isDropZoneOver
+                  ? "border-emerald-600 bg-[#e8f8f0] scale-[1.005]"
+                  : activeStamp
+                  ? activeStamp.isCorrect
+                    ? "border-emerald-600 bg-[#f0fff4]"
+                    : "border-red-600 bg-[#fff5f5]"
+                  : "border-[#7f9db9] bg-white shadow-inner"
+              }`}
+            >
+              {activeStamp ? (
+                /* TAMPON APPOSÉ AVEC ENCRE ET RELIEF RÉALISTE */
+                <div className="flex flex-col items-center gap-1.5">
+                  <div
+                    style={{
+                      transform: `rotate(${activeStamp.angle || -3}deg)`,
+                    }}
+                    className={`border-4 px-6 py-2.5 font-sans font-black text-sm sm:text-base uppercase tracking-wider shadow-xl animate-tampon transition-transform relative overflow-hidden ${
+                      activeStamp.isCorrect
+                        ? "border-emerald-700 text-emerald-800 bg-white/95"
+                        : "border-red-700 text-red-800 bg-white/95"
+                    }`}
+                  >
+                    <span className="relative z-10">[ VISA OFFICIEL : {activeStamp.label} ]</span>
+                  </div>
+                  <div className="text-xs font-bold text-slate-800 mt-1 font-sans">
+                    {activeStamp.isCorrect
+                      ? "✓ Visa homologué par la Préfecture et le Parquet."
+                      : "⚠️ Visa rejeté par le Parquet : Orientation non conforme aux réquisitions."}
+                  </div>
                 </div>
-                <div className="text-xs font-bold text-slate-800 mt-1 font-sans">
-                  {activeStamp.isCorrect
-                    ? "✓ Visa homologué par la Préfecture et le Parquet."
-                    : "⚠️ Visa rejeté par le Parquet : Orientation non conforme aux réquisitions."}
+              ) : (
+                /* EN ATTENTE DU VISA */
+                <div className="flex flex-col items-center gap-1.5 text-slate-600">
+                  <Stamp className="w-7 h-7 text-slate-400" />
+                  <div className="text-xs font-black text-[#003366] uppercase tracking-wider font-sans">
+                    {cameraBlocked
+                      ? "ZONE VÉROUILLÉE : ARBITREZ D'ABORD LA VIDÉO CCTV"
+                      : medicalBlocked
+                      ? "ZONE VÉROUILLÉE : CAVIARDEZ LES LÉSIONS IML AU FEUTRE NOIR"
+                      : "GLISSEZ LE TAMPON DE SERVICE OU CLIQUEZ CI-DESSOUS"}
+                  </div>
+                  <div className="text-[11px] text-slate-600 font-sans max-w-md">
+                    {medicalBlocked
+                      ? "Le rapport médical contredit la version des policiers. Biffez les mentions contestées dans le visualiseur."
+                      : "Sélectionnez le visa doctrinal conforme pour clôturer le dossier."}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              /* EN ATTENTE DU VISA */
-              <div className="flex flex-col items-center gap-1.5 text-slate-600">
-                <Stamp className="w-7 h-7 text-slate-400" />
-                <div className="text-xs font-black text-[#003366] uppercase tracking-wider font-sans">
-                  {!isChronoStarted
-                    ? "ZONE VERROUILLÉE : POINTEZ LA PRISE EN CHARGE DU DOSSIER [P]"
-                    : cameraBlocked
-                    ? "ZONE VÉROUILLÉE : ARBITREZ D'ABORD LA VIDÉO CCTV"
-                    : medicalBlocked
-                    ? "ZONE VÉROUILLÉE : CAVIARDEZ LES LÉSIONS IML AU FEUTRE NOIR"
-                    : "GLISSEZ LE TAMPON DE SERVICE OU CLIQUEZ CI-DESSOUS"}
-                </div>
-                <div className="text-[11px] text-slate-600 font-sans max-w-md">
-                  {!isChronoStarted
-                    ? "L'instruction n'est pas ouverte. Pointez l'horodateur pour déverrouiller la qualification."
-                    : medicalBlocked
-                    ? "Le rapport médical contredit la version des policiers. Biffez les mentions contestées dans le visualiseur."
-                    : "Sélectionnez le visa doctrinal conforme pour clôturer le dossier."}
-                </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </fieldset>
 
         {/* GROUPBOX 4 : SÉLECTION DES 3 SCEAUX / TAMPONS OFFICIELS (STYLE BOUTONS POUSSOIRS WIN32) */}
@@ -587,8 +597,9 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
             </legend>
 
             {!isChronoStarted ? (
-              <div className="p-3 bg-white border border-[#7f9db9] text-center text-xs text-slate-500 font-mono my-1">
-                🔒 [ VISAS DE QUALIFICATION VERROUILLÉS — Pointez la prise en charge pour ouvrir l'instruction ]
+              <div className="p-4 bg-white border border-[#7f9db9] text-center text-xs text-slate-500 font-mono my-1 flex flex-col items-center justify-center gap-1 min-h-[70px]">
+                <span className="font-bold text-[#003366]">🔒 [ INSTRUCTION NON OUVERTE ]</span>
+                <span className="text-[11px]">Accessible après prise en charge horodatée.</span>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-1.5">

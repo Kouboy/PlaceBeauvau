@@ -220,9 +220,76 @@ function hasMedicalInjuries(dossier: Dossier): boolean {
   return true;
 }
 
+export function getMedicalSubject(dossier: Dossier): string {
+  switch (dossier.id) {
+    case "DOS-B75-1733":
+      return "Brigadier Marc Vasseur";
+    case "DOS-B75-1108":
+      return "M. Bilal M. & Brigadier Marc Vasseur (Examens contradictoires)";
+    default:
+      return dossier.profilage.identite;
+  }
+}
+
 function getMedicalReportContent(dossier: Dossier): string {
   const caseFolderId = dossier.id;
-  const p = dossier.profilage;
+
+  // Cas DOS-B75-1108 : double examen distinct (Bilal M. et Brigadier Marc Vasseur)
+  if (dossier.id === "DOS-B75-1108") {
+    return `================================================================================
+MINISTÈRE DE LA SANTÉ // UNITÉ MÉDICO-JUDICIAIRE (UMJ)
+CERTIFICAT DE CONSTATATIONS CLINIQUES // RÉF : ${caseFolderId}
+--------------------------------------------------------------------------------
+EXAMENS MÉDICAUX CONTRADICTOIRES // INCIDENT CONJOINT
+MÉDECIN PRATICIEN : Dr. V. Lambert // Médecin Légiste Praticien Hospitalier
+--------------------------------------------------------------------------------
+
+PERSONNE EXAMINÉE A :
+M. Bilal M.
+
+CONSTATATIONS :
+• Dermabrasions et ecchymoses péri-orbi-faciales droites.
+• Lésions traumatiques consécutives : suite à une frappe portée à la mâchoire de l'administré.
+• Ébranlement dentaire secteur 4 sans fracture osseuse alvéolaire décelable.
+• Incapacité Totale de Travail (ITT) fixée à 4 jours à titre conservatoire.
+
+--------------------------------------------------------------------------------
+
+PERSONNE EXAMINÉE B :
+Brigadier Marc Vasseur
+
+CONSTATATIONS :
+• Constat médico-légal de lésion en service : fracture du cinquième métacarpien du fonctionnaire.
+• Œdème dorsal marqué et impotence fonctionnelle complète de la main droite.
+• Incapacité Totale de Travail (ITT) fixée à 21 jours par le praticien.
+
+--------------------------------------------------------------------------------
+CONCLUSIONS LÉGALES :
+• Constatations médico-légales contradictoires consignées pour versement au dossier d'instruction.
+• Certificats établis conformément aux réquisitions du Parquet.`;
+  }
+
+  // Cas DOS-B75-1733 : l'examen concerne l'agent Marc Vasseur, blessé au genou
+  if (dossier.id === "DOS-B75-1733") {
+    return `================================================================================
+MINISTÈRE DE LA SANTÉ // UNITÉ MÉDICO-JUDICIAIRE (UMJ)
+CERTIFICAT DE CONSTATATIONS CLINIQUES // RÉF : ${caseFolderId}
+--------------------------------------------------------------------------------
+EXAMEN MÉDICAL RÉALISÉ SUR :
+Brigadier Marc Vasseur
+MÉDECIN PRATICIEN : Dr. V. Lambert // Médecin Légiste Praticien Hospitalier
+--------------------------------------------------------------------------------
+
+CONSTATATIONS CLINIQUES ET TRAUMATOLOGIQUES :
+Examen de l'équipage intervenant : entorse bénigne du ligament collatéral médial du genou droit chez le Brigadier Marc Vasseur, consécutive à une perte d'équilibre en phase de course d'interpellation.
+
+CONCLUSIONS LÉGALES :
+• Incapacité Totale de Travail (ITT) fixée à 8 jours en accident de service.
+• Examen réalisé selon les protocoles médico-légaux en vigueur.
+
+AVIS MÉDICO-LÉGAL :
+Constatations objectives consignées pour versement au dossier d'instruction.`;
+  }
 
   let constatations = "";
 
@@ -232,9 +299,6 @@ function getMedicalReportContent(dossier: Dossier): string {
       .join("\n");
   } else {
     switch (dossier.id) {
-      case "DOS-B75-1733":
-        constatations = "Examen de l'équipage intervenant : entorse bénigne du ligament collatéral médial du genou droit chez le Brigadier Marc Vasseur, consécutive à une perte d'équilibre en phase de course.";
-        break;
       case "DOS-B75-1502":
         constatations = "Patiente Manon R. : Luxation acromio-claviculaire droite de stade II consécutive à une chute provoquée avec impact direct de la ceinture scapulaire sur le sol. Impotence fonctionnelle majeure du membre supérieur droit.";
         break;
@@ -253,7 +317,8 @@ function getMedicalReportContent(dossier: Dossier): string {
 MINISTÈRE DE LA SANTÉ // UNITÉ MÉDICO-JUDICIAIRE (UMJ)
 CERTIFICAT DE CONSTATATIONS CLINIQUES // RÉF : ${caseFolderId}
 --------------------------------------------------------------------------------
-EXAMEN MÉDICAL RÉALISÉ SUR : ${p.identite}
+EXAMEN MÉDICAL RÉALISÉ SUR :
+${getMedicalSubject(dossier)}
 MÉDECIN PRATICIEN : Dr. V. Lambert // Médecin Légiste Praticien Hospitalier
 --------------------------------------------------------------------------------
 

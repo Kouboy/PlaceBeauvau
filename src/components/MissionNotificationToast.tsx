@@ -53,23 +53,50 @@ export const MissionNotificationToast: React.FC<MissionNotificationToastProps> =
 
       {/* CORPS DE LA MISSION */}
       <div className="p-3 text-xs space-y-2 text-black">
-        <div className="flex items-start justify-between gap-2 border-b border-[#9c9a91] pb-1.5">
-          <div>
-            <div className="text-[10px] text-slate-600 font-bold uppercase">Affaire Contentieuse :</div>
-            <div className="text-sm font-bold text-black">
-              #{dossier.id.toUpperCase()} — {dossier.profilage.identite}
+        {!isChronoStarted ? (
+          <>
+            <div className="flex items-start justify-between gap-2 border-b border-[#9c9a91] pb-1.5">
+              <div>
+                <div className="text-[10px] text-slate-600 font-bold uppercase">Affaire Contentieuse :</div>
+                <div className="text-sm font-bold text-[#003366]">
+                  #{dossier.id.toUpperCase()}
+                </div>
+              </div>
+              <span className="text-[10px] font-bold bg-amber-100 text-amber-900 px-1.5 py-0.5 border border-amber-400 shrink-0">
+                SOUS SCELLÉ
+              </span>
             </div>
-          </div>
-          <span className="text-[10px] font-bold bg-white text-black px-1.5 py-0.5 border border-[#808080] shrink-0">
-            {dossier.profilage.classeSociale}
-          </span>
-        </div>
 
-        {/* RÉSUMÉ DES FAITS & MISSION */}
-        <div className="text-black leading-relaxed text-xs bg-white p-2 border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white shadow-inner">
-          <strong className="text-red-900">Faits déclarés : </strong>
-          <span className="line-clamp-2">{dossier.faits}</span>
-        </div>
+            <div className="text-black leading-relaxed text-xs bg-white p-2.5 border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white shadow-inner font-mono">
+              <div className="font-bold text-[#003366] text-[11px] mb-1">
+                STATUT : EN ATTENTE DE PRISE EN CHARGE
+              </div>
+              <div className="text-slate-600 text-[11px]">
+                Les éléments matériels et déclaratifs du dossier seront accessibles après pointage.
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="flex items-start justify-between gap-2 border-b border-[#9c9a91] pb-1.5">
+              <div>
+                <div className="text-[10px] text-slate-600 font-bold uppercase">Affaire Contentieuse :</div>
+                <div className="text-sm font-bold text-black">
+                  #{dossier.id.toUpperCase()} — {dossier.profilage.identite}
+                </div>
+              </div>
+              <span className="text-[10px] font-bold bg-white text-black px-1.5 py-0.5 border border-[#808080] shrink-0">
+                {dossier.profilage.classeSociale}
+              </span>
+            </div>
+
+            {/* RÉSUMÉ DES FAITS & MISSION */}
+            <div className="text-black leading-relaxed text-xs bg-white p-2 border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white shadow-inner">
+              <strong className="text-red-900">Faits déclarés : </strong>
+              <span className="line-clamp-2">{dossier.faits}</span>
+            </div>
+          </>
+        )}
 
         {/* TÉLÉGRAMME / CONSIGNE HIÉRARCHIQUE */}
         {dossier.telegrammePrefet && (
