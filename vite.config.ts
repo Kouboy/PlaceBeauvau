@@ -4,10 +4,11 @@ import path from 'path';
 import {defineConfig} from 'vite';
 import {VitePWA} from 'vite-plugin-pwa';
 
-export default defineConfig(() => {
+export default defineConfig(({ command }) => {
+  const isBuild = command === 'build';
   const repoName = process.env.GITHUB_REPOSITORY
     ? `/${process.env.GITHUB_REPOSITORY.split('/')[1]}/`
-    : process.env.BASE_PATH || './';
+    : process.env.BASE_PATH || (isBuild ? './' : '/');
 
   return {
     base: repoName,
@@ -54,7 +55,7 @@ export default defineConfig(() => {
           navigateFallback: repoName === './' ? 'index.html' : `${repoName}index.html`,
         },
         devOptions: {
-          enabled: true,
+          enabled: false,
         },
       }),
     ],

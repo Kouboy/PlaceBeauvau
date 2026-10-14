@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback, ReactNode } from "react";
 import { Minus, Square, Copy, X } from "lucide-react";
+import { motion } from "motion/react";
 import { soundFx } from "../services/soundFx";
 
 export interface WindowRect {
@@ -239,11 +240,18 @@ export const DesktopWindow: React.FC<DesktopWindowProps> = ({
     setActiveMenu(null);
   };
 
+  useEffect(() => {
+    soundFx.playWindowOpen();
+  }, []);
+
   if (!isOpen || isMinimized) return null;
 
   return (
-    <div
+    <motion.div
       id={`window-${id}`}
+      initial={{ opacity: 0, scale: 0.985, y: 4 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.13, ease: [0.16, 1, 0.3, 1] }}
       onMouseDown={onFocus}
       onTouchStart={onFocus}
       style={{
@@ -593,6 +601,6 @@ export const DesktopWindow: React.FC<DesktopWindowProps> = ({
           />
         </>
       )}
-    </div>
+    </motion.div>
   );
 };

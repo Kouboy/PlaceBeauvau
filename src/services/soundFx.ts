@@ -652,38 +652,45 @@ class DiegeticAudioEngine {
 
   /**
    * Bruit d'ouverture et de déploiement d'une fenêtre Windows XP au premier plan
+   * (thunk plastique, léger clic système et court souffle de lecture)
    */
   public playWindowOpen() {
-    this.playUiClick();
-  }
-
-  /**
-   * Claquement sec et mat de fermeture de fenêtre ou dossier cartonné
-   */
-  public playWindowClose() {
     if (this.isMuted) return;
     this.initContext();
     if (!this.ctx) return;
 
     const t = this.ctx.currentTime;
 
-    // Coup sourd de clapet (folder snapping shut)
+    // 1. Thunk plastique sourd (châssis de fenêtre Win32)
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(220, t);
-    osc.frequency.exponentialRampToValueAtTime(60, t + 0.06);
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(190, t);
+    osc.frequency.exponentialRampToValueAtTime(75, t + 0.05);
 
-    gain.gain.setValueAtTime(0.25, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+    gain.gain.setValueAtTime(0.2, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
 
     osc.connect(gain);
     gain.connect(this.ctx.destination);
     osc.start(t);
-    osc.stop(t + 0.08);
+    osc.stop(t + 0.07);
 
-    // Bruit d'impact plastique sec (clack)
-    const bufferSize = this.ctx.sampleRate * 0.04;
+    // 2. Micro clic système sec
+    const oscClick = this.ctx.createOscillator();
+    const clickGain = this.ctx.createGain();
+    oscClick.type = "sine";
+    oscClick.frequency.setValueAtTime(1400, t);
+    oscClick.frequency.exponentialRampToValueAtTime(500, t + 0.02);
+    clickGain.gain.setValueAtTime(0.12, t);
+    clickGain.gain.exponentialRampToValueAtTime(0.001, t + 0.025);
+    oscClick.connect(clickGain);
+    clickGain.connect(this.ctx.destination);
+    oscClick.start(t);
+    oscClick.stop(t + 0.03);
+
+    // 3. Court bruit de disque / lecture système (très discret)
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.035);
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
@@ -693,10 +700,80 @@ class DiegeticAudioEngine {
     noise.buffer = buffer;
     const filter = this.ctx.createBiquadFilter();
     filter.type = "bandpass";
-    filter.frequency.setValueAtTime(1600, t);
+    filter.frequency.setValueAtTime(2200, t);
     const noiseGain = this.ctx.createGain();
-    noiseGain.gain.setValueAtTime(0.2, t);
-    noiseGain.gain.exponentialRampToValueAtTime(0.01, t + 0.04);
+    noiseGain.gain.setValueAtTime(0.08, t);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.035);
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(this.ctx.destination);
+    noise.start(t);
+  }
+
+  /**
+   * Clic de relais électromécanique sec et discret (palette de compteur, commutation relais)
+   */
+  public playSystemRelayClick() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = "square";
+    osc.frequency.setValueAtTime(840, t);
+    osc.frequency.exponentialRampToValueAtTime(280, t + 0.018);
+
+    gain.gain.setValueAtTime(0.14, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.02);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.025);
+  }
+
+  /**
+   * Claquement sec et discret de fermeture de fenêtre (plus faible que l'ouverture)
+   */
+  public playWindowClose() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+
+    // Coup sourd discret de clapet
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(180, t);
+    osc.frequency.exponentialRampToValueAtTime(60, t + 0.05);
+
+    gain.gain.setValueAtTime(0.14, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.07);
+
+    // Bruit d'impact plastique sec (clic discret)
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.03);
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.006));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = "bandpass";
+    filter.frequency.setValueAtTime(1700, t);
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.11, t);
+    noiseGain.gain.exponentialRampToValueAtTime(0.005, t + 0.03);
     noise.connect(filter);
     filter.connect(noiseGain);
     noiseGain.connect(this.ctx.destination);

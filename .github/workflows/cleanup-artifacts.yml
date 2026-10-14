@@ -1,0 +1,85 @@
+name: Nettoyage des Artefacts Actions
+
+on:
+  schedule:
+    # Exécution hebdomadaire chaque dimanche à 03:00 UTC
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+    inputs:
+      retention_days:
+        description: 'Âge minimum des artefacts à supprimer (en jours)'
+        required: true
+        default: '1'
+        type: string
+      dry_run:
+        description: 'Mode simulation (ne supprime rien si coché)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  cleanup:
+    name: Purge des anciens artefacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Nettoyage automatisé via API GitHub
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const retentionDays = parseInt('${{ inputs.retention_days || 1 }}', 10);
+            const dryRun = '${{ inputs.dry_run || false }}' === 'true';
+            const cutoffDate = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000);
+            
+            console.log(`Période de rétention : ${retentionDays} jour(s)`);
+            console.log(`Seuil de suppression : antérieur à ${cutoffDate.toISOString()}`);
+            console.log(`Mode simulation : ${dryRun ? 'OUI' : 'NON'}`);
+
+            const { owner, repo } = context.repo;
+            let deletedCount = 0;
+            let freedBytes = 0;
+
+            const artifacts = await github.paginate(github.rest.actions.listArtifactsForRepo, {
+              owner,
+              repo,
+              per_page: 100
+            });
+
+            console.log(`Total artefacts trouvés dans le dépôt : ${artifacts.length}`);
+
+            for (const artifact of artifacts) {
+              const createdAt = new Date(artifact.created_at);
+              if (createdAt < cutoffDate) {
+                console.log(`[CIBLE] Id: ${artifact.id} | Nom: ${artifact.name} | Taille: ${(artifact.size_in_bytes / (1024 * 1024)).toFixed(2)} Mo | Créé le: ${artifact.created_at}`);
+                if (!dryRun) {
+                  try {
+                    await github.rest.actions.deleteArtifact({
+                      owner,
+                      repo,
+                      artifact_id: artifact.id
+                    });
+                    deletedCount++;
+                    freedBytes += artifact.size_in_bytes;
+                    console.log(`  -> Supprimé avec succès.`);
+                  } catch (err) {
+                    console.error(`  -> Erreur suppression ${artifact.id}: ${err.message}`);
+                  }
+                } else {
+                  deletedCount++;
+                  freedBytes += artifact.size_in_bytes;
+                  console.log(`  -> [SIMULATION] Serait supprimé.`);
+                }
+              } else {
+                console.log(`[CONSERVÉ] Id: ${artifact.id} | Nom: ${artifact.name} (créé le ${artifact.created_at})`);
+              }
+            }
+
+            const freedMo = (freedBytes / (1024 * 1024)).toFixed(2);
+            console.log(`\n========================================`);
+            console.log(`RÉSUMÉ DU NETTOYAGE :`);
+            console.log(`Artefacts purgés : ${deletedCount}`);
+            console.log(`Espace libéré estimé : ${freedMo} Mo`);
+            console.log(`========================================`);

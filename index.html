@@ -18,7 +18,26 @@
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body class="bg-black text-white selection:bg-[#CC0000] selection:text-white">
-    <div id="root"></div>
+    <script>
+      // Nettoyage immédiat de tout ancien Service Worker de développement resté actif dans le navigateur
+      if ('serviceWorker' in navigator && (window.location.hostname === 'localhost' || window.location.hostname.includes('run.app'))) {
+        navigator.serviceWorker.getRegistrations().then(function(regs) {
+          for (var r of regs) {
+            r.unregister();
+          }
+        });
+      }
+    </script>
+    <div id="root">
+      <div style="background-color: #004e98; color: #ffffff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: Tahoma, 'Segoe UI', Arial, sans-serif; text-align: center; padding: 20px;">
+        <div style="font-size: 20px; font-weight: bold; margin-bottom: 6px; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
+          CHEOPS Professionnel // DGPN
+        </div>
+        <div style="font-size: 12px; color: #99ccff;">
+          Initialisation du poste de travail contentieux...
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

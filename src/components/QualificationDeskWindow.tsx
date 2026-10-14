@@ -1,4 +1,4 @@
-import React, { DragEvent, TouchEvent } from "react";
+import React, { useState, useRef, useEffect, DragEvent, TouchEvent } from "react";
 import {
   ShieldCheck,
   ShieldAlert,
@@ -15,6 +15,7 @@ import {
   Timer,
   Coffee
 } from "lucide-react";
+import { motion } from "motion/react";
 import { Dossier, TamponOption, TAMPONS_DISPONIBLES } from "../dossiers";
 import { soundFx } from "../services/soundFx";
 
@@ -97,6 +98,42 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
     caviardagesFaits === 0
   );
   const isAnyBlocked = cameraBlocked || medicalBlocked;
+
+  const prevChronoStartedRef = useRef<boolean>(isChronoStarted);
+  const [isPunchFlash, setIsPunchFlash] = useState<boolean>(false);
+  const passed25Ref = useRef<boolean>(false);
+  const passed10Ref = useRef<boolean>(false);
+  const [thresholdPulse, setThresholdPulse] = useState<"25" | "10" | null>(null);
+
+  useEffect(() => {
+    if (!prevChronoStartedRef.current && isChronoStarted) {
+      setIsPunchFlash(true);
+      const timer = setTimeout(() => setIsPunchFlash(false), 320);
+      return () => clearTimeout(timer);
+    }
+    prevChronoStartedRef.current = isChronoStarted;
+  }, [isChronoStarted]);
+
+  useEffect(() => {
+    if (!isChronoStarted) {
+      passed25Ref.current = false;
+      passed10Ref.current = false;
+      setThresholdPulse(null);
+      return;
+    }
+
+    if (timeRemaining <= 25 && timeRemaining > 10 && !passed25Ref.current) {
+      passed25Ref.current = true;
+      setThresholdPulse("25");
+      const timer = setTimeout(() => setThresholdPulse(null), 250);
+      return () => clearTimeout(timer);
+    } else if (timeRemaining <= 10 && !passed10Ref.current) {
+      passed10Ref.current = true;
+      setThresholdPulse("10");
+      const timer = setTimeout(() => setThresholdPulse(null), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [timeRemaining, isChronoStarted]);
 
   const formatChrono = (seconds: number): string => {
     const s = Math.max(0, seconds);
@@ -196,8 +233,10 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
       >
         {/* GROUPBOX 0 : HORODATEUR DE CADENCE // POINTEUSE ADMINISTRATIVE (OPTION A) */}
         <fieldset
-          className={`border-2 p-2.5 pt-1 rounded-none shadow-[inset_1px_1px_0_#fff] transition-colors ${
-            !isChronoStarted && !isAwaitingNext
+          className={`border-2 p-2.5 pt-1 rounded-none shadow-[inset_1px_1px_0_#fff] transition-all duration-150 ${
+            isPunchFlash
+              ? "border-[#0055ea] bg-[#dbeafe] shadow-[0_0_16px_rgba(0,85,234,0.45)]"
+              : !isChronoStarted && !isAwaitingNext
               ? "border-[#003366] bg-[#f0f4fc]"
               : isChronoStarted && !isAwaitingNext
               ? timeRemaining <= 10
@@ -245,7 +284,7 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
                       onStartChrono();
                     }
                   }}
-                  className="w-full sm:w-auto px-4 py-2 bg-[#0055ea] hover:bg-[#0044cc] text-white font-sans font-bold text-xs sm:text-sm uppercase tracking-wide flex items-center justify-center gap-2 cursor-pointer shadow-md border-2 border-t-white border-l-white border-b-[#002266] border-r-[#002266] active:translate-y-0.5"
+                  className="w-full sm:w-auto px-4 py-2 bg-[#0055ea] hover:bg-[#0044cc] text-white font-sans font-bold text-xs sm:text-sm uppercase tracking-wide flex items-center justify-center gap-2 cursor-pointer shadow-md border-2 border-t-white border-l-white border-b-[#002266] border-r-[#002266] active:scale-[0.97] active:translate-y-0.5 transition-transform duration-75"
                 >
                   <span className="text-base">⏱️</span>
                   <span>PRENDRE EN CHARGE // POINTER</span>
@@ -273,7 +312,13 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
               {/* COMPTEUR NUMÉRIQUE EN RELIEF & JAUGE */}
               <div className="flex items-center gap-3 w-full sm:w-auto flex-1">
                 <div
-                  className={`font-mono font-black text-xl sm:text-2xl px-3 py-1 border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white shadow-inner shrink-0 tracking-wider flex items-center gap-2 ${
+                  className={`font-mono font-black text-xl sm:text-2xl px-3 py-1 border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white shadow-inner shrink-0 tracking-wider flex items-center gap-2 transition-transform duration-150 ${
+                    thresholdPulse === "25"
+                      ? "scale-[1.03]"
+                      : thresholdPulse === "10"
+                      ? "scale-[1.05]"
+                      : ""
+                  } ${
                     timeRemaining <= 10
                       ? "bg-red-950 text-red-400 border-red-700 animate-pulse"
                       : timeRemaining <= 25
@@ -377,7 +422,11 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
               <span className="text-[11px]">Accessible après prise en charge horodatée.</span>
             </div>
           ) : (
-            <>
+            <motion.div
+              initial={{ opacity: 0, y: 3 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+            >
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#d8d4c4] pb-1.5 mb-2 text-xs">
                 <span className="text-slate-800">
                   Administré mis en cause : <strong className="text-black font-sans">{dossier.profilage.identite}</strong>
@@ -398,7 +447,7 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
                   <span className="font-bold">Lexique officiel préconisé :</span> « {dossier.novlangue.termeMinisteriel} »
                 </div>
               )}
-            </>
+            </motion.div>
           )}
         </fieldset>
 
@@ -414,7 +463,12 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
               <span className="text-[11px]">Accessible après prise en charge horodatée.</span>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] mt-1">
+            <motion.div
+              initial={{ opacity: 0, y: 3 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+              className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] mt-1"
+            >
             {/* CCTV */}
             <button
               type="button"
@@ -516,7 +570,7 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
                   : "[ ● ] Substitution possible"}
               </div>
             </button>
-          </div>
+          </motion.div>
           )}
         </fieldset>
 
@@ -537,6 +591,8 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
               onDragLeave={onDragLeave}
               onDrop={onDrop}
               className={`border-2 border-dashed p-4 text-center transition-all flex flex-col items-center justify-center min-h-[130px] relative ${
+                activeStamp ? "animate-tampon-shake" : ""
+              } ${
                 isDropZoneOver
                   ? "border-emerald-600 bg-[#e8f8f0] scale-[1.005]"
                   : activeStamp
@@ -552,13 +608,21 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
                   <div
                     style={{
                       transform: `rotate(${activeStamp.angle || -3}deg)`,
-                    }}
-                    className={`border-4 px-6 py-2.5 font-sans font-black text-sm sm:text-base uppercase tracking-wider shadow-xl animate-tampon transition-transform relative overflow-hidden ${
+                      "--stamp-angle": `${activeStamp.angle || -3}deg`,
+                    } as React.CSSProperties}
+                    className={`border-4 px-6 py-2.5 font-sans font-black text-sm sm:text-base uppercase tracking-wider shadow-xl animate-tampon relative overflow-hidden ${
                       activeStamp.isCorrect
                         ? "border-emerald-700 text-emerald-800 bg-white/95"
                         : "border-red-700 text-red-800 bg-white/95"
                     }`}
                   >
+                    {/* Flash d'encre bref à l'impact */}
+                    <div
+                      className={`absolute inset-0 pointer-events-none opacity-20 ${
+                        activeStamp.isCorrect ? "bg-emerald-600" : "bg-red-600"
+                      } animate-ping`}
+                      style={{ animationDuration: "0.2s", animationIterationCount: 1 }}
+                    />
                     <span className="relative z-10">[ VISA OFFICIEL : {activeStamp.label} ]</span>
                   </div>
                   <div className="text-xs font-bold text-slate-800 mt-1 font-sans">
@@ -602,7 +666,12 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
                 <span className="text-[11px]">Accessible après prise en charge horodatée.</span>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-1.5">
+              <motion.div
+                initial={{ opacity: 0, y: 3 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
+                className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-1.5"
+              >
                 {TAMPONS_DISPONIBLES.map((t, index) => {
                   const isImpunite = t.code === "impunite";
                   const isVictimisation = t.code === "victimisation";
@@ -645,7 +714,7 @@ export const QualificationDeskWindow: React.FC<QualificationDeskWindowProps> = (
                   </button>
                 );
               })}
-            </div>
+            </motion.div>
             )}
           </fieldset>
         )}

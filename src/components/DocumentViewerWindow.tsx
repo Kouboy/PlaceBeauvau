@@ -14,6 +14,7 @@ import {
   Share2,
   ArrowRight
 } from "lucide-react";
+import { motion } from "motion/react";
 import { VirtualFile } from "../fileSystem";
 import { Dossier, TermeCaviarde } from "../dossiers";
 import { soundFx } from "../services/soundFx";
@@ -179,9 +180,23 @@ export const DocumentViewerWindow: React.FC<DocumentViewerWindowProps> = ({
 
                         <div>
                           {estCaviarde ? (
-                            <span className="bg-black text-black px-2 py-0.5 border border-black select-none font-black tracking-widest line-through">
-                              ████████████████████
-                            </span>
+                            <div className="relative inline-block overflow-hidden py-0.5">
+                              <motion.div
+                                initial={{ scaleX: 0 }}
+                                animate={{ scaleX: 1 }}
+                                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                                style={{ transformOrigin: "left" }}
+                                className="absolute inset-0 bg-black z-10 pointer-events-none"
+                              />
+                              <motion.span
+                                initial={{ y: 0 }}
+                                animate={{ y: [0, 1.5, 0] }}
+                                transition={{ duration: 0.22, ease: "easeInOut" }}
+                                className="bg-black text-black px-2 py-0.5 border border-black select-none font-black tracking-widest line-through relative z-0 inline-block"
+                              >
+                                ████████████████████
+                              </motion.span>
+                            </div>
                           ) : (
                             <span className="font-bold text-slate-900 text-xs sm:text-sm">
                               « {terme.texteBrut} »

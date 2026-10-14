@@ -1,5 +1,6 @@
 import React from "react";
 import { Package, ArrowRightLeft, ShieldAlert, Sparkles, CheckCircle2, Lock } from "lucide-react";
+import { motion } from "motion/react";
 import { Dossier } from "../dossiers";
 import { soundFx } from "../services/soundFx";
 
@@ -54,21 +55,36 @@ export const EvidenceLockerWindow: React.FC<EvidenceLockerWindowProps> = ({
             </legend>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              <div className="p-2.5 bg-white border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white shadow-inner">
-                <div className="text-rose-900 text-[10px] font-bold uppercase mb-0.5">
-                  Objet actuellement dans le sac :
+              <motion.div
+                animate={estSubstitue ? { opacity: 0.45, x: -5 } : { opacity: 1, x: 0 }}
+                transition={{ duration: 0.15, ease: "easeOut" }}
+                className="p-2.5 bg-white border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white shadow-inner"
+              >
+                <div className="text-rose-900 text-[10px] font-bold uppercase mb-0.5 flex justify-between">
+                  <span>Objet initial dans le sac :</span>
+                  {estSubstitue && <span className="text-[9px] text-rose-800">[RETIRÉ]</span>}
                 </div>
-                <div className="font-bold text-black text-sm">
+                <div className={`font-bold text-sm ${estSubstitue ? "line-through text-slate-500" : "text-black"}`}>
                   {piece.scelleCompromettant}
                 </div>
                 <div className="text-[11px] text-slate-600 mt-1">
                   Nature : {piece.scelleType}
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="p-2.5 bg-white border-2 border-t-[#808080] border-l-[#808080] border-b-white border-r-white shadow-inner">
-                <div className="text-emerald-900 text-[10px] font-bold uppercase mb-0.5">
-                  Pièce alternative disponible au greffe :
+              <motion.div
+                animate={estSubstitue ? { opacity: 1, x: 0 } : { opacity: 0.85, x: 0 }}
+                initial={estSubstitue ? { opacity: 0.6, x: 6 } : undefined}
+                transition={{ duration: 0.15, ease: "easeOut" }}
+                className={`p-2.5 bg-white border-2 shadow-inner ${
+                  estSubstitue
+                    ? "border-emerald-700 bg-emerald-50/40"
+                    : "border-t-[#808080] border-l-[#808080] border-b-white border-r-white"
+                }`}
+              >
+                <div className="text-emerald-900 text-[10px] font-bold uppercase mb-0.5 flex justify-between">
+                  <span>Pièce alternative disponible au greffe :</span>
+                  {estSubstitue && <span className="text-[9px] text-emerald-800 font-bold">[INSÉRÉ]</span>}
                 </div>
                 <div className="font-bold text-emerald-800 text-sm">
                   {piece.substitutOfficiel}
@@ -80,21 +96,26 @@ export const EvidenceLockerWindow: React.FC<EvidenceLockerWindowProps> = ({
                     <span className="text-slate-500 italic">Bordereau administratif scellé</span>
                   )}
                 </div>
-              </div>
+              </motion.div>
             </div>
 
             {estSubstitue ? (
-              <div className="bg-[#eaf5ea] border border-emerald-700 p-2.5 text-center flex items-center justify-center gap-2">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.14, ease: "easeOut" }}
+                className="bg-[#eaf5ea] border border-emerald-700 p-2.5 text-center flex items-center justify-center gap-2"
+              >
                 <CheckCircle2 className="w-4 h-4 text-emerald-700" />
                 <span className="font-bold text-emerald-900 text-xs sm:text-sm uppercase font-mono">
                   Remplacement enregistré au greffe (+{piece.primeBonus} €)
                 </span>
-              </div>
+              </motion.div>
             ) : (
               <button
                 type="button"
                 onClick={() => onSubstituerScelle(piece)}
-                className="w-full xp-btn py-2 text-xs sm:text-sm font-bold text-[#003366] flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                className="w-full xp-btn py-2 text-xs sm:text-sm font-bold text-[#003366] flex items-center justify-center gap-2 shadow-xs cursor-pointer active:translate-y-0.5"
               >
                 <ArrowRightLeft className="w-4 h-4 text-slate-700" />
                 <span>Procéder au remplacement de la pièce consignée</span>

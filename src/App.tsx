@@ -574,7 +574,14 @@ export default function App() {
         qualification: { isOpen: true, isMinimized: false, zIndex: 11 },
       }));
       setActiveWindowId("document");
-      soundFx.playPaperRustle();
+      // Séquence sonore M1.1 : PUNCH POINTEUSE -> petit relais système -> léger accès disque + ouverture PV
+      setTimeout(() => {
+        soundFx.playSystemRelayClick();
+      }, 110);
+      setTimeout(() => {
+        soundFx.playHddSeek("short");
+        soundFx.playPaperRustle();
+      }, 220);
     }
   }, [isAwaitingNext, isChronoStarted, gameState, currentIndex]);
 
@@ -626,6 +633,7 @@ export default function App() {
 
     let lastTick = performance.now();
     let lastAudioTickSec = Math.ceil(timeRemaining);
+    let passed25Audio = timeRemaining <= 25;
 
     const tick = (now: number) => {
       const dt = (now - lastTick) / 1000;
@@ -634,6 +642,14 @@ export default function App() {
       setTimeRemaining((prev) => {
         const next = Math.max(0, prev - dt);
         const curSec = Math.ceil(next);
+
+        // M1.6 : Clic de relais discret unique au franchissement des 25 secondes
+        if (next <= 25 && !passed25Audio) {
+          passed25Audio = true;
+          soundFx.playSystemRelayClick();
+        } else if (next > 25) {
+          passed25Audio = false;
+        }
 
         // Tic-tac sec d'urgence dans les 8 dernières secondes (intensifié dans les 4 dernières)
         if (curSec <= 8 && curSec > 0 && curSec !== lastAudioTickSec) {
@@ -863,10 +879,7 @@ export default function App() {
       setTimeout(() => setScreenFlash(null), 500);
     }
 
-    // Effet d'impact
-    setScreenShake(true);
-    setTimeout(() => setScreenShake(false), 220);
-
+    // M1.4 : Secousse locale de formulaire gérée dans QualificationDeskWindow (pas de secousse globale de tout l'écran)
     const randomAngle = -4 + Math.random() * 8;
 
     setActiveStamp({
@@ -1293,7 +1306,8 @@ export default function App() {
       );
     }
     setTimeout(() => setFlashNews(null), 4500);
-    setTimeout(() => setBroyeurAnime(false), 900);
+    // M1.5 : Durée mécanique alignée sur le moteur sonore (380 ms)
+    setTimeout(() => setBroyeurAnime(false), 380);
   }, [blames, gameState, isChronoStarted, isAwaitingNext, notifierAccesRefuse]);
 
   // Gestion tactile du glisser-déposer sur mobile / tablette
