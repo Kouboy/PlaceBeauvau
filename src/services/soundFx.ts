@@ -21,6 +21,17 @@ class DiegeticAudioEngine {
   private lastPointerDownTime: number = 0;
   private hasInitializedAmbiance: boolean = false;
 
+  // Kit A1 : Ambiance sonore diégétique externe & micro-événements
+  private loadedAudioBuffers: Map<string, AudioBuffer> = new Map();
+  private roomtoneSourceNode: AudioBufferSourceNode | null = null;
+  private roomtoneGainNode: GainNode | null = null;
+  private rareEventsTimer: ReturnType<typeof setTimeout> | null = null;
+  private rareEventSourceNode: AudioBufferSourceNode | null = null;
+  private isRareEventActive: boolean = false;
+  private officeEventsMasterGain: GainNode | null = null;
+  private officeEventPace: "fast" | "normal" | "slow" = "normal";
+  private lastSampleIndex: number = -1;
+
   constructor() {
     if (typeof window !== "undefined") {
       window.addEventListener(
@@ -59,13 +70,13 @@ class DiegeticAudioEngine {
 
   public setMuted(muted: boolean) {
     this.isMuted = muted;
-    if (muted) {
-      if (this.ambianceMasterGain && this.ctx) {
-        this.ambianceMasterGain.gain.setValueAtTime(0, this.ctx.currentTime);
+    if (this.ctx) {
+      const t = this.ctx.currentTime;
+      if (this.ambianceMasterGain) {
+        this.ambianceMasterGain.gain.setValueAtTime(muted ? 0 : this.ambianceVolume * 0.12, t);
       }
-    } else {
-      if (this.isAmbianceActive && this.ambianceMasterGain && this.ctx) {
-        this.ambianceMasterGain.gain.setValueAtTime(this.ambianceVolume * 0.12, this.ctx.currentTime);
+      if (this.officeEventsMasterGain) {
+        this.officeEventsMasterGain.gain.setValueAtTime(muted ? 0 : this.ambianceVolume * 0.70, t);
       }
     }
   }
@@ -90,10 +101,31 @@ class DiegeticAudioEngine {
     this.isRetroMouseActive = active;
   }
 
+  public getOfficeEventPace(): "fast" | "normal" | "slow" {
+    return this.officeEventPace;
+  }
+
+  public setOfficeEventPace(pace: "fast" | "normal" | "slow") {
+    this.officeEventPace = pace;
+    if (this.rareEventsTimer) {
+      clearTimeout(this.rareEventsTimer);
+      this.rareEventsTimer = null;
+      if (this.isAmbianceActive && !this.isMuted) {
+        this.scheduleNextRareOfficeEvent(false);
+      }
+    }
+  }
+
   public setAmbianceVolume(vol: number) {
     this.ambianceVolume = Math.max(0, Math.min(1, vol));
-    if (this.ambianceMasterGain && this.ctx && this.isAmbianceActive && !this.isMuted) {
-      this.ambianceMasterGain.gain.setTargetAtTime(this.ambianceVolume * 0.12, this.ctx.currentTime, 0.08);
+    if (this.ctx && this.isAmbianceActive && !this.isMuted) {
+      const t = this.ctx.currentTime;
+      if (this.ambianceMasterGain) {
+        this.ambianceMasterGain.gain.setTargetAtTime(this.ambianceVolume * 0.12, t, 0.08);
+      }
+      if (this.officeEventsMasterGain) {
+        this.officeEventsMasterGain.gain.setTargetAtTime(this.ambianceVolume * 0.70, t, 0.08);
+      }
     }
   }
 
@@ -133,6 +165,17 @@ class DiegeticAudioEngine {
       this.ambianceMasterGain.gain.exponentialRampToValueAtTime(
         Math.max(0.001, this.ambianceVolume * 0.12),
         t + 1.2
+      );
+
+      // Master Office Events Gain (Plan 4 : calibré pour être net, audible et équilibré)
+      if (!this.officeEventsMasterGain) {
+        this.officeEventsMasterGain = this.ctx.createGain();
+        this.officeEventsMasterGain.connect(this.ctx.destination);
+      }
+      this.officeEventsMasterGain.gain.setValueAtTime(0.0001, t);
+      this.officeEventsMasterGain.gain.exponentialRampToValueAtTime(
+        Math.max(0.001, this.ambianceVolume * 0.70),
+        t + 0.8
       );
 
       // 1. SOUFFLE VENTILATEUR TOUR PC (Bruit brun chaud en boucle)
@@ -222,6 +265,10 @@ class DiegeticAudioEngine {
 
       // 4. Programmation des grattements intermittents de disque dur
       this.scheduleNextHddChurn();
+
+      // 5. Kit A1 : Ambiance feutrée de bureau via les enregistrements audio (.ogg)
+      this.initRoomtoneOgg();
+      this.scheduleNextRareOfficeEvent(true);
     } catch (err) {
       console.warn("Échec lancement ambiance rétro :", err);
     }
@@ -236,10 +283,38 @@ class DiegeticAudioEngine {
       this.hddIntervalTimer = null;
     }
 
-    if (this.ctx && this.ambianceMasterGain) {
+    if (this.rareEventsTimer) {
+      clearTimeout(this.rareEventsTimer);
+      this.rareEventsTimer = null;
+    }
+
+    if (this.roomtoneSourceNode) {
+      try {
+        this.roomtoneSourceNode.stop();
+        this.roomtoneSourceNode.disconnect();
+      } catch (_) {}
+      this.roomtoneSourceNode = null;
+    }
+
+    if (this.rareEventSourceNode) {
+      try {
+        this.rareEventSourceNode.stop();
+        this.rareEventSourceNode.disconnect();
+      } catch (_) {}
+      this.rareEventSourceNode = null;
+    }
+    this.isRareEventActive = false;
+
+    if (this.ctx) {
       const t = this.ctx.currentTime;
-      this.ambianceMasterGain.gain.setValueAtTime(this.ambianceMasterGain.gain.value, t);
-      this.ambianceMasterGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.4);
+      if (this.ambianceMasterGain) {
+        this.ambianceMasterGain.gain.setValueAtTime(this.ambianceMasterGain.gain.value, t);
+        this.ambianceMasterGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.4);
+      }
+      if (this.officeEventsMasterGain) {
+        this.officeEventsMasterGain.gain.setValueAtTime(this.officeEventsMasterGain.gain.value, t);
+        this.officeEventsMasterGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+      }
 
       setTimeout(() => {
         try {
@@ -277,6 +352,264 @@ class DiegeticAudioEngine {
       }
       this.scheduleNextHddChurn();
     }, delay);
+  }
+
+  /**
+   * Kit A1 : Chargement et décodage asynchrone des fichiers audio Web Audio
+   */
+  private async getDecodedBuffer(url: string): Promise<AudioBuffer | null> {
+    if (!this.ctx) return null;
+    if (this.loadedAudioBuffers.has(url)) {
+      return this.loadedAudioBuffers.get(url)!;
+    }
+    try {
+      const response = await fetch(url);
+      if (!response.ok) return null;
+      const arrayBuffer = await response.arrayBuffer();
+      const decoded = await this.ctx.decodeAudioData(arrayBuffer);
+      this.loadedAudioBuffers.set(url, decoded);
+      return decoded;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Kit A1 : Initialisation de la boucle roomtone feutrée (.ogg)
+   */
+  private async initRoomtoneOgg() {
+    if (!this.ctx || !this.ambianceMasterGain || !this.isAmbianceActive) return;
+    try {
+      const buffer =
+        (await this.getDecodedBuffer("/audio/real/00_roomtone_feutre_REAL.ogg")) ||
+        (await this.getDecodedBuffer("/audio/demo/00_roomtone_feutre_DEMO.ogg"));
+
+      if (!buffer || !this.isAmbianceActive || !this.ctx || !this.ambianceMasterGain) return;
+
+      if (this.roomtoneSourceNode) {
+        try {
+          this.roomtoneSourceNode.stop();
+          this.roomtoneSourceNode.disconnect();
+        } catch (_) {}
+        this.roomtoneSourceNode = null;
+      }
+
+      this.roomtoneSourceNode = this.ctx.createBufferSource();
+      this.roomtoneSourceNode.buffer = buffer;
+      this.roomtoneSourceNode.loop = true;
+
+      // Filtrage passe-bas pour préserver l'acoustique feutrée et mate
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(320, this.ctx.currentTime);
+
+      this.roomtoneGainNode = this.ctx.createGain();
+      this.roomtoneGainNode.gain.setValueAtTime(0.55, this.ctx.currentTime);
+
+      this.roomtoneSourceNode.connect(filter);
+      filter.connect(this.roomtoneGainNode);
+      this.roomtoneGainNode.connect(this.ambianceMasterGain);
+
+      this.roomtoneSourceNode.start();
+    } catch (_) {
+      // Fallback automatique sur la synthèse procédurale
+    }
+  }
+
+  /**
+   * Kit A1 : Déclenchement périodique de micro-événements diégétiques de bureau.
+   * Cadence recalibrée pour maintenir l'ambiance vivante sans temps mort frustrant.
+   */
+  private scheduleNextRareOfficeEvent(isInitial: boolean = false) {
+    if (!this.isAmbianceActive) return;
+
+    let minDelay = 6000;
+    let maxRandom = 7000;
+
+    if (this.officeEventPace === "fast") {
+      minDelay = 3500;
+      maxRandom = 4000;
+    } else if (this.officeEventPace === "slow") {
+      minDelay = 12000;
+      maxRandom = 12000;
+    }
+
+    const delay = isInitial
+      ? 2000 + Math.random() * 2500 // Dès 2 à 4.5 secondes au démarrage !
+      : minDelay + Math.random() * maxRandom;
+
+    this.rareEventsTimer = setTimeout(async () => {
+      if (this.isAmbianceActive && !this.isMuted) {
+        await this.playRareOfficeSound();
+
+        // 18% de chance d'un mini-enchaînement cohérent (ex: collègue tape puis tasse, classeur puis agrafeuse)
+        if (Math.random() < 0.18) {
+          setTimeout(() => {
+            if (this.isAmbianceActive && !this.isMuted) {
+              this.playRareOfficeSound();
+            }
+          }, 1800 + Math.random() * 1200);
+        }
+      }
+      this.scheduleNextRareOfficeEvent(false);
+    }, delay);
+  }
+
+  /**
+   * Liste des micro-événements de bureau disponibles (Kit A1)
+   */
+  public getOfficeSamplesList() {
+    return [
+      { id: 0, name: "Clavier d'un collègue" },
+      { id: 1, name: "Photocopieuse réseau" },
+      { id: 2, name: "Fermeture de porte" },
+      { id: 3, name: "Tasse de café sur soucoupe" },
+      { id: 4, name: "Classeur administratif" },
+      { id: 5, name: "Téléphone standard" },
+      { id: 6, name: "Tampon d'un collègue" },
+      { id: 7, name: "Agrafeuse métallique" }
+    ];
+  }
+
+  /**
+   * Kit A1 : Joue un micro-événement diégétique de bureau net, présent et reconnaissable.
+   * Restitue toute la texture acoustique (2.5 - 4 kHz) avec placement spatial stéréo.
+   */
+  public async playRareOfficeSound(specificIndex?: number): Promise<string | null> {
+    if (this.isMuted) return null;
+    this.initContext();
+    if (!this.ctx) return null;
+
+    if (!this.officeEventsMasterGain) {
+      this.officeEventsMasterGain = this.ctx.createGain();
+      this.officeEventsMasterGain.connect(this.ctx.destination);
+    }
+    const t = this.ctx.currentTime;
+    this.officeEventsMasterGain.gain.setValueAtTime(this.ambianceVolume * 0.70, t);
+
+    const samples = [
+      {
+        url: "/audio/demo/01_clavier_lointain_DEMO.ogg",
+        fallbackUrl: "/audio/real/01_clavier_lointain_REAL.ogg",
+        name: "Clavier d'un collègue",
+        gain: 0.90,
+        filterFreq: 3400,
+        pan: -0.35
+      },
+      {
+        url: "/audio/demo/02_photocopieuse_lointaine_DEMO.ogg",
+        fallbackUrl: "/audio/real/02_photocopieuse_lointaine_REAL.ogg",
+        name: "Photocopieuse réseau",
+        gain: 0.85,
+        filterFreq: 2800,
+        pan: 0.45
+      },
+      {
+        url: "/audio/demo/03_porte_feutree_DEMO.ogg",
+        fallbackUrl: "/audio/real/03_porte_feutree_REAL.ogg",
+        name: "Fermeture de porte",
+        gain: 0.95,
+        filterFreq: 3200,
+        pan: 0.25
+      },
+      {
+        url: "/audio/demo/04_tasse_cafe_bureau_DEMO.ogg",
+        fallbackUrl: "/audio/real/04_tasse_cafe_bureau_REAL.ogg",
+        name: "Tasse de café sur soucoupe",
+        gain: 0.90,
+        filterFreq: 4000,
+        pan: -0.20
+      },
+      {
+        url: "/audio/demo/05_papier_classeur_DEMO.ogg",
+        fallbackUrl: "/audio/real/05_papier_classeur_REAL.ogg",
+        name: "Classeur administratif",
+        gain: 0.95,
+        filterFreq: 3500,
+        pan: 0.15
+      },
+      {
+        url: "/audio/demo/06_telephone_lointain_DEMO.ogg",
+        fallbackUrl: "/audio/real/06_telephone_lointain_REAL.ogg",
+        name: "Téléphone standard",
+        gain: 0.90,
+        filterFreq: 3000,
+        pan: -0.55
+      },
+      {
+        url: "/audio/demo/07_tampon_voisin_DEMO.ogg",
+        fallbackUrl: "/audio/real/07_tampon_voisin_REAL.ogg",
+        name: "Tampon d'un collègue",
+        gain: 0.90,
+        filterFreq: 3400,
+        pan: 0.40
+      },
+      {
+        url: "/audio/demo/08_agrafeuse_DEMO.ogg",
+        fallbackUrl: "/audio/real/08_agrafeuse_REAL.ogg",
+        name: "Agrafeuse métallique",
+        gain: 0.90,
+        filterFreq: 3800,
+        pan: -0.30
+      }
+    ];
+
+    let index = specificIndex;
+    if (index === undefined || index < 0 || index >= samples.length) {
+      let available = samples.map((_, i) => i);
+      if (this.lastSampleIndex >= 0 && samples.length > 1) {
+        available = available.filter((i) => i !== this.lastSampleIndex);
+      }
+      index = available[Math.floor(Math.random() * available.length)];
+    }
+    this.lastSampleIndex = index;
+    const sample = samples[index];
+
+    let buffer = await this.getDecodedBuffer(sample.url);
+    if (!buffer && sample.fallbackUrl) {
+      buffer = await this.getDecodedBuffer(sample.fallbackUrl);
+    }
+    if (!buffer || !this.ctx || !this.officeEventsMasterGain) return null;
+
+    try {
+      this.isRareEventActive = true;
+      const source = this.ctx.createBufferSource();
+      source.buffer = buffer;
+
+      // Filtrage doux pour donner la sensation d'espace dans le couloir sans étouffer les attaques
+      const distFilter = this.ctx.createBiquadFilter();
+      distFilter.type = "lowpass";
+      distFilter.frequency.setValueAtTime(sample.filterFreq, this.ctx.currentTime);
+      distFilter.Q.setValueAtTime(0.8, this.ctx.currentTime);
+
+      const gainNode = this.ctx.createGain();
+      gainNode.gain.setValueAtTime(sample.gain, this.ctx.currentTime);
+
+      source.connect(distFilter);
+      distFilter.connect(gainNode);
+
+      // Panning stéréo diégétique (si supporté par le navigateur)
+      if (typeof this.ctx.createStereoPanner === "function") {
+        const panner = this.ctx.createStereoPanner();
+        panner.pan.setValueAtTime(sample.pan, this.ctx.currentTime);
+        gainNode.connect(panner);
+        panner.connect(this.officeEventsMasterGain);
+      } else {
+        gainNode.connect(this.officeEventsMasterGain);
+      }
+
+      this.rareEventSourceNode = source;
+      source.onended = () => {
+        this.isRareEventActive = false;
+        this.rareEventSourceNode = null;
+      };
+
+      source.start();
+      return sample.name;
+    } catch (_) {
+      this.isRareEventActive = false;
+      return null;
+    }
   }
 
   /**

@@ -283,6 +283,8 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
   const [isAmbianceActive, setIsAmbianceActive] = useState<boolean>(soundFx.getIsAmbianceActive());
   const [ambianceVol, setAmbianceVol] = useState<number>(soundFx.getAmbianceVolume());
   const [isRetroMouse, setIsRetroMouse] = useState<boolean>(soundFx.getIsRetroMouseActive());
+  const [officePace, setOfficePace] = useState<"fast" | "normal" | "slow">(soundFx.getOfficeEventPace());
+  const [lastTestedSound, setLastTestedSound] = useState<string | null>(null);
 
   // Installation autonome PWA (Standalone)
   const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
@@ -1693,6 +1695,71 @@ export const DesktopWorkspace: React.FC<DesktopWorkspaceProps> = ({
                       className="flex-1 cursor-pointer accent-[#0055ea]"
                     />
                     <span className="text-[10px] text-slate-500 font-mono">Fort</span>
+                  </div>
+                </div>
+
+                {/* Section 2.5 : Micro-événements de bureau CHEOPS (Kit A1) */}
+                <div className="bg-[#f5f3ec] border border-[#9c9a91] p-2 mb-2 shadow-[inset_1px_1px_0_#fff]">
+                  <div className="font-bold text-[#003366] text-[11px] mb-1 flex items-center justify-between">
+                    <span>MICRO-ÉVÉNEMENTS BUREAU</span>
+                    <span className="text-[9px] text-slate-500 font-mono">Kit A1</span>
+                  </div>
+                  <div className="text-[10px] text-slate-600 mb-1.5 leading-snug">
+                    Clavier collègue, photocopieuse, tasse, classeur, téléphone, agrafeuse.
+                  </div>
+
+                  {/* Choix de la cadence */}
+                  <div className="flex items-center justify-between gap-1 mb-2">
+                    <span className="text-[10px] text-slate-600 font-semibold">Fréquence :</span>
+                    <div className="flex gap-1">
+                      {(
+                        [
+                          { key: "fast", label: "Dynamique" },
+                          { key: "normal", label: "Standard" },
+                          { key: "slow", label: "Discrète" },
+                        ] as const
+                      ).map(({ key, label }) => (
+                        <button
+                          key={key}
+                          type="button"
+                          disabled={!isAmbianceActive || isMuted}
+                          onClick={() => {
+                            setOfficePace(key);
+                            soundFx.setOfficeEventPace(key);
+                          }}
+                          className={`px-1.5 py-0.5 text-[9px] font-bold border transition-colors cursor-pointer ${
+                            officePace === key
+                              ? "bg-[#003366] text-white border-black"
+                              : "bg-[#ece9d8] text-slate-700 border-[#9c9a91] hover:bg-[#d8d4c4]"
+                          } ${(!isAmbianceActive || isMuted) ? "opacity-50 cursor-not-allowed" : ""}`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Bouton de test direct avec retour visuel immédiat */}
+                  <div className="pt-1 border-t border-[#d8d4c4]">
+                    <button
+                      type="button"
+                      disabled={isMuted}
+                      onClick={async () => {
+                        const name = await soundFx.playRareOfficeSound();
+                        if (name) {
+                          setLastTestedSound(name);
+                          setTimeout(() => setLastTestedSound(null), 3000);
+                        }
+                      }}
+                      className="w-full px-2 py-1 bg-[#ece9d8] hover:bg-[#d8d4c4] border-2 border-t-white border-l-white border-b-[#808080] border-r-[#808080] active:border-t-[#808080] active:border-l-[#808080] active:border-b-white active:border-r-white text-[10px] font-bold text-black flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <Sparkles className="w-3 h-3 text-[#003366]" />
+                      <span>
+                        {lastTestedSound
+                          ? `Écouté : ${lastTestedSound}`
+                          : "Écouter un son de bureau"}
+                      </span>
+                    </button>
                   </div>
                 </div>
 

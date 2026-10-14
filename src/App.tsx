@@ -1390,7 +1390,7 @@ export default function App() {
         setBlames(0);
         setPrimeTotale(0);
         setDernierePrime(null);
-        startDossier(0);
+        startDossier(0, chronoCadenceActive);
         jouerSonTampon();
         return;
       }
@@ -1577,8 +1577,8 @@ export default function App() {
         </div>
       )}
 
-      {/* EN-TÊTE DIÉGÉTIQUE SUPÉRIEUR (POSTE DE TRAVAIL CHEOPS // OS CONTENTIEUX) */}
-      {gameState !== "playing" && (
+      {/* EN-TÊTE DIÉGÉTIQUE SUPÉRIEUR (POSTE DE TRAVAIL CHEOPS // OS CONTENTIEUX - ACTIF HORS TITRE ET JEU) */}
+      {gameState !== "playing" && gameState !== "intro" && (
         <DiegeticTopBar
           activeContactId={activeContactId}
           onSelectContact={(id) => setActiveContactId(id)}
@@ -1603,32 +1603,36 @@ export default function App() {
       )}
 
       {/* ZONE CENTRALE DE TRAITEMENT DU DOSSIER - BUREAU PLEIN ÉCRAN LORS DU JEU */}
-      <main className={`flex-1 min-h-0 flex flex-col items-center justify-center relative w-full overflow-hidden ${gameState === "playing" ? "p-0 m-0 max-w-none" : "w-full my-auto"}`}>
-        {/* ÉCRAN D'ACCUEIL : OUVERTURE DE SESSION WINDOWS XP PROFESSIONNEL (CHEOPS XP) */}
+      <main className={`flex-1 min-h-0 flex flex-col items-center justify-center relative w-full ${gameState === "playing" ? "p-0 m-0 max-w-none overflow-hidden" : "w-full my-auto overflow-y-auto p-2 sm:p-4"}`}>
+        {/* ÉCRAN TITRE : IMPUNITÉ ADMINISTRATIVE // CHEOPS CONTENTIEUX */}
         {gameState === "intro" && (
-          <div className="w-full max-w-5xl my-auto font-sans select-none p-2 sm:p-4">
+          <div className="w-full max-w-5xl my-auto font-sans select-none flex flex-col items-stretch">
             {/* BOÎTE DU LOGON XP PROFESSIONNEL */}
             <div className="bg-[#003399] border-2 border-[#002266] shadow-[0_25px_60px_rgba(0,0,0,0.8)] overflow-hidden rounded-xs text-white">
               
-              {/* BANDEAU SUPÉRIEUR BLEU PROFOND AVEC LISERÉ ORANGE XP */}
-              <div className="bg-gradient-to-r from-[#001c54] via-[#003399] to-[#001c54] px-4 py-3 flex items-center justify-between border-b border-[#001c54]">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-white/20 border border-white/80 flex items-center justify-center text-sm shadow-xs">
+              {/* BANDEAU SUPÉRIEUR BLEU PROFOND AVEC LISERÉ ORANGE XP : TITRE DU JEU */}
+              <div className="bg-gradient-to-r from-[#001440] via-[#002b80] to-[#001440] px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#001c54]">
+                <div className="flex items-start sm:items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-full bg-white/15 border border-white/70 flex items-center justify-center text-lg shadow-xs shrink-0 mt-0.5 sm:mt-0">
                     🇫🇷
                   </div>
                   <div>
-                    <h1 className="font-bold text-base sm:text-lg tracking-wide drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
-                      CHEOPS Professionnel
+                    <h1 className="font-extrabold text-xl sm:text-2xl md:text-3xl tracking-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)] uppercase">
+                      IMPUNITÉ ADMINISTRATIVE
                     </h1>
-                    <div className="text-[11px] text-sky-200">
-                      Système d'Information et d'Apurement du Contentieux // DGPN
+                    <div className="text-xs sm:text-sm font-mono font-bold tracking-wider text-sky-200 uppercase mt-0.5">
+                      CHEOPS // CONTENTIEUX
+                    </div>
+                    <div className="text-[11px] sm:text-xs text-sky-100/90 italic font-sans mt-0.5">
+                      Une vacation ordinaire au service du contentieux.
                     </div>
                   </div>
                 </div>
 
-                <div className="hidden sm:block text-right text-[10px] text-sky-200">
-                  <div>Direction Générale de la Police Nationale</div>
-                  <div className="font-mono text-amber-300 font-bold">APPLICATION ART. L. 435-1 CSI</div>
+                <div className="text-left sm:text-right text-[10px] sm:text-[11px] text-sky-200 border-t sm:border-t-0 pt-2 sm:pt-0 border-white/10 shrink-0">
+                  <div className="text-sky-300 font-semibold">Direction Générale de la Police Nationale</div>
+                  <div className="font-mono text-amber-300 font-bold mt-0.5">CHEOPS PROFESSIONNEL v1.0</div>
+                  <div className="font-mono text-sky-200/80 text-[10px]">APPLICATION ART. L. 435-1 CSI</div>
                 </div>
               </div>
               <div className="h-0.5 bg-gradient-to-r from-transparent via-[#d76b00] to-transparent" />
@@ -1639,11 +1643,11 @@ export default function App() {
                 {/* VOLET GAUCHE : DOCTRINE & CADRE LÉGAL */}
                 <div className="md:w-1/2 flex flex-col justify-between space-y-4">
                   <div>
-                    <div className="text-amber-300 font-bold text-xs uppercase tracking-wider mb-1">
-                      Vacation contentieuse ministérielle :
+                    <div className="text-amber-300 font-bold text-[11px] uppercase tracking-wider mb-1">
+                      Consignes de poste // Mission :
                     </div>
-                    <h2 className="text-base sm:text-xl font-bold leading-tight mb-2 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
-                      Pour commencer votre service, ouvrez votre session d'officier instructeur.
+                    <h2 className="text-sm sm:text-base font-bold text-white leading-snug mb-2 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
+                      Ouverture de session d'officier instructeur
                     </h2>
                     <p className="text-xs text-sky-100 leading-relaxed mb-3">
                       Sous la supervision de la hiérarchie et des circulaires d'engagement,
@@ -1675,10 +1679,14 @@ export default function App() {
                 {/* SÉPARATEUR VERTICAL XP */}
                 <div className="hidden md:block w-px bg-gradient-to-b from-transparent via-white/30 to-transparent" />
 
-                {/* VOLET DROIT : COMPTE UTILISATEUR XP & CONNEXION */}
+                {/* VOLET DROIT : COMPTE UTILISATEUR XP & CONNEXION CHEOPS */}
                 <div className="md:w-1/2 flex flex-col justify-between space-y-4">
                   {/* TUILE UTILISATEUR WINDOWS XP AUTHENTIQUE */}
                   <div className="p-3 bg-white/10 hover:bg-white/15 border border-white/20 rounded-xs transition-colors">
+                    <div className="text-[11px] text-sky-300 font-bold uppercase tracking-wider mb-2 flex items-center justify-between border-b border-white/15 pb-1">
+                      <span>Connexion CHEOPS Professionnel</span>
+                      <span className="text-[10px] text-emerald-300 font-mono">EN LIGNE</span>
+                    </div>
                     <div className="flex items-center gap-3">
                       <div className="w-14 h-14 rounded-xs border-2 border-white/80 bg-[#002266] flex items-center justify-center text-3xl shadow-md shrink-0">
                         👮
@@ -1808,6 +1816,17 @@ export default function App() {
                 </div>
               </div>
 
+            </div>
+
+            {/* NOTE D'INTENTION ÉDITORIALE (CADRE NEUTRE HORS DIÉGÈSE - PAROLE DES AUTEURS) */}
+            <div className="mt-3 bg-[#0d111a]/95 border border-slate-700/80 rounded-xs px-4 py-3 text-slate-300 text-xs shadow-md">
+              <div className="text-[10px] uppercase tracking-widest font-bold text-slate-400 mb-1 flex items-center gap-2">
+                <span className="w-1.5 h-1.5 bg-slate-400 rounded-full"></span>
+                <span>NOTE D'INTENTION</span>
+              </div>
+              <p className="leading-relaxed text-slate-300 text-[11px] sm:text-xs">
+                Cette fiction satirique explore la manière dont des faits deviennent des versions administratives. Les personnages et dossiers sont fictifs ou composites. Le jeu évoque notamment des violences et des décès, sans reconstituer une affaire réelle.
+              </p>
             </div>
           </div>
         )}
