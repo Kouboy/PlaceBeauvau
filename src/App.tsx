@@ -864,9 +864,11 @@ export default function App() {
       setNotaireProtege2144(true);
     }
 
-    // Son de tampon administratif et écriture disque
+    // Séquence audio M1.1 : Tampon (t=0) -> Écriture disque (t=+150ms) -> Feedback prime/combo (t=+320ms)
     jouerSonTampon();
-    soundFx.playHddSeek("burst");
+    setTimeout(() => {
+      soundFx.playHddSeek("burst");
+    }, 150);
 
     // Vibration tactile mobile
     if (isCorrect) {
@@ -901,7 +903,9 @@ export default function App() {
           setFloatingBonus({ text: "⏱️ CADENCE RÉGLEMENTAIRE (+15 €)", id: Date.now() + 1 });
         }
         if (bonusCelerite > 0) {
-          soundFx.playBonusCoinsSound();
+          setTimeout(() => {
+            soundFx.playBonusCoinsSound();
+          }, 300);
         }
       }
       setIsChronoStarted(false);
@@ -920,11 +924,14 @@ export default function App() {
       setFloatingBonus({ text: `+${gainDossier} € (HOMOLOGUÉ)`, id: Date.now() });
       setTimeout(() => setFloatingBonus(null), 1600);
 
-      if (newCombo > 1) {
-        jouerSonCombo(newCombo);
-      } else {
-        jouerSonPrime();
-      }
+      // Feedback audio de rétribution (échelonné à t=+320ms / +380ms)
+      setTimeout(() => {
+        if (newCombo > 1) {
+          jouerSonCombo(newCombo);
+        } else {
+          jouerSonPrime();
+        }
+      }, bonusCelerite > 0 ? 380 : 320);
 
       setFlashNews(
         `COMBO ZÉLÉ x${mult.toFixed(2)} : Affaire #${currentDossier.id} apurée sans réserve ! Prime de +${gainDossier} € (Crédibilité +6%).`
@@ -950,7 +957,9 @@ export default function App() {
           next.delete("immunite_blame");
           return next;
         });
-        jouerSonPrime();
+        setTimeout(() => {
+          jouerSonPrime();
+        }, 320);
         setFloatingBonus({ text: `🛡️ BLÂME ANNULÉ (IMMUNITÉ)`, id: Date.now() });
         setTimeout(() => setFloatingBonus(null), 1800);
         declencherTelegramme(
@@ -966,7 +975,9 @@ export default function App() {
           motifErreur: `[BLÂME NEUTRALISÉ PAR LA DIRECTION] ${currentDossier.justification_erreur}`
         });
       } else {
-        jouerSonBlame();
+        setTimeout(() => {
+          jouerSonBlame();
+        }, 320);
         const newBlames = blames + 1;
         setBlames(newBlames);
         setComboZeile(0);

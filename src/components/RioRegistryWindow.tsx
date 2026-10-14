@@ -3,19 +3,19 @@ import { FileBadge, ShieldCheck, ShieldAlert, CheckCircle2, AlertTriangle, EyeOf
 import { Dossier } from "../dossiers";
 import { soundFx } from "../services/soundFx";
 
+export interface RioFeedback {
+  valide: boolean;
+  explication: string;
+  bonus: number;
+}
+
 interface RioRegistryWindowProps {
   dossier: Dossier;
   rioInspecte: boolean;
   onInspecterRio: () => void;
   rioDecision?: "flouter" | "valider" | null;
   onTrancherRio?: (decision: "flouter" | "valider") => void;
-  rioFeedback?: {
-    success: boolean;
-    titre: string;
-    description: string;
-    credibiliteDelta: number;
-    primeDelta: number;
-  } | null;
+  rioFeedback?: RioFeedback | null;
   onClose?: () => void;
 }
 
@@ -72,21 +72,33 @@ export const RioRegistryWindow: React.FC<RioRegistryWindowProps> = ({
             {rioFeedback && (
               <div
                 className={`p-2.5 border text-xs flex flex-col gap-1 ${
-                  rioFeedback.success
+                  rioFeedback.valide
                     ? "bg-[#eaf5ea] border-emerald-700 text-emerald-950 font-medium"
                     : "bg-[#fee2e2] border-red-700 text-red-950 font-medium"
                 }`}
               >
                 <div className="font-bold flex items-center gap-1.5 text-xs uppercase">
-                  {rioFeedback.success ? <CheckCircle2 className="w-4 h-4 text-emerald-700" /> : <AlertTriangle className="w-4 h-4 text-red-700" />}
-                  <span>{rioFeedback.titre}</span>
+                  {rioFeedback.valide ? (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-700" />
+                  ) : (
+                    <AlertTriangle className="w-4 h-4 text-red-700" />
+                  )}
+                  <span>
+                    {rioFeedback.valide
+                      ? "ARBITRAGE HOMOLOGUÉ"
+                      : "ARBITRAGE DÉSAPPROUVÉ"}
+                  </span>
                 </div>
                 <div className="text-[11px] text-slate-800 font-sans">
-                  {rioFeedback.description}
+                  {rioFeedback.explication}
                 </div>
                 <div className="font-bold text-xs mt-0.5 flex gap-3">
-                  <span>Prime : {rioFeedback.primeDelta >= 0 ? `+${rioFeedback.primeDelta}` : rioFeedback.primeDelta} €</span>
-                  <span>Crédibilité : {rioFeedback.credibiliteDelta >= 0 ? `+${rioFeedback.credibiliteDelta}` : rioFeedback.credibiliteDelta}%</span>
+                  <span>
+                    Prime : {rioFeedback.bonus >= 0 ? `+${rioFeedback.bonus}` : rioFeedback.bonus} €
+                  </span>
+                  <span>
+                    Crédibilité : {rioFeedback.valide ? "+8%" : "-18%"}
+                  </span>
                 </div>
               </div>
             )}

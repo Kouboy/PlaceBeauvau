@@ -130,13 +130,13 @@ interface DesktopWorkspaceProps {
   onNeutraliserCamera: () => void;
   cameraDecision: "neutralisee" | "conservee" | null;
   onTrancherCamera: (d: "neutralisee" | "conservee") => void;
-  cameraFeedback: any;
+  cameraFeedback?: { valide: boolean; explication: string; bonus: number } | null;
   // TAJ & RIO & Riposte
   rioInspecte: boolean;
   onInspecterRio: () => void;
   rioDecision: "flouter" | "valider" | null;
   onTrancherRio: (d: "flouter" | "valider") => void;
-  rioFeedback: any;
+  rioFeedback?: { valide: boolean; explication: string; bonus: number } | null;
   riposteDeclenchee: boolean;
   onRiposteOutrage: () => void;
   // Scellés

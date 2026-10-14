@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback, ReactNode } from "react";
 import { Minus, Square, Copy, X } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { soundFx } from "../services/soundFx";
 
 export interface WindowRect {
@@ -240,18 +240,28 @@ export const DesktopWindow: React.FC<DesktopWindowProps> = ({
     setActiveMenu(null);
   };
 
-  useEffect(() => {
-    soundFx.playWindowOpen();
-  }, []);
+  const wasVisibleRef = useRef<boolean>(false);
 
-  if (!isOpen || isMinimized) return null;
+  useEffect(() => {
+    const visible = isOpen && !isMinimized;
+
+    if (visible && !wasVisibleRef.current) {
+      soundFx.playWindowOpen();
+    }
+
+    wasVisibleRef.current = visible;
+  }, [isOpen, isMinimized]);
 
   return (
-    <motion.div
-      id={`window-${id}`}
-      initial={{ opacity: 0, scale: 0.985, y: 4 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.13, ease: [0.16, 1, 0.3, 1] }}
+    <AnimatePresence>
+      {isOpen && !isMinimized && (
+        <motion.div
+          key={`window-${id}`}
+          id={`window-${id}`}
+          initial={{ opacity: 0, scale: 0.985, y: 4 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.99 }}
+          transition={{ duration: 0.1, ease: [0.16, 1, 0.3, 1] }}
       onMouseDown={onFocus}
       onTouchStart={onFocus}
       style={{
@@ -601,6 +611,8 @@ export const DesktopWindow: React.FC<DesktopWindowProps> = ({
           />
         </>
       )}
-    </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
